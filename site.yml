@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+  - include: playbooks/initial.yml
+  - include: playbooks/install_python.yml
+  roles:
+    - { role: kamaln7.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10, swapfile_location: /swapfile }
+    - { role: mongrelion.docker, userland-proxy: false }
