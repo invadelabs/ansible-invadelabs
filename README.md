@@ -10,7 +10,7 @@ sudo apt-get install -y ansible
 # Install Ansible Galaxy roles and run our playbook:
 ~~~
 ansible-galaxy install -r requirements.yml -p roles/
-ansible-playbook -i hosts site.yml
+ansible-playbook -i hosts site.yml -b
 ~~~
 
 # Example Ansible Commands
