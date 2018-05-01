@@ -2,6 +2,7 @@
 - hosts: drew-serv
   become: true
   become_method: sudo
+  gather_facts: no
 
   tasks:
   - name: Add user drew
@@ -37,6 +38,7 @@
     - bc # for github.com/invadelabs/cron-invadelabs
     - bind-utils # for dig
     - dnf-plugins-core # for docker install
+    - snapd # for drive
     # python
     - python-dnf # for ansible
     - python2-pip # for ansible docker module
@@ -75,26 +77,42 @@
     pip:
       name: docker-py
 
-  # if this fails drive is not initialized!
-  - name: Get latest backup of nagios
-    command: drive pull -piped $(drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
-             # drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-
-             # drive pull -piped Backup/Web/nagios-drewserv.20180429230001-0600.tar.xz > /home/drew/nagios-bkup-latest.tar.xz
+  - name: Install drive via snap
+    command: snap install drive --classic
+    args:
+      creates: /var/lib/snapd/snap/bin/drive
+
+  # when / if this fails drive is not initialized! `cd /root; drive init`
+  - name: Get latest backup of nagios backup
+    shell: /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
     args:
       chdir: /root
       creates: /home/drew/nagios-bkup-latest.tar.xz
+    notify:
+    - Extract nagios-bkup-latest.tar.xz
+    - Create container nagios4
 
-  - name: Create nagios4 container
-    docker_container:
-      name: nagios4
-      image: jasonrivers/nagios:latest
-      state: present
-      volumes:
-        - /home/drew/nagios/etc/:/opt/nagios/etc/
-        - /home/drew/nagios/var:/opt/nagios/var/
-        - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
-      ports:
-        - "0.0.0.0:8080:80"
+  - name: Add cron check_ddns.sh
+    cron:
+      name: check_ddns.sh
+      minute: "*/5"
+      user: root
+      job: /root/scripts/check_ddns.sh
+
+  - name: Add cron gdrive_backup.sh
+    cron:
+      name: gdrive_backup.sh
+      minute: "0"
+      hour: "6"
+      user: root
+      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l gdrive_backup_nagios-drewserv.txt -s
+
+  - name: Add cron check_docker.sh
+    cron:
+      name: check_docker.sh
+      minute: "*/1"
+      user: root
+      job: /root/scripts/check_docker.sh
 
   handlers:
    - name: Start docker
@@ -118,3 +136,21 @@
    # kvm
    - name: Start libvirtd
      service: name=libvirtd state=started enabled=yes
+
+   - name: Extract nagios-bkup-latest.tar.xz
+     unarchive:
+       src: /home/drew/nagios-bkup-latest.tar.xz
+       dest: /home/drew
+       remote_src: yes
+
+   - name: Create container nagios4
+     docker_container:
+       name: nagios4
+       image: jasonrivers/nagios:latest
+       state: started
+       volumes:
+         - /home/drew/nagios/etc:/opt/nagios/etc
+         - /home/drew/nagios/var/opt/nagios/var
+         - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
+       ports:
+         - "0.0.0.0:8080:80"
