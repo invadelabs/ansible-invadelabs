@@ -1,0 +1,120 @@
+---
+- hosts: drew-serv
+  become: true
+  become_method: sudo
+
+  tasks:
+  - name: Add user drew
+    user:
+      name: drew
+      uid: 1000 # 1001 on invadelabs, fix this
+
+  - name: Add drew to sudoers
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^drew ALL='
+      line: 'drew ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+  - name: Add docker-ce repo
+    command: sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+    args:
+      creates: /etc/yum.repos.d/docker-ce.repo
+
+  - name: Install Base Packages
+    dnf: name={{item}} state=present
+    with_items:
+    - docker-ce
+    # base
+    - chrony
+    - mcelog
+    - lldpd
+    - samba
+    - httpd
+    - screen
+    - git # for github.com/invadelabs/cron-invadelabs
+    - bc # for github.com/invadelabs/cron-invadelabs
+    - bind-utils # for dig
+    - dnf-plugins-core # for docker install
+    # python
+    - python-dnf # for ansible
+    - python2-pip # for ansible docker module
+    - python2-virtualenv # for ansible docker module
+    - libselinux-python # for ansible
+    # nagios
+    - nrpe
+    - nagios-plugins-users
+    - nagios-plugins-load
+    - nagios-plugins-disk
+    - nagios-plugins-procs
+    # qemu-kvm
+    - qemu-kvm
+    - libvirt
+    - virt-install
+    - bridge-utils
+    - libguestfs-tools
+    notify:
+    - Start docker
+    - Start chronyd
+    - Start mcelog
+    - Start lldpd
+    - Start smb
+    - Start nmb
+    - Start httpd
+    - Start nrpe
+    - Start libvirtd
+
+  - name: git clone invadelabs.com/cron-invadelabs
+    git:
+      repo: https://github.com/invadelabs/cron-invadelabs.git
+      dest: /root/scripts
+      depth: 1
+
+  - name: Install docker-py pip module
+    pip:
+      name: docker-py
+
+  # if this fails drive is not initialized!
+  - name: Get latest backup of nagios
+    command: drive pull -piped $(drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
+             # drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-
+             # drive pull -piped Backup/Web/nagios-drewserv.20180429230001-0600.tar.xz > /home/drew/nagios-bkup-latest.tar.xz
+    args:
+      chdir: /root
+      creates: /home/drew/nagios-bkup-latest.tar.xz
+
+  - name: Create nagios4 container
+    docker_container:
+      name: nagios4
+      image: jasonrivers/nagios:latest
+      state: present
+      volumes:
+        - /home/drew/nagios/etc/:/opt/nagios/etc/
+        - /home/drew/nagios/var:/opt/nagios/var/
+        - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
+      ports:
+        - "0.0.0.0:8080:80"
+
+  handlers:
+   - name: Start docker
+     service: name=docker state=started enabled=yes
+   # base
+   - name: Start chronyd
+     service: name=chronyd state=started enabled=yes
+   - name: Start mcelog
+     service: name=mcelog state=started enabled=yes
+   - name: Start lldpd
+     service: name=lldpd state=started enabled=yes
+   - name: Start smb
+     service: name=smb state=started enabled=yes
+   - name: Start nmb
+     service: name=nmb state=started enabled=yes
+   - name: Start httpd
+     service: name=httpd state=started enabled=yes
+   # nagios
+   - name: Start nrpe
+     service: name=nrpe state=started enabled=yes
+   # kvm
+   - name: Start libvirtd
+     service: name=libvirtd state=started enabled=yes

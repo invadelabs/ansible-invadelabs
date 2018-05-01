@@ -1,11 +1,17 @@
 sudo: false
 language: python
 python:
-- 3.4
+- 2.7
+addons:
+  apt:
+    packages:
+    - ansible
 install:
-- pip install yamllint
+- pip install ansible-lint
 script:
-- yamllint -d relaxed *.yml playbooks/*.yml
+- ansible-lint -t '!ANSIBLE0010' *.yml playbooks/*.yml
+- ansible-galaxy install -r requirements.yml -p roles/
+- ansible-playbook -i hosts --syntax-check $(ls *.yml | grep -v requirements.yml)
 notifications:
   slack:
-    secure: N0q86yoiIxSe5KHy5B2joO1CyAZL9KuTXPkf9pB4OT3QvttBDCaRZ1KKPinRWhhEzJoYrvHlpHUcgGJ2OBXxqTEb2/pncI6ayvntE5xpMf3tjmiT9G001RPrq4IXGnoBvFurAPLnsXxx9Xa9QhSdJa6RmRitKvhUPosf7b127bsdW2paLUv5eZa/vOSZhsLiSR6lhO2GyJBYmdZ/f/cxYEwdPJ182wB9ZdavtISY3dQbuPt117DazY+i9m0W2yMjK38mwjtSWvfJVW/oYsNvpVCdUzgCMecDunFMy7QvjMKT07hXVyuGREsFr7YjzCFULFb/yENRnNbMAh3zvuUCMZ1cPEDpv5tUpQWPDEeUNw0YaDZiSPyXTdteyZTPes5LN8MQTEfKsRfQsrllqB5Qxv5o6UffBa3jjkkjScSeg1zaq7x9W4zFMmSwVP02oByXfznun3c97qBPaLXsYDYYsHuFmFWLxFUH3MgCA2qEkFztY/CzBIMUom6U3BrlGClhlffR2qKMmT3s5Ua34d14+CvHPbhZKeZBns5Hd8XwZ1KP24qScSge1PX7i/LZP20zvSgH3UD8rMHbbXnUXHgpoQwMtl2AcnvB0TMp0rKegHciGXNnS2EBZz3Dwy5x/boNCSJL7GZ45naOK9qjHHMV5qUVXAC5J75PXaN/QwZSQHw=
+    secure: qs2pA0ECZjHH6bNNEzOOs6c3nITPDgJx2ZaoEE+58HiEqmxHuVAP/8DMfF6qXb4Q2ARzTeQhR/E8coShWzSinFuBVyKlzJCySs+/rHacBI02fzOR2aVJDGgQayy5FENICK2YB6FI62Jh2NpPsPFa/r2ATvuSmtWjFQ9+g6rs8HimvjDePsYHW7hr1HMKenzF/PsWxlctB9P1PM/nhSvXRGErA59zyIepw4MvRh5Wd9zUNPQS8WxVPhKeywbN7piNFB4XQaCJBbH04sM13LISEkEV/rlnSeujMj4V99BNkACQ1MrChh8GFyI/pKXnHqbRl0koB8n+WVAj6B2b6iEM4RG7ljXjhRWp8UR0VwTsl1a0QjaLJRyFaRom+oEQydKZrvnMuqEzguW6yMSlwJCr2Yo3hv/8PpD9kAqLbtMEzEAOb1q3Dvene5GIiWc85r8tG3/Ucw7GRurQXVQqyRgbxmdpx6sQgjF6rzzlauKxGeCFE/+hL7ZQnoU9W89o9477ZuNFoMmt+Tc0fS5hfa3Pg3ETz37izQu6UhDalqG+2MOhVo+Fb6WSUgPRQNcPxfjj9sFCBg9N9b8O4HyGV7sBECle/D20M4X5+efWfrxE6FyWTHNTJSRpVj5ZinKCN8nMkHzazSy6kT0OaOUH4TOpLxHp5FNO+mijhTZirhXwzxE=

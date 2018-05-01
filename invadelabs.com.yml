@@ -1,12 +1,12 @@
 ---
-- hosts: all
+- hosts: invadelabs.com
   become: true
   become_method: sudo
   tasks:
   - include: playbooks/initial.yml
-  - include: playbooks/sshd_config.yml
+  #- include: playbooks/sshd_config.yml
   - include: playbooks/web_pkgs.yml
-  # configure sendgrid + domain whitelisting
+  #- include: playbooks/postfix.yml # configure sendgrid + domain whitelisting
   # configure lets encrypt
   # configure apache2 modules rewrite, headers, mod_pagespeed
   # configure apache2 sites
@@ -14,7 +14,7 @@
   # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   # a2ensite /apache2 reload
   # create /root/{slacktee.conf,slacktee.sh,gen_sitemap.sh,wiki_to_md.sh}
-  - include: playbooks/swapfile.yml
+  #- include: playbooks/swapfile.yml
   # lynis
   # configure crons
   roles:
