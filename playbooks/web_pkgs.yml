@@ -1,11 +1,11 @@
 ---
-  - name: install initial
+  - name: install packages
     apt: name={{item}} state=latest # update_cache=yes
     with_items:
     - apache2
     - mailutils
     - postfix
-    - apache2-mod-php7.0
+    - libapache2-mod-php7.0
     - php7.0-sqlite3
     - php7.0-mbstring
     - php7.0-xml
