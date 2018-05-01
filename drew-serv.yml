@@ -19,7 +19,9 @@
       validate: '/usr/sbin/visudo -cf %s'
 
   - name: Add docker-ce repo
-    command: sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+    command: |
+      sudo dnf config-manager --add-repo \
+      https://download.docker.com/linux/fedora/docker-ce.repo
     args:
       creates: /etc/yum.repos.d/docker-ce.repo
 
@@ -84,7 +86,15 @@
 
   # when / if this fails drive is not initialized! `cd /root; drive init`
   - name: Get latest backup of nagios backup
-    shell: /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
+    shell: |
+      /var/lib/snapd/snap/bin/drive pull -piped \
+      $(/var/lib/snapd/snap/bin/drive ls Backup/Web | \
+      grep nagios-drewserv | \
+      grep -v sha256 | \
+      sort | \
+      tail -n 1 | \
+      cut -c 2-) > \
+      /home/drew/nagios-bkup-latest.tar.xz
     args:
       chdir: /root
       creates: /home/drew/nagios-bkup-latest.tar.xz
@@ -105,7 +115,7 @@
       minute: "0"
       hour: "6"
       user: root
-      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l gdrive_backup_nagios-drewserv.txt -s
+      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_nagios-drewserv.txt -s
 
   - name: Add cron check_docker.sh
     cron:
@@ -148,9 +158,11 @@
        name: nagios4
        image: jasonrivers/nagios:latest
        state: started
+       restart_policy: unless-stopped
        volumes:
          - /home/drew/nagios/etc:/opt/nagios/etc
          - /home/drew/nagios/var/opt/nagios/var
          - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
+         - /home/drew/nagios/nagiosgraph/var:/opt/nagiosgraph/var
        ports:
          - "0.0.0.0:8080:80"
