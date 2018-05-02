@@ -5,36 +5,36 @@
   gather_facts: no
 
   tasks:
-  - name: Add user drew
-    user:
-      name: drew
-      uid: 1000 # 1001 on invadelabs, fix this
+  # waiting for fedora 28 stable packages, test available
+  # - name: Add docker-ce repo
+  #   command: |
+  #     sudo dnf config-manager --add-repo \
+  #     https://download.docker.com/linux/fedora/docker-ce.repo
+  #   args:
+  #     creates: /etc/yum.repos.d/docker-ce.repo
 
-  - name: Add drew to sudoers
-    lineinfile:
-      path: /etc/sudoers
-      state: present
-      regexp: '^drew ALL='
-      line: 'drew ALL=(ALL) NOPASSWD: ALL'
-      validate: '/usr/sbin/visudo -cf %s'
+  - name: Install etckeeper
+    dnf: name=etckeeper state=present
 
-  - name: Add docker-ce repo
-    command: |
-      sudo dnf config-manager --add-repo \
-      https://download.docker.com/linux/fedora/docker-ce.repo
+  - name: Initalize etckeeper
+    command: etckeeper init
     args:
-      creates: /etc/yum.repos.d/docker-ce.repo
+      chdir: /etc
+      creates: /etc/.git
 
   - name: Install Base Packages
     dnf: name={{item}} state=present
     with_items:
-    - docker-ce
+    - docker # docker-ce when fedora 28 stable pkgs are available
     # base
     - chrony
     - mcelog
+    - cronie # crontab
     - lldpd
     - samba
     - httpd
+    - postfix
+    - mailx
     - screen
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
@@ -66,10 +66,36 @@
     - Start smb
     - Start nmb
     - Start httpd
+    - Start postfix
     - Start nrpe
     - Start libvirtd
 
-  - name: git clone invadelabs.com/cron-invadelabs
+  - name: Set SELinux to permissive
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: Ensure group "docker" exists
+    group:
+      name: docker
+      state: present
+
+  - name: Append drew to docker group
+    user:
+      name: drew
+      uid: 1000 # 1001 on invadelabs, fix this
+      groups: docker
+      append: yes
+
+  - name: Ensure drew is in sudoers
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^drew ALL='
+      line: 'drew ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+
+  - name: git clone --depth 1 invadelabs.com/cron-invadelabs
     git:
       repo: https://github.com/invadelabs/cron-invadelabs.git
       dest: /root/scripts
@@ -79,22 +105,23 @@
     pip:
       name: docker-py
 
+  - name: Symlink /var/lib/snapd/snap to /snap
+    file:
+      src: /var/lib/snapd/snap
+      dest: /snap
+      owner: root
+      group: root
+      state: link
+
   - name: Install drive via snap
     command: snap install drive --classic
     args:
       creates: /var/lib/snapd/snap/bin/drive
 
   # when / if this fails drive is not initialized! `cd /root; drive init`
-  - name: Get latest backup of nagios backup
+  - name: Get nagios-bkup-latest.tar.xz backup
     shell: |
-      /var/lib/snapd/snap/bin/drive pull -piped \
-      $(/var/lib/snapd/snap/bin/drive ls Backup/Web | \
-      grep nagios-drewserv | \
-      grep -v sha256 | \
-      sort | \
-      tail -n 1 | \
-      cut -c 2-) > \
-      /home/drew/nagios-bkup-latest.tar.xz
+      /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
     args:
       chdir: /root
       creates: /home/drew/nagios-bkup-latest.tar.xz
@@ -140,6 +167,8 @@
      service: name=nmb state=started enabled=yes
    - name: Start httpd
      service: name=httpd state=started enabled=yes
+   - name: Start postfix
+     service: name=postfix state=started enabled=yes
    # nagios
    - name: Start nrpe
      service: name=nrpe state=started enabled=yes
@@ -161,8 +190,10 @@
        restart_policy: unless-stopped
        volumes:
          - /home/drew/nagios/etc:/opt/nagios/etc
-         - /home/drew/nagios/var/opt/nagios/var
+         - /home/drew/nagios/var:/opt/nagios/var
          - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
          - /home/drew/nagios/nagiosgraph/var:/opt/nagiosgraph/var
        ports:
          - "0.0.0.0:8080:80"
+
+# notify message to place check_dns.cred and slacktee.conf
