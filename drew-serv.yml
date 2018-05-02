@@ -3,6 +3,8 @@
   become: true
   become_method: sudo
   gather_facts: no
+  vars:
+    MAILTO: drew@invadelabs.com
 
   tasks:
   # waiting for fedora 28 stable packages, test available
@@ -36,6 +38,8 @@
     - postfix
     - mailx
     - screen
+    - smartmontools
+    - lm_sensors
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
     - bind-utils # for dig
@@ -69,6 +73,35 @@
     - Start postfix
     - Start nrpe
     - Start libvirtd
+    - Setup lm_sensors
+
+  - name: smartd mail root
+    lineinfile:
+      dest: /etc/sysconfig/smartmontools
+      regexp: "^smartd_conf_opts="
+      line: 'smartd_conf_opts="-H -m root"'
+      state: present
+    notify: Restart smartd.service
+
+  - name: Disallow root SSH access
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service
+
+  - name: Add /etc/motd template
+    template:
+      src: templates/etc/motd.j2
+      dest: /etc/motd
+
+  - name: Add /etc/nrpe.d/nrpe_local.cfg template
+    template:
+      src: templates/etc/nrpe.d/nrpe_local.cfg.j2
+      dest: /etc/nrpe.d/nrpe_local.cfg
+    notify: Restart nrpe.service
 
   - name: Set SELinux to permissive
     selinux:
@@ -151,6 +184,10 @@
       user: root
       job: /root/scripts/check_docker.sh
 
+  - name: Notify message to place check_dns.cred and slacktee.conf
+    debug:
+      msg: "Place check_dns.cred and slacktee.conf"
+
   handlers:
    - name: Start docker
      service: name=docker state=started enabled=yes
@@ -176,6 +213,16 @@
    - name: Start libvirtd
      service: name=libvirtd state=started enabled=yes
 
+   - name: Setup lm_sensors
+     command: sensors-detect --auto
+
+   - name: Restart smartd.service
+     service: name=smartd state=restarted
+   - name: Restart sshd.service
+     service: name=sshd state=restarted
+   - name: Restart nrpe.service
+     service: name=nrpe state=restarted
+
    - name: Extract nagios-bkup-latest.tar.xz
      unarchive:
        src: /home/drew/nagios-bkup-latest.tar.xz
@@ -195,5 +242,3 @@
          - /home/drew/nagios/nagiosgraph/var:/opt/nagiosgraph/var
        ports:
          - "0.0.0.0:8080:80"
-
-# notify message to place check_dns.cred and slacktee.conf
