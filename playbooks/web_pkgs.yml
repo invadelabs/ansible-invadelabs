@@ -2,21 +2,24 @@
   - name: install packages
     apt: name={{item}} state=latest # update_cache=yes
     with_items:
-    - apache2
     - mailutils
     - postfix
+
+    - apache2
     - libapache2-mod-php7.0
     - php7.0-sqlite3
     - php7.0-mbstring
     - php7.0-xml
     - php-curl
     - libsasl2-modules
+    - php-apcu
+
     - certbot
     - python-certbot-apache
-    - php-apcu
-    - highlight
-    - lynis
-    - snapd
-    - bc
-    - pandoc
-    - pxz
+
+    - highlight # for invadelabs/cron-invadelabs
+    - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
+    - snapd # for invadelabs/cron-invadelabs/gdrive.sh
+    - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+    - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+    - pxz # for invadelabs/cron-invadelabs/gdrive.sh
