@@ -76,6 +76,14 @@
     - Start libvirtd
     - Setup lm_sensors
 
+  - name: Set /etc/systemd/journald.conf; SystemMaxUse=20G
+    lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^SystemMaxUse="
+      line: 'SystemMaxUse=20G'
+      state: present
+    notify: Restart systemd-journald.service
+
   - name: smartd mail root
     lineinfile:
       dest: /etc/sysconfig/smartmontools
@@ -217,6 +225,8 @@
    - name: Setup lm_sensors
      command: sensors-detect --auto
 
+   - name: Restart systemd-journald.service
+     service: name=systemd-journald state=restarted
    - name: Restart smartd.service
      service: name=smartd state=restarted
    - name: Restart sshd.service
@@ -239,7 +249,7 @@
        volumes:
          - /home/drew/nagios/etc:/opt/nagios/etc
          - /home/drew/nagios/var:/opt/nagios/var
-         - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugin
+         - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
          - /home/drew/nagios/nagiosgraph/var:/opt/nagiosgraph/var
        ports:
          - "0.0.0.0:8080:80"
