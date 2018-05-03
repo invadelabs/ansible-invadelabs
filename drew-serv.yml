@@ -45,6 +45,7 @@
     - bind-utils # for dig
     - dnf-plugins-core # for docker install
     - snapd # for drive
+    - pxz # parallel xz for backups
     # python
     - python-dnf # for ansible
     - python2-pip # for ansible docker module
