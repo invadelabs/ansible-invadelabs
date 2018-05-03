@@ -2,9 +2,18 @@
 
 Ansible run for invadelabs using either [invadelabs/vbox-invadelabs](https://github.com/invadelabs/vbox-invadelabs) on local or terraform for cloud.
 
-# Install Ansible on host machine
+# Install Ansible on controller machine
 ~~~
 sudo apt-get install -y ansible
+~~~
+
+# Install python on guest machine
+~~~
+Fedora 28:
+sudo dnf install -y python2
+
+Ubuntu 18.04:
+sudo apt-get install -y python-minimal
 ~~~
 
 # Install Ansible Galaxy roles, check, and run our playbook:

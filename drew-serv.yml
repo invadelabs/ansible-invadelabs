@@ -7,14 +7,6 @@
     MAILTO: drew@invadelabs.com
 
   tasks:
-  # waiting for fedora 28 stable packages, test available
-  # - name: Add docker-ce repo
-  #   command: |
-  #     sudo dnf config-manager --add-repo \
-  #     https://download.docker.com/linux/fedora/docker-ce.repo
-  #   args:
-  #     creates: /etc/yum.repos.d/docker-ce.repo
-
   - name: Install etckeeper
     dnf: name=etckeeper state=present
 
@@ -29,24 +21,25 @@
     with_items:
     - docker # docker-ce when fedora 28 stable pkgs are available
     # base
-    - chrony
+    - vim-enhanced
     - mcelog
     - cronie # crontab
-    - lldpd
-    - samba
-    - httpd
-    - postfix
-    - mailx
-    - screen
-    - smartmontools
-    - lm_sensors
-    - rsyslog # for elasticsearch
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
     - bind-utils # for dig
     - dnf-plugins-core # for docker install
     - snapd # for drive
     - pxz # parallel xz for backups
+    - chrony
+    - lldpd
+    - samba
+    - httpd
+    - postfix
+    - rsyslog # for elasticsearch
+    - mailx
+    - screen
+    - smartmontools
+    - lm_sensors
     # python
     - python-dnf # for ansible
     - python2-pip # for ansible docker module
@@ -73,10 +66,18 @@
     - Start nmb
     - Start httpd
     - Start postfix
-    - Setup lm_sensors
     - Start rsyslog
     - Start nrpe
     - Start libvirtd
+    - Setup lm_sensors
+
+  - name: Set /etc/default/grub nomodeset
+    lineinfile:
+      dest: /etc/default/grub
+      regexp: "^GRUB_CMDLINE_LINUX="
+      line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root nomodeset"'
+      state: present
+    notify: grub2-mkconfig -o /boot/grub2/grub.cfg
 
   - name: Set /etc/systemd/journald.conf; SystemMaxUse=20G
     lineinfile:
@@ -116,6 +117,14 @@
       src: templates/etc/motd.j2
       dest: /etc/motd
 
+  - name: nrpe.cfg allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1
+    lineinfile:
+      dest: /etc/nagios/nrpe.cfg
+      regexp: "^allowed_hosts="
+      line: "allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
+      state: present
+    notify: Restart nrpe.service
+
   - name: Add /etc/nrpe.d/nrpe_local.cfg template
     template:
       src: templates/etc/nrpe.d/nrpe_local.cfg.j2
@@ -132,14 +141,14 @@
       name: docker
       state: present
 
-  - name: Append drew to docker group
+  - name: Append "drew" to "docker" group
     user:
       name: drew
       uid: 1000 # 1001 on invadelabs, fix this
       groups: docker
       append: yes
 
-  - name: Ensure drew is in sudoers
+  - name: Ensure "drew" is in sudoers
     lineinfile:
       path: /etc/sudoers
       state: present
@@ -170,17 +179,6 @@
     args:
       creates: /var/lib/snapd/snap/bin/drive
 
-  # when / if this fails drive is not initialized! `cd /root; drive init`
-  - name: Get nagios-bkup-latest.tar.xz backup
-    shell: |
-      /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
-    args:
-      chdir: /root
-      creates: /home/drew/nagios-bkup-latest.tar.xz
-    notify:
-    - Extract nagios-bkup-latest.tar.xz
-    - Create container nagios4
-
   - name: Add cron check_ddns.sh
     cron:
       name: check_ddns.sh
@@ -205,7 +203,18 @@
 
   - name: Notify message to place check_dns.cred and slacktee.conf
     debug:
-      msg: "Place check_dns.cred and slacktee.conf"
+      msg: "Init drive, place check_dns.cred and slacktee.conf"
+
+  # # when this fails drive is not initialized! `cd /root; drive init`
+  # - name: Get nagios-bkup-latest.tar.xz backup
+  #   shell: |
+  #     /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
+  #   args:
+  #     chdir: /root
+  #     creates: /home/drew/nagios-bkup-latest.tar.xz
+  #   notify:
+  #   - Extract nagios-bkup-latest.tar.xz
+  #   - Create container nagios4
 
   handlers:
    - name: Start docker
@@ -237,6 +246,9 @@
    - name: Setup lm_sensors
      command: sensors-detect --auto
 
+   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
+     command: grub2-mkconfig -o /boot/grub2/grub.cfg
+
    - name: Restart systemd-journald.service
      service: name=systemd-journald state=restarted
    - name: Restart smartd.service
@@ -251,7 +263,6 @@
        src: /home/drew/nagios-bkup-latest.tar.xz
        dest: /home/drew
        remote_src: yes
-
    - name: Create container nagios4
      docker_container:
        name: nagios4
