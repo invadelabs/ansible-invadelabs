@@ -1,0 +1,47 @@
+# waiting for fedora 28 stable packages, test available
+# - name: Add docker-ce repo
+#   command: |
+#     sudo dnf config-manager --add-repo \
+#     https://download.docker.com/linux/fedora/docker-ce.repo
+#   args:
+#     creates: /etc/yum.repos.d/docker-ce.repo
+#
+# sudo firewall-cmd --add-service=http --permanent
+# sudo firewall-cmd --add-port=5666/tcp --permanent
+# sudo firewall-cmd --add-port=139/tcp --permanent
+# sudo firewall-cmd --add-port=445/tcp --permanent
+# sudo firewall-cmd --reload
+#
+# - name: firewalld enable https
+#   firewalld:
+#     service: https
+#     permanent: true
+#     state: enabled
+#
+# - name: firewalld enable nrpe 5666/tcp
+#   firewalld:
+#     port: 5666/tcp
+#     permanent: true
+#     state: enabled
+#
+# - name: Set /etc/default/grub GRUB_GFXMODE
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXMODE="
+#     line: 'GRUB_GFXMODE="1024x768x32"'
+#     state: present
+#
+# - name: Set /etc/default/grub GRUB_GFXPAYLOAD
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXPAYLOAD="
+#     line: 'GRUB_GFXPAYLOAD="1024x768x32"'
+#     state: present
+#
+#  # only entry that adds gfxmode into grub.cfg
+# - name: Set /etc/default/grub GRUB_GFXPAYLOAD_LINUX
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXPAYLOAD_LINUX="
+#     line: 'GRUB_GFXPAYLOAD_LINUX="1024x768x32"'
+#     state: present
