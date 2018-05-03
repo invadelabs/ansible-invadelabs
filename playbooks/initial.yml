@@ -4,3 +4,4 @@
     with_items:
     - etckeeper
     - fail2ban
+    - python-apt # for ansible
