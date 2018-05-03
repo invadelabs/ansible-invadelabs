@@ -40,6 +40,7 @@
     - screen
     - smartmontools
     - lm_sensors
+    - rsyslog # for elasticsearch
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
     - bind-utils # for dig
@@ -72,15 +73,24 @@
     - Start nmb
     - Start httpd
     - Start postfix
+    - Setup lm_sensors
+    - Start rsyslog
     - Start nrpe
     - Start libvirtd
-    - Setup lm_sensors
 
   - name: Set /etc/systemd/journald.conf; SystemMaxUse=20G
     lineinfile:
       dest: /etc/systemd/journald.conf
       regexp: "^SystemMaxUse="
       line: 'SystemMaxUse=20G'
+      state: present
+    notify: Restart systemd-journald.service
+
+  - name: Set /etc/systemd/journald.conf; ForwardToSyslog=yes
+    lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^ForwardToSyslog=yes"
+      line: 'ForwardToSyslog=yes'
       state: present
     notify: Restart systemd-journald.service
 
@@ -215,6 +225,8 @@
      service: name=httpd state=started enabled=yes
    - name: Start postfix
      service: name=postfix state=started enabled=yes
+   - name: Start rsyslog
+     service: name=rsyslog state=started enabled=yes
    # nagios
    - name: Start nrpe
      service: name=nrpe state=started enabled=yes
