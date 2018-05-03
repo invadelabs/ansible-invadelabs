@@ -2,9 +2,11 @@
 - hosts: invadelabs.com
   become: true
   become_method: sudo
+  #gather_facts: no
+
   tasks:
   - include: playbooks/initial.yml
-  #- include: playbooks/sshd_config.yml
+  # - include: playbooks/sshd_config.yml
   - include: playbooks/web_pkgs.yml
   #- include: playbooks/postfix.yml # configure sendgrid + domain whitelisting
   # configure lets encrypt
@@ -13,9 +15,51 @@
   # invadelabs.com deploy
   # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   # a2ensite /apache2 reload
-  # create /root/{slacktee.conf,slacktee.sh,gen_sitemap.sh,wiki_to_md.sh}
+  # create /root/{slacktee.conf,github_token,mediawiki_to_git_md}
   #- include: playbooks/swapfile.yml
-  # lynis
-  # configure crons
-  roles:
-    - { role: mongrelion.docker, userland-proxy: false }
+  - name: git clone --depth 1 invadelabs.com/cron-invadelabs
+    git:
+      repo: https://github.com/invadelabs/cron-invadelabs.git
+      dest: /root/scripts
+      depth: 1
+
+  - name: Add cron gen_sitemap.sh
+    cron:
+      name: gen_sitemap.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gen_sitemap.sh -s
+
+  - name: Add cron gdrive_backup.sh
+    cron:
+      name: gdrive_backup.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
+
+  - name: Add cron check_lynis.sh
+    cron:
+      name: check_lynis.sh
+      minute: 59
+      hour: 4
+      user: root
+      job: /root/scripts/check_lynis.sh
+
+  # - name: Add cron certbot
+  #   cron:
+  #     name: certbot
+  #     minute: 0
+  #     hour: 3,15
+  #     user: root
+  #     job: certbot --apache renew --quiet
+
+  - name: Add cron `hostname invadelabs.com`
+    cron:
+      name: hostname invadelabs.com
+      minute: 0
+      user: root
+      job: hostname invadelabs.com
+  # roles:
+  #   - { role: mongrelion.docker, userland-proxy: false }
