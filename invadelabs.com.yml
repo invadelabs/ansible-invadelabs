@@ -44,6 +44,7 @@
       name: check_lynis.sh
       minute: 59
       hour: 4
+      weekday: 5
       user: root
       job: /root/scripts/check_lynis.sh
 
