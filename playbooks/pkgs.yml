@@ -23,3 +23,9 @@
     - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
     - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
     - pxz # for invadelabs/cron-invadelabs/gdrive.sh
+    - gawk # for lynis and ansi2html
+    - dbus # for lynis and ansi2html
+
+    notify:
+    - Start apache2.service
+    - Start postfix.service

@@ -2,65 +2,37 @@
 - hosts: invadelabs.com
   become: true
   become_method: sudo
-  #gather_facts: no
+  # gather_facts: no
+  # vars:
+  #   MAILTO: drew@invadelabs.com
 
   tasks:
+  - include: playbooks/etckeeper.yml
   - include: playbooks/initial.yml
-  # - include: playbooks/sshd_config.yml
-  - include: playbooks/web_pkgs.yml
-  #- include: playbooks/postfix.yml # configure sendgrid + domain whitelisting
+  - include: playbooks/sshd_config.yml
+  - include: playbooks/pkgs.yml
+  # configure sendgrid + domain whitelisting
   # configure lets encrypt
-  # configure apache2 modules rewrite, headers, mod_pagespeed
-  # configure apache2 sites
+  - include: playbooks/apache2.yml # XXX add mod_pagespeed, more loops
   # invadelabs.com deploy
   # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
-  # a2ensite /apache2 reload
-  # create /root/{slacktee.conf,github_token,mediawiki_to_git_md}
-  #- include: playbooks/swapfile.yml
-  - name: git clone --depth 1 invadelabs.com/cron-invadelabs
-    git:
-      repo: https://github.com/invadelabs/cron-invadelabs.git
-      dest: /root/scripts
-      depth: 1
+  - include: playbooks/cron.yml
 
-  - name: Add cron gen_sitemap.sh
-    cron:
-      name: gen_sitemap.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gen_sitemap.sh -s
+  - name: Notify message to place github_token, mediawiki_to_git_md, and slacktee.conf
+    debug:
+      msg: "Create /root/{slacktee.conf,github_token,mediawiki_to_git_md}"
 
-  - name: Add cron gdrive_backup.sh
-    cron:
-      name: gdrive_backup.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
+  handlers:
+   - name: Start apache2.service
+     service: name=apache2 state=started enabled=yes
+   - name: Start postfix.service
+     service: name=postfix state=started enabled=yes
 
-  - name: Add cron check_lynis.sh
-    cron:
-      name: check_lynis.sh
-      minute: 59
-      hour: 4
-      weekday: 5
-      user: root
-      job: /root/scripts/check_lynis.sh
+   - name: Restart sshd.service
+     service: name=sshd state=restarted
+   - name: Restart apache2.service
+     service: name=apache2 state=restarted
 
-  # - name: Add cron certbot
-  #   cron:
-  #     name: certbot
-  #     minute: 0
-  #     hour: 3,15
-  #     user: root
-  #     job: certbot --apache renew --quiet
-
-  - name: Add cron `hostname invadelabs.com`
-    cron:
-      name: hostname invadelabs.com
-      minute: 0
-      user: root
-      job: hostname invadelabs.com
-  # roles:
-  #   - { role: mongrelion.docker, userland-proxy: false }
+  roles:
+  - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
+  # - { role: mongrelion.docker, userland-proxy: false }
