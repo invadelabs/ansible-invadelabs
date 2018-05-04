@@ -4,6 +4,7 @@
     with_items:
     - mailutils
     - postfix
+    - libsasl2-modules # needed for postfix sendgrid
 
     - apache2
     - libapache2-mod-php7.0
