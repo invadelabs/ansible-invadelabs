@@ -1,4 +1,4 @@
 - src: tersmitten.swapfile
+  version: v2.0.4
 - src: mongrelion.docker
-- src: willshersystems.sshd
-- src: geerlingguy.postfix
+  version: 0.1.1

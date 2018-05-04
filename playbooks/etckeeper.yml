@@ -1,0 +1,9 @@
+---
+  - name: Install etckeeper
+    apt: name=etckeeper state=present
+
+  - name: Initalize etckeeper
+    command: etckeeper init && etckeeper post-install
+    args:
+      chdir: /etc
+      creates: /etc/.git

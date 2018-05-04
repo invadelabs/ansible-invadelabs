@@ -1,0 +1,46 @@
+---
+  - name: git clone --depth 1 invadelabs.com/cron-invadelabs
+    git:
+      repo: https://github.com/invadelabs/cron-invadelabs.git
+      dest: /root/scripts
+      depth: 1
+
+  - name: Add cron gen_sitemap.sh
+    cron:
+      name: gen_sitemap.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gen_sitemap.sh -s
+
+  - name: Add cron gdrive_backup.sh
+    cron:
+      name: gdrive_backup.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
+
+  - name: Add cron check_lynis.sh
+    cron:
+      name: check_lynis.sh
+      minute: 59
+      hour: 4
+      weekday: 5
+      user: root
+      job: /root/scripts/check_lynis.sh
+
+  # - name: Add cron certbot
+  #   cron:
+  #     name: certbot
+  #     minute: 0
+  #     hour: 3,15
+  #     user: root
+  #     job: certbot --apache renew --quiet
+
+  - name: Add cron `hostname invadelabs.com`
+    cron:
+      name: hostname invadelabs.com
+      minute: 0
+      user: root
+      job: hostname invadelabs.com

@@ -1,11 +1,36 @@
 ---
-- hosts: all
-  vars:
-    sshd_skip_defaults: true
-    sshd:
-      DebianBanner no
-      KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
-      Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-      MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
-  roles:
-    - role: willshersystems.sshd
+  - name: sshd_config; DebianBanner
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^DebianBanner"
+      line: "DebianBanner no"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service
+
+  - name: sshd_config; KexAlgorithms
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^KexAlgorithms"
+      line: "KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service
+
+  - name: sshd_config; Ciphers
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^Ciphers"
+      line: "Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service
+
+  - name: sshd_config; MACs
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^MACs"
+      line: "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service      
