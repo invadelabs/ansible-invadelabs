@@ -21,10 +21,10 @@ sudo apt-get install -y python-minimal
 ansible-galaxy install -r requirements.yml -p roles/
 
 ansible-playbook -i hosts drew-serv.yml --check --diff
-ansible-playbook -i hosts invadelabs.com.yml --check --diff
+ansible-playbook -i hosts invadelabs.com.yml --check --diff --private-key=~/.ssh/google_compute_engine
 
 ansible-playbook -i hosts drew-serv.yml --diff
-ansible-playbook -i hosts invadelabs.com.yml --diff
+ansible-playbook -i hosts invadelabs.com.yml --diff --private-key=~/.ssh/google_compute_engine
 ~~~
 
 # Example Ansible Commands
