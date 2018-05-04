@@ -1,4 +1,2 @@
-hosts.deleted.*
 *.retry
-coverage-*
 roles/*.*

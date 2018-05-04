@@ -20,10 +20,10 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/invadelabs.com
 
-  SetEnv GITDIR_ENV "${gitdir_env}"
-  SetEnv DEPLOY_ENV "${deploy_env}"
-  SetEnv EMAIL_ENV "${email_env}"
-  SetEnv SLACK_ENV "${slack_env}"
+  SetEnv GITDIR_ENV {{ gitdir_env.stdout }}
+  SetEnv DEPLOY_ENV {{ deploy_env.stdout }}
+  SetEnv EMAIL_ENV {{ email_env.stdout }}
+  SetEnv SLACK_ENV {{ slack_env.stdout }}
 
   ErrorLog ${APACHE_LOG_DIR}/invadelabs.com-secure.error.log
   CustomLog ${APACHE_LOG_DIR}/invadelabs.com.access-secure.log combined
