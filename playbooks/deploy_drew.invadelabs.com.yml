@@ -43,10 +43,16 @@
       group: www-data
       creates: /var/www/drew.invadelabs.com/extensions/Description2
 
-# https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
+  # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
   - name: drewwiki; remove softwareInformation SpecialVersion.php
     lineinfile:
       dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
       regexp: '\$this\-\>softwareInformation\(\) \.'
       line: '//$this->softwareInformation() .'
       state: present
+
+  - name: drewwiki; wiki_to_md.sh; git clone --depth 1 https://github.com/drew-holt/mediawiki_to_git_md.git
+    git:
+      repo: https://github.com/drew-holt/mediawiki_to_git_md.git
+      dest: /root/mediawiki_to_git_md
+      depth: 1
