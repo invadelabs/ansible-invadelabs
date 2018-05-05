@@ -34,5 +34,5 @@
      service: name=postfix state=restarted
 
   roles:
-  - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
+  # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
   # - { role: mongrelion.docker, userland-proxy: false }

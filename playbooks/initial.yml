@@ -1,4 +1,7 @@
 ---
+  - name: initial; set hostname
+    command: hostname invadelabs.com
+
   - name: initial; Install initial packages
     apt: name={{item}} state=present # update_cache=yes
     with_items:
@@ -7,7 +10,9 @@
     - python-apt # for ansible
 
   - name: initial; Initalize etckeeper
-    command: etckeeper init && etckeeper post-install
+    shell: |
+      etckeeper init
+      etckeeper post-install
     args:
       chdir: /etc
       creates: /etc/.git
