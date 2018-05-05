@@ -14,7 +14,7 @@
   - include: playbooks/drive.yml # initalize drive, configures letsencrypt
   - include: playbooks/apache2.yml # XXX add mod_pagespeed, more loops
   - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
-  # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
+  - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   - include: playbooks/cron.yml
   - name: Notify message to place github_token, mediawiki_to_git_md, and slacktee.conf
     debug:
