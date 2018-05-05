@@ -1,12 +1,12 @@
 ---
-  - name: Install initial packages
+  - name: initial; Install initial packages
     apt: name={{item}} state=present # update_cache=yes
     with_items:
     - etckeeper
     - fail2ban
     - python-apt # for ansible
 
-  - name: Initalize etckeeper
+  - name: initial; Initalize etckeeper
     command: etckeeper init && etckeeper post-install
     args:
       chdir: /etc

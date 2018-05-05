@@ -1,11 +1,11 @@
 ---
-  - name: debconf; postfix; option type 'Internet with smarthost'
+  - name: pkgs; debconf; postfix; option type 'Internet with smarthost'
     debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
 
-  - name: debconf; postfix; option type 'System mail name'
+  - name: pkgs; debconf; postfix; option type 'System mail name'
     debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
-  - name: install packages
+  - name: pkgs; install packages
     apt: name={{item}} state=latest # update_cache=yes
     with_items:
     - mailutils
@@ -36,7 +36,7 @@
     - Start apache2.service
     - Start postfix.service
 
-  - name: etckeeper post-install
+  - name: pkgs; etckeeper post-install
     command: touch /var/log/firstpkg.run && etckeeper post-install
     args:
       creates: /var/log/firstpkg.run
