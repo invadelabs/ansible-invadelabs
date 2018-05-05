@@ -6,6 +6,7 @@
     args:
       creates: /etc/apache2/mods-enabled/{{item}}.load
     with_items:
+      #- env
       - ssl
       - rewrite
       - headers
@@ -51,6 +52,14 @@
       - ServerSignature Off
     notify: Restart apache2.service
 
+  - name: apache2; add SSLStapling Cache to ssl.conf
+    blockinfile:
+      path: /etc/apache2/mods-available/ssl.conf
+      marker: "        # {mark} ANSIBLE MANAGED BLOCK -->"
+      insertbefore: "</IfModule>"
+      content: "        SSLStaplingCache        shmcb:/var/run/ocsp(128000)"
+    notify: Restart apache2.service
+
   # blank /var/www/html/index.html
   - name: apache2; /var/www/html/index.html
     copy:
@@ -58,11 +67,16 @@
       content: ""
     notify: Restart apache2.service
 
+  #- name: apache2; a2dissite 000-default
+  #  command: a2dissite 000-default
+  #  args:
+  #    #creates: /etc/apache2/sites-available/000-default.conf # XXX do the opppisite of create
+  #  notify: Restart apache2.service
+  #/etc/apache2/sites-available/000-default.conf
   - name: apache2; a2dissite 000-default
-    command: a2dissite 000-default
-    args:
-      #creates: /etc/apache2/sites-available/000-default.conf # XXX do the opppisite of create
-    notify: Restart apache2.service
+    file:
+      path: /etc/apache2/sites-enables/000-default.conf
+      state: absent
 
   # apahce2 vhosts
   - name: apache2; add site templates
