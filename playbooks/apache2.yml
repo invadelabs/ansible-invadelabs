@@ -1,12 +1,10 @@
 ---
   # apahce2 mods
-
   - name: apache2; a2enmod
     command: /usr/sbin/a2enmod {{item}}
     args:
       creates: /etc/apache2/mods-enabled/{{item}}.load
     with_items:
-      #- env
       - ssl
       - rewrite
       - headers
@@ -67,12 +65,6 @@
       content: ""
     notify: Restart apache2.service
 
-  #- name: apache2; a2dissite 000-default
-  #  command: a2dissite 000-default
-  #  args:
-  #    #creates: /etc/apache2/sites-available/000-default.conf # XXX do the opppisite of create
-  #  notify: Restart apache2.service
-  #/etc/apache2/sites-available/000-default.conf
   - name: apache2; a2dissite 000-default
     file:
       path: /etc/apache2/sites-enables/000-default.conf

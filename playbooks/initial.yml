@@ -1,13 +1,14 @@
 ---
   - name: initial; set hostname
     command: hostname invadelabs.com
+    when: (ansible_fqdn != "invadelabs.com")
 
   - name: initial; Install initial packages
     apt: name={{item}} state=present # update_cache=yes
     with_items:
     - etckeeper
-    - fail2ban
     - python-apt # for ansible
+    # - fail2ban # sshguard in ubuntu 18.04
 
   - name: initial; Initalize etckeeper
     shell: |

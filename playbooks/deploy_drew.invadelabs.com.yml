@@ -16,32 +16,26 @@
       extra_opts: ['--strip-components=1']
       creates: /var/www/drew.invadelabs.com/index.php
 
-  - name: drewwiki; mediawiki; add googleAnalytics extension
+  - name: drewwiki; mediawiki; add extensions
     unarchive:
       remote_src: yes
-      src: https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz
+      src: "{{ item.value }}"
       dest: /var/www/drew.invadelabs.com/extensions
       owner: www-data
       group: www-data
-      creates: /var/www/drew.invadelabs.com/extensions/googleAnalytics
+    with_dict: {
+      "googleAnalytics": "https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz",
+      "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz",
+      "Description2": "https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz"
+      }
+    creates: "/var/www/drew.invadelabs.com/extensions/{{ item.key }}"
 
-  - name: drewwiki; mediawiki; add OpenGraphMeta extension
-    unarchive:
-      remote_src: yes
-      src: https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz
-      dest: /var/www/drew.invadelabs.com/extensions
+  - name: drewwiki; add logo
+    copy:
+      src: templates/omgz_square.gif
+      dest: /var/www/drew.invadelabs.com/omgz_square.gif
       owner: www-data
       group: www-data
-      creates: /var/www/drew.invadelabs.com/extensions/OpenGraphMeta
-
-  - name: drewwiki; mediawiki; add Description2 extension
-    unarchive:
-      remote_src: yes
-      src: https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz
-      dest: /var/www/drew.invadelabs.com/extensions
-      owner: www-data
-      group: www-data
-      creates: /var/www/drew.invadelabs.com/extensions/Description2
 
   # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
   - name: drewwiki; remove softwareInformation SpecialVersion.php

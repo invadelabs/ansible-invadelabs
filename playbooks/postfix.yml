@@ -31,15 +31,11 @@
   - name: postfix; set sasl_passwd
     shell: cat /root/postfix_passwd
     register: sasl_passwd
+
+  - name: postfix; create /etc/postfix/sasl_passwd
+    command: "echo {{ sasl_passwd.stdout }} >  /etc/postfix/sasl_passwd"
     args:
       creates: /etc/postfix/sasl_passwd.db
-
-  - name: postfix; create /etc/postfix/sasl_passwd # XXX on 2nd don't recreate this file
-    copy:
-      dest: /etc/postfix/sasl_passwd
-      mode: 0600
-      content: "{{ sasl_passwd.stdout }}"
-    creates: /etc/postfix/sasl_passwd.db # XXX
 
   - name: postfix; postmap /etc/postfix/sasl_passwd
     shell: |
@@ -50,16 +46,13 @@
       creates: /etc/postfix/sasl_passwd.db
     notify: Restart postfix.service
 
-  - name: postfix; /home/drew/.forward
+  - name: postfix; add .forward
     copy:
-      dest: /home/drew/.forward
-      owner: drew
-      group: drew
+      dest: "{{item.value}}/.forward"
+      owner: "{{ item.key }}"
+      group: "{{ item.key }}"
       content: "drewderivative@gmail.com"
-
-  - name: postfix; /root/.forward
-    copy:
-      dest: /root/.forward
-      owner: root
-      group: root
-      content: "drewderivative@gmail.com"
+    with_dict: {
+      "drew": "/home/drew",
+      "root": "/root"
+      }
