@@ -1,0 +1,52 @@
+---
+  - name: drewwiki; Creates '/var/www/drew.invadelabs.com' directory
+    file:
+      path: /var/www/drew.invadelabs.com
+      state: directory
+      owner: www-data
+      group: www-data
+
+  - name: drewwiki; Initial site deploy drew.invadelabs.com
+    unarchive:
+      remote_src: yes
+      src: https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
+      dest: /var/www/drew.invadelabs.com
+      owner: www-data
+      group: www-data
+      extra_opts: ['--strip-components=1']
+      creates: /var/www/drew.invadelabs.com/index.php
+
+  - name: drewwiki; mediawiki; add googleAnalytics extension
+    unarchive:
+      remote_src: yes
+      src: https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz
+      dest: /var/www/drew.invadelabs.com/extensions
+      owner: www-data
+      group: www-data
+      creates: /var/www/drew.invadelabs.com/extensions/googleAnalytics
+
+  - name: drewwiki; mediawiki; add OpenGraphMeta extension
+    unarchive:
+      remote_src: yes
+      src: https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz
+      dest: /var/www/drew.invadelabs.com/extensions
+      owner: www-data
+      group: www-data
+      creates: /var/www/drew.invadelabs.com/extensions/OpenGraphMeta
+
+  - name: drewwiki; mediawiki; add Description2 extension
+    unarchive:
+      remote_src: yes
+      src: https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz
+      dest: /var/www/drew.invadelabs.com/extensions
+      owner: www-data
+      group: www-data
+      creates: /var/www/drew.invadelabs.com/extensions/Description2
+
+# https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
+  - name: drewwiki; remove softwareInformation SpecialVersion.php
+    lineinfile:
+      dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
+      regexp: '\$this\-\>softwareInformation\(\) \.'
+      line: '//$this->softwareInformation() .'
+      state: present

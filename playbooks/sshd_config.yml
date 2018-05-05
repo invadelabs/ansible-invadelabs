@@ -1,5 +1,5 @@
 ---
-  - name: sshd_config params
+  - name: sshd_config; sshd_config params
     lineinfile:
       dest: /etc/ssh/sshd_config
       regexp: "^{{item.key}}"

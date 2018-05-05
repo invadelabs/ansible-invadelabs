@@ -31,13 +31,15 @@
   - name: postfix; set sasl_passwd
     shell: cat /root/postfix_passwd
     register: sasl_passwd
+    args:
+      creates: /etc/postfix/sasl_passwd.db
 
   - name: postfix; create /etc/postfix/sasl_passwd
     copy:
       dest: /etc/postfix/sasl_passwd
       mode: 0600
       content: "{{ sasl_passwd.stdout }}"
-    creates: /etc/postfix/sasl_passwd.db
+    creates: /etc/postfix/sasl_passwd.db # XXX
 
   - name: postfix; postmap /etc/postfix/sasl_passwd
     shell: |
