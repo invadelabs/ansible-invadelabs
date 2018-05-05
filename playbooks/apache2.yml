@@ -10,7 +10,7 @@
       - ssl
       - rewrite
       - headers
-      - php7.0
+      - php7.2
     notify: Restart apache2.service
 
   # apahce2 env variables

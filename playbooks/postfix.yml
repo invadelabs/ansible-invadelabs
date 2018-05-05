@@ -34,7 +34,7 @@
     args:
       creates: /etc/postfix/sasl_passwd.db
 
-  - name: postfix; create /etc/postfix/sasl_passwd
+  - name: postfix; create /etc/postfix/sasl_passwd # XXX on 2nd don't recreate this file
     copy:
       dest: /etc/postfix/sasl_passwd
       mode: 0600
@@ -49,3 +49,17 @@
       chdir: /etc/postfix
       creates: /etc/postfix/sasl_passwd.db
     notify: Restart postfix.service
+
+  - name: postfix; /home/drew/.forward
+    copy:
+      dest: /home/drew/.forward
+      owner: drew
+      group: drew
+      content: "drewderivative@gmail.com"
+
+  - name: postfix; /root/.forward
+    copy:
+      dest: /root/.forward
+      owner: root
+      group: root
+      content: "drewderivative@gmail.com"

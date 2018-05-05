@@ -17,28 +17,39 @@
       src: /home/drew/invadelabs.com-bkup-latest.tar.xz
       dest: /home/drew
       remote_src: yes
-      ower: www-data
+      creates: /var/www/data/drew_wiki.sqlite
+
+  - name: drive; copy /home/drew/letsencrypt /etc/letsencrypt
+    shell: |
+      rm -rf /etc/letsencrypt
+      mv /home/drew/letsencrypt /etc
+    args:
+      creates: /etc/letsencrypt/live
+
+  - name: drive; mkdir /var/www/data
+    file:
+      path: /var/www/data
+      state: directory
+      owner: www-data
       group: www-data
-    args:
-      creates: /var/www/data/drew_wiki.sqlite
 
-  - name: drive; mv /home/drew/letsencrypt to /etc/letsencrypt
-    command: mv /home/drew/letsencrypt to /etc/letsencrypt
-    args:
-      creates: /etc/letsencrypt
-
-  - name: drive; mkdir -p /var/www/data; mv /home/drew/drew_wiki.sqlite /var/www/data
-    shell:
-      mkdir -p /var/www/data
-      chown www-data:www-data /var/www/data
+  - name: mv /home/drew/drew_wiki.sqlite /var/www/data
+    shell: |
       mv /home/drew/drew_wiki.sqlite /var/www/data
+      chown www-data:www-data /var/www/data/drew_wiki.sqlite
     args:
       creates: /var/www/data/drew_wiki.sqlite
+
+  - name: drive; mkdir /var/www/drew.invadelabs.com
+    file:
+      path: /var/www/drew.invadelabs.com
+      state: directory
+      owner: www-data
+      group: www-data
 
   - name: drive; mkdir -p /var/www/drew.invadelabs.com; mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
-    shell:
-      mkdir -p drew.invadelabs.com
-      chown -R www-data:www-data /var/www/drew.invadelabs.com
-      mv /home/drew/LocalSettings /var/www/drew.invadelabs.com
+    shell: |
+      mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
+      chown www-data:www-data /var/www/drew.invadelabs.com/LocalSettings.php
     args:
       creates: /var/www/drew.invadelabs.com/LocalSettings.php
