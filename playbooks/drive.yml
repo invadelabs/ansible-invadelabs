@@ -2,7 +2,7 @@
   - name: Install drive via snap
     command: snap install drive --classic
     args:
-      creates: /var/lib/snapd/snap/bin/drive
+      creates: /snap/bin/drive
 
   # when this fails drive is not initialized! `cd /root; drive init`
   - name: Get invadelabs.com-bkup-latest.tar.xz backup
@@ -11,8 +11,14 @@
     args:
       chdir: /root
       creates: /home/drew/invadelabs.com-bkup-latest.tar.xz
-    notify:
-    - Extract invadelabs.com-bkup-latest.tar.xz
+
+  - name: Extract invadelabs.com-bkup-latest.tar.xz
+    unarchive:
+      src: /home/drew/invadelabs.com-bkup-latest.tar.xz
+      dest: /home/drew
+      remote_src: yes
+    args:
+      creates: /var/www/data/drew_wiki.sqlite
 
   - name: mv /home/drew/letsencrypt to /etc/letsencrypt
     command: mv /home/drew/letsencrypt to /etc/letsencrypt

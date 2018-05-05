@@ -37,4 +37,6 @@
     - Start postfix.service
 
   - name: etckeeper post-install
-    command: etckeeper post-install
+    command: touch /var/log/firstpkg.run && etckeeper post-install
+    args:
+      creates: /var/log/firstpkg.run
