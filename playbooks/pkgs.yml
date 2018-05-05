@@ -1,4 +1,10 @@
 ---
+  - name: debconf; postfix; option type 'Internet with smarthost'
+    debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
+
+  - name: debconf; postfix; option type 'System mail name'
+    debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
+
   - name: install packages
     apt: name={{item}} state=latest # update_cache=yes
     with_items:
@@ -26,7 +32,9 @@
     - pxz # for invadelabs/cron-invadelabs/gdrive.sh
     - gawk # for lynis and ansi2html
     - dbus # for lynis and ansi2html
-
     notify:
     - Start apache2.service
     - Start postfix.service
+
+  - name: etckeeper post-install
+    command: etckeeper post-install

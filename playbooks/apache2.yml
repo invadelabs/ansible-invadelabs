@@ -39,22 +39,16 @@
     register: slack_env
 
   # apahce2.conf
-  - name: apache2.conf; ServerTokens
+  - name: apache2.conf updates
     lineinfile:
       dest: /etc/apache2/apache2.conf
-      regexp: "^ServerTokens"
-      line: "ServerTokens Prod"
+      regexp: "^{{item}}"
+      line: "{{item}}"
       state: present
       validate: "/usr/sbin/apachectl -t -f %s"
-    notify: Restart apache2.service
-
-  - name: apache2.conf; ServerSignature
-    lineinfile:
-      dest: /etc/apache2/apache2.conf
-      regexp: "^ServerSignature"
-      line: "ServerSignature Off"
-      state: present
-      validate: "/usr/sbin/apachectl -t -f %s"
+    with_items:
+      - ServerTokens Prod
+      - ServerSignature Off
     notify: Restart apache2.service
 
   # blank /var/www/html/index.html
@@ -67,7 +61,7 @@
   - name: apache2; a2dissite 000-default
     command: a2dissite 000-default
     args:
-      creates: /etc/apache2/sites-enabled/000-default.conf
+      #creates: /etc/apache2/sites-available/000-default.conf # XXX do the opppisite of create
     notify: Restart apache2.service
 
   # apahce2 vhosts
@@ -90,36 +84,3 @@
       - invadelabs.com
       - www.invadelabs.com
     notify: Restart apache2.service
-
-  # - name: apache2; /etc/apache2/sites-available/drew.invadelabs.com.conf.j2 template
-  #   template:
-  #     src: templates/etc/apache2/sites-available/drew.invadelabs.com.conf.j2
-  #     dest: /etc/apache2/sites-available/drew.invadelabs.com.conf
-  #   notify: Restart apache2.service
-  # - name: apache2; enable drew.invadelabs.com
-  #   command: a2ensite drew.invadelabs.com
-  #   args:
-  #     creates: /etc/apache2/sites-enabled/drew.invadelabs.com.conf
-  #   notify: Restart apache2.service
-
-  # - name: apache2; /etc/apache2/sites-available/invadelabs.com.conf.j2 template
-  #   template:
-  #     src: templates/etc/apache2/sites-available/invadelabs.com.conf.j2
-  #     dest: /etc/apache2/sites-available/invadelabs.com.conf
-  #   notify: Restart apache2.service
-  # - name: apache2; enable invadelabs.com
-  #   command: a2ensite invadelabs.com
-  #   args:
-  #     creates: /etc/apache2/sites-enabled/invadelabs.com.conf
-  #   notify: Restart apache2.service
-
-  # - name: apache2; /etc/apache2/sites-available/www.invadelabs.com.conf.j2 template
-  #   template:
-  #     src: templates/etc/apache2/sites-available/www.invadelabs.com.conf.j2
-  #     dest: /etc/apache2/sites-available/www.invadelabs.com.conf
-  #   notify: Restart apache2.service
-  # - name: apache2; enable www.invadelabs.com
-  #   command: a2ensite www.invadelabs.com
-  #   args:
-  #     creates: /etc/apache2/sites-enabled/www.invadelabs.com.conf
-  #   notify: Restart apache2.service
