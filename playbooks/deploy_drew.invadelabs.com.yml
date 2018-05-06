@@ -1,12 +1,5 @@
 ---
-  - name: drewwiki; Creates '/var/www/drew.invadelabs.com' directory
-    file:
-      path: /var/www/drew.invadelabs.com
-      state: directory
-      owner: www-data
-      group: www-data
-
-  - name: drewwiki; Initial site deploy drew.invadelabs.com
+  - name: drewwiki; Extract mediawiki for drew.invadelabs.com
     unarchive:
       remote_src: yes
       src: https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
@@ -16,7 +9,7 @@
       extra_opts: ['--strip-components=1']
       creates: /var/www/drew.invadelabs.com/index.php
 
-  - name: drewwiki; mediawiki; add extensions
+  - name: drewwiki; add mediawiki extensions
     unarchive:
       remote_src: yes
       src: "{{ item.value }}"
