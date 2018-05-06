@@ -27,36 +27,33 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 
   RewriteEngine On
 
-# re-write /wiki/index.php/Main_Page to /index.php/Main_Page
-# used to rewrite any old links
-  RewriteRule ^/wiki/(.*) https://%{SERVER_NAME}/$1 [R,L]
+  # re-write /wiki/index.php/Main_Page to /index.php/Main_Page
+  # used to rewrite any old links
+    RewriteRule ^/wiki/(.*) https://%{SERVER_NAME}/$1 [R,L]
 
-## Short url for wiki pages
-#RewriteRule ^/?wiki(/.*)?$ %{DOCUMENT_ROOT}/index.php [L]
-#
-## Redirect / to Main Page
-#RewriteRule ^/*$ %{DOCUMENT_ROOT}/index.php [L]
+  ## Short url for wiki pages
+  #RewriteRule ^/?wiki(/.*)?$ %{DOCUMENT_ROOT}/index.php [L]
+  #
+  ## Redirect / to Main Page
+  #RewriteRule ^/*$ %{DOCUMENT_ROOT}/index.php [L]
 
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
-RewriteRule ^(.*)$ %{DOCUMENT_ROOT}/index.php [L]
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+  RewriteRule ^(.*)$ %{DOCUMENT_ROOT}/index.php [L]
 
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
-RewriteRule ^/?images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/thumb.php?f=$1&width=$2 [L,QSA,B]
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+  RewriteRule ^/?images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/thumb.php?f=$1&width=$2 [L,QSA,B]
 
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
-RewriteRule ^/?images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+  RewriteRule ^/?images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ %{DOCUMENT_ROOT}/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
 
   # from mozzila observatory https://mozilla.github.io/server-side-tls/ssl-config-generator/
-  # HSTS (mod_headers is required) (15768000 seconds = 6 months)
-  # Header always set Strict-Transport-Security "max-age=15768000"
-  # Header always set Strict-Transport-Security "max-age=300; includeSubDomains"
-Header always set Strict-Transport-Security "max-age=63072000"
+  Header always set Strict-Transport-Security "max-age=63072000"
 
   # https://infosec.mozilla.org/guidelines/web_security#content-security-policy
- #Header set Content-Security-Policy "default-src https:"
+  # Header set Content-Security-Policy "default-src https:"
 #  Header set Content-Security-Policy "default-src https:; \
 # font-src 'self'; \
 # img-src 'self'; \
@@ -68,7 +65,7 @@ Header always set Strict-Transport-Security "max-age=63072000"
 # frame-ancestors 'none';"
 
   # https://infosec.mozilla.org/guidelines/web_security#x-content-type-options
-Header set X-Content-Type-Options "nosniff"
+  Header set X-Content-Type-Options "nosniff"
 
   # https://infosec.mozilla.org/guidelines/web_security#x-frame-options
   Header set X-Frame-Options "DENY"
