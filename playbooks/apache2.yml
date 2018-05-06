@@ -1,4 +1,17 @@
 ---
+  - name: apache2; download mod_pagespeed
+    shell: |
+      wget -O /tmp/mod-pagespeed-stable_current_amd64.deb https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+    args:
+      creates: /etc/apache2/mods-available/mod_pagespeed.load
+
+  - name: apache2; install mod_pagespeed
+    shell: |
+      apt-get install /tmp/mod-pagespeed-stable_current_amd64.deb
+      rm /tmp/mod-pagespeed-stable_current_amd64.deb
+    args:
+      creates: /var/cache/apt/archives/mod-pagespeed-stable_current_amd64.deb
+
   # apahce2 mods
   - name: apache2; a2enmod
     command: /usr/sbin/a2enmod {{item}}
@@ -9,6 +22,7 @@
       - rewrite
       - headers
       - php7.2
+      - pagespeed
     notify: Restart apache2.service
 
   # apahce2 env variables
@@ -65,10 +79,12 @@
       content: ""
     notify: Restart apache2.service
 
+  # disable default site otherwise breaks some 302 http->https 
   - name: apache2; a2dissite 000-default
     file:
       path: /etc/apache2/sites-enables/000-default.conf
       state: absent
+    notify: Restart apache2.service
 
   # apahce2 vhosts
   - name: apache2; add site templates
