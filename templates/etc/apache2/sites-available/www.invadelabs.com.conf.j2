@@ -10,8 +10,8 @@
   RewriteCond %{HTTPS} !=on
   RewriteRule ^/?(.*) https://invadelabs.com/$1 [R,L]
 
-RewriteCond %{SERVER_NAME} =www.invadelabs.com
-RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+  RewriteCond %{SERVER_NAME} =www.invadelabs.com
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 
 <IfModule mod_ssl.c>
