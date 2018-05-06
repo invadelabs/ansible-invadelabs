@@ -30,24 +30,20 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 
   Include /etc/letsencrypt/options-ssl-apache.conf
 
-  # from mozzila observatory https://mozilla.github.io/server-side-tls/ssl-config-generator/
-  # HSTS (mod_headers is required) (15768000 seconds = 6 months)
-  # Header always set Strict-Transport-Security "max-age=15768000"
-  # Header always set Strict-Transport-Security "max-age=300; includeSubDomains"
+  # https://mozilla.github.io/server-side-tls/ssl-config-generator/
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 
   # https://infosec.mozilla.org/guidelines/web_security#content-security-policy
   Header set Content-Security-Policy "default-src 'unsafe-inline' 'unsafe-eval' https: data:"
-#  Header set Content-Security-Policy "default-src https:; \
-#font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; \
-#img-src 'self' https://www.google-analytics.com; \
-#object-src 'none'; \
-#script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; \
-#style-src 'self' https://fonts.googleapis.com 'sha256-CwE3Bg0VYQOIdNAkbB/Btdkhul49qZuwgNCMPgNY5zw=' 'sha256-MZKTI0Eg1N13tshpFaVW65co/LeICXq4hyVx6GWVlK0=' 'sha256-gsguu2F8m4q7H3D3/VA/Nk+tpRoJFh4qBBB7qcNtoSQ=' 'sha256-bgdokNGyQY05oJz5+kIlIeee1kuIGY2mz5UxHRGP4KM='; \
-#base-uri 'self'; \
-#form-action 'self'; \
-#frame-ancestors 'none';"
-
+  # Header set Content-Security-Policy "default-src https:; \
+# font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://stackpath.bootstrapcdn.com; \
+# img-src 'self' https://www.google-analytics.com; \
+# object-src 'none'; \
+# script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://code.jquery.com https://cdnjs.cloudflare.com https://stackpath.bootstrapcdn.com; \
+# style-src 'self' https://fonts.googleapis.com https://stackpath.bootstrapcdn.com; \
+# base-uri 'self'; \
+# form-action 'self'; \
+# frame-ancestors 'none';"
 
   # https://infosec.mozilla.org/guidelines/web_security#x-content-type-options
   Header set X-Content-Type-Options "nosniff"
@@ -62,6 +58,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
   Header set Referrer-Policy "strict-origin-when-cross-origin"
 
   Header set Expect-CT "max-age=0, report-uri='https://invadelabs.report-uri.com/r/d/ct/reportOnly'"
+
   SSLCertificateFile /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem
   SSLCertificateKeyFile /etc/letsencrypt/live/invadelabs.com-0001/privkey.pem
 </VirtualHost>
