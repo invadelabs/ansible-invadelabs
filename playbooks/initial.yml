@@ -10,6 +10,16 @@
     - python-apt # for ansible
     # - fail2ban # sshguard in ubuntu 18.04
 
+  - name: initial; gitconfig
+    git_config:
+      name: "{{item.key}}"
+      scope: global
+      value: "{{item.value}}"
+    with_dict: {
+      'user.email': 'drew@invadelabs.com',
+      'user.name': 'Drew Holt'
+      }
+
   - name: initial; Initalize etckeeper
     shell: |
       etckeeper init
