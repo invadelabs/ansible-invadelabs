@@ -14,9 +14,9 @@
 
   # apahce2 mods
   - name: apache2; a2enmod
-    command: /usr/sbin/a2enmod {{item}}
-    args:
-      creates: /etc/apache2/mods-enabled/{{item}}.load
+    apache2_module:
+      state: present
+      name: "{{ item }}"
     with_items:
       - ssl
       - rewrite
@@ -79,7 +79,7 @@
       content: ""
     notify: Restart apache2.service
 
-  # disable default site otherwise breaks some 302 http->https 
+  # disable default site otherwise breaks some 302 http->https
   - name: apache2; a2dissite 000-default
     file:
       path: /etc/apache2/sites-enables/000-default.conf
