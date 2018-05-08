@@ -27,3 +27,8 @@
     args:
       chdir: /etc
       creates: /etc/.git
+
+  - name: initial; update-alternatives editor to vim-basic
+    alternatives:
+      name: editor
+      path: /usr/bin/vim.basic
