@@ -1,16 +1,13 @@
 ---
   - name: apache2; download mod_pagespeed
-    shell: |
-      wget -O /tmp/mod-pagespeed-stable_current_amd64.deb https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
-    args:
-      creates: /etc/apache2/mods-available/mod_pagespeed.load
+    get_url:
+      url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+      dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
+      force: no
 
   - name: apache2; install mod_pagespeed
-    shell: |
-      apt-get install /tmp/mod-pagespeed-stable_current_amd64.deb
-      rm /tmp/mod-pagespeed-stable_current_amd64.deb
-    args:
-      creates: /var/cache/apt/archives/mod-pagespeed-stable_current_amd64.deb
+    apt:
+      deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
 
   # apahce2 mods
   - name: apache2; a2enmod
