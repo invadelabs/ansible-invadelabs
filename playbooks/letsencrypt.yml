@@ -1,0 +1,17 @@
+---
+  - name: letsencrypt; mkdir /root/certbot
+    file:
+      path: /root/certbot
+      state: directory
+
+  - name: letsencrypt; dl certbot-auto
+    get_url:
+      url: https://dl.eff.org/certbot-auto
+      dest: /root/certbot/certbot-auto
+      force: no
+      mode: 0755
+
+  - name: letsencrypt; initial certbot-auto
+    command:  /root/certbot/certbot-auto --install-only
+    args:
+      creates: /root/certbot/certbot-auto
