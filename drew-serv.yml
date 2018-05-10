@@ -52,6 +52,7 @@
     - nagios-plugins-load
     - nagios-plugins-disk
     - nagios-plugins-procs
+    - nagios-plugins-check-updates
     # qemu-kvm
     - qemu-kvm
     - libvirt
