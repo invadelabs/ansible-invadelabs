@@ -52,13 +52,14 @@
   - name: apache2.conf updates
     lineinfile:
       dest: /etc/apache2/apache2.conf
-      regexp: "^{{item}}"
-      line: "{{item}}"
+      regexp: "^{{item.key}}"
+      line: "{{item.key}} {{item.value}}"
       state: present
       validate: "/usr/sbin/apachectl -t -f %s"
-    with_items:
-      - ServerTokens Prod
-      - ServerSignature Off
+    with_dict: {
+      'ServerTokens': 'Prod',
+      'ServerSignature': 'Off'
+      }
     notify: Restart apache2.service
 
   - name: apache2; add SSLStapling Cache to ssl.conf
