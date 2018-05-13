@@ -30,6 +30,7 @@
     - dnf-plugins-core # for docker install
     - snapd # for drive
     - pxz # parallel xz for backups
+    - wget
     - chrony
     - lldpd
     - samba
@@ -51,6 +52,7 @@
     - nagios-plugins-load
     - nagios-plugins-disk
     - nagios-plugins-procs
+    - nagios-plugins-check-updates
     # qemu-kvm
     - qemu-kvm
     - libvirt
