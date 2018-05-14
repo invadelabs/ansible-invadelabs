@@ -207,6 +207,29 @@
     debug:
       msg: "Init drive, place check_dns.cred and slacktee.conf"
 
+  - name: mount; mkdir /mnt/share
+    file:
+      path: /mnt/share
+      state: directory
+
+  - name: mount; vg_share/share
+    mount:
+      path: /mnt/share
+      src: UUID=29a687bf-2150-4825-ac20-a65c6c0a88dd
+      fstype: ext4
+      state: mounted
+
+  - name: samba; Restart smb.service
+    copy:
+      src: templates/etc/samba/smb.conf
+      dest: /etc/samba/smb.conf
+      validate: /usr/bin/testparm -s %s
+    notify: Restart smb.service
+
+  # XXX add smb users here / better unix password sync
+  # smbpasswd -a drew
+  # smbpasswd -e drew
+
   # # when this fails drive is not initialized! `cd /root; drive init`
   # - name: Get nagios-bkup-latest.tar.xz backup
   #   shell: |
@@ -259,6 +282,8 @@
      service: name=sshd state=restarted
    - name: Restart nrpe.service
      service: name=nrpe state=restarted
+   - name: Restart smb.service
+     service: name=smb state=restarted
 
    - name: Extract nagios-bkup-latest.tar.xz
      unarchive:
