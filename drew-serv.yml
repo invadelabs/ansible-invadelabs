@@ -233,10 +233,10 @@
   # # when this fails drive is not initialized! `cd /root; drive init`
   # - name: Get nagios-bkup-latest.tar.xz backup
   #   shell: |
-  #     /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/nagios-bkup-latest.tar.xz
+  #     /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /srv/nagios-bkup-latest.tar.xz
   #   args:
   #     chdir: /root
-  #     creates: /home/drew/nagios-bkup-latest.tar.xz
+  #     creates: /srv/nagios-bkup-latest.tar.xz
   #   notify:
   #   - Extract nagios-bkup-latest.tar.xz
   #   - Create container nagios4
@@ -287,8 +287,8 @@
 
    - name: Extract nagios-bkup-latest.tar.xz
      unarchive:
-       src: /home/drew/nagios-bkup-latest.tar.xz
-       dest: /home/drew
+       src: /srv/nagios-bkup-latest.tar.xz
+       dest: /srv
        remote_src: yes
    - name: Create container nagios4
      docker_container:
@@ -297,9 +297,9 @@
        state: started
        restart_policy: unless-stopped
        volumes:
-         - /home/drew/nagios/etc:/opt/nagios/etc
-         - /home/drew/nagios/var:/opt/nagios/var
-         - /home/drew/nagios/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
-         - /home/drew/nagios/nagiosgraph/var:/opt/nagiosgraph/var
+         - /srv/nagios4/etc:/opt/nagios/etc
+         - /srv/nagios4/var:/opt/nagios/var
+         - /srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
+         - /srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var
        ports:
          - "0.0.0.0:8080:80"
