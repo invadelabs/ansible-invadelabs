@@ -292,6 +292,10 @@
        src: /srv/nagios-bkup-latest.tar.xz
        dest: /srv
        remote_src: yes
+       # system_u:object_r:container_file_t
+       setype: container_file_t
+       serole: object_r
+       seuser: system_u
    - name: Create container nagios4
      docker_container:
        name: nagios4
