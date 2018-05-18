@@ -233,7 +233,9 @@
   # # when this fails drive is not initialized! `cd /root; drive init`
   # - name: Get nagios-bkup-latest.tar.xz backup
   #   shell: |
-  #     /var/lib/snapd/snap/bin/drive pull -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /srv/nagios-bkup-latest.tar.xz
+  #     /var/lib/snapd/snap/bin/drive pull \
+  #     -piped $(/var/lib/snapd/snap/bin/drive ls Backup/Web | grep nagios-drewserv | \
+  #     grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /srv/nagios-bkup-latest.tar.xz
   #   args:
   #     chdir: /root
   #     creates: /srv/nagios-bkup-latest.tar.xz
