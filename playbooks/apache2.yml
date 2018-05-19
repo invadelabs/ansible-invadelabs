@@ -9,6 +9,15 @@
     apt:
       deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
 
+  # apahce2.conf
+  - name: apache2; use /dev/shm for mod_pagespeed
+    lineinfile:
+      dest: /etc/apache2/mods-available/pagespeed.conf
+      regexp: "^    ModPagespeedFileCachePath"
+      line: '    ModPagespeedFileCachePath "/dev/shm/mod_pagespeed/"'
+      state: present
+    notify: Restart apache2.service
+
   # apahce2 mods
   - name: apache2; a2enmod
     apache2_module:
