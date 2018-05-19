@@ -29,6 +29,8 @@
 
    - name: Restart sshd.service
      service: name=sshd state=restarted
+   - name: Restart sshguard.service
+     service: name=sshguard state=restarte
    - name: Restart apache2.service
      service: name=apache2 state=restarted
    - name: Restart postfix.service
