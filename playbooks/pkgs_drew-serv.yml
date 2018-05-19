@@ -1,0 +1,60 @@
+---
+- name: Install Base Packages
+  dnf: name={{item}} state=present
+  with_items:
+  - docker # docker-ce when fedora 28 stable pkgs are available
+  # base
+  - vim-enhanced
+  - mcelog
+  - logwatch
+  - cronie # crontab
+  - git # for github.com/invadelabs/cron-invadelabs
+  - bc # for github.com/invadelabs/cron-invadelabs
+  - bind-utils # for dig
+  - dnf-plugins-core # for docker install
+  - snapd # for drive
+  - pxz # parallel xz for backups
+  - wget
+  - chrony
+  - lldpd
+  - samba
+  - httpd
+  - postfix
+  - cyrus-sasl-plain # needed for sendmail + postfix
+  - rsyslog # for elasticsearch
+  - mailx
+  - screen
+  - smartmontools
+  - lm_sensors
+  - lynis
+  # python
+  - python-dnf # for ansible
+  - python2-pip # for ansible docker module
+  - python2-virtualenv # for ansible docker module
+  - libselinux-python # for ansible
+  # nagios
+  - nrpe
+  - nagios-plugins-users
+  - nagios-plugins-load
+  - nagios-plugins-disk
+  - nagios-plugins-procs
+  - nagios-plugins-check-updates
+  # qemu-kvm
+  - qemu-kvm
+  - libvirt
+  - virt-install
+  - bridge-utils
+  - libguestfs-tools
+  notify: # XXX break this into smaller groups for when new packages are needed
+  - Start docker.service
+  - Start chronyd.service
+  - Start mcelog.service
+  - Start lldpd.service
+  - Start smb.service
+  - Start nmb.service
+  - Start httpd.service
+  - Start postfix.service
+  - Start rsyslog.service
+  - Start nrpe.service
+  - Start libvirtd.service
+  - Setup lm_sensors
