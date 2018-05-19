@@ -28,6 +28,7 @@
     - certbot
     - python-certbot-apache
 
+    - logwatch
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
     - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
