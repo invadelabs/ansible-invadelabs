@@ -1,0 +1,16 @@
+---
+  - name: docker; install docker-py pip module
+    pip:
+      name: docker-py
+
+  - name: docker; ensure group "docker" exists
+    group:
+      name: docker
+      state: present
+
+  - name: docker; append "drew" to "docker" group
+    user:
+      name: drew
+      uid: 1000 # 1001 on invadelabs, fix this
+      groups: docker
+      append: yes

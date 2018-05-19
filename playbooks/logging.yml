@@ -1,0 +1,23 @@
+---
+  - name: logging; /etc/systemd/journald.conf
+    lineinfile:
+      dest: /etc/systemd/journald.conf
+      regexp: "^{{item.key}}"
+      line: "{{item.key}}={{item.value}}"
+      state: present
+      # validate: "/usr/sbin/apachectl -t -f %s" # XXX
+    with_dict: {
+      'SystemMaxUse': '20G',
+      'ForwardToSyslog': 'yes'
+      }
+    notify: Restart systemd-journald.service
+
+  - name: logging; add /etc/rsyslog.d ignores
+    template:
+      src: "templates/etc/rsyslog.d/{{item}}.j2"
+      dest: "/etc/rsyslog.d/{{item}}"
+    with_items:
+      - ignore-audit.conf
+      - ignore-nagios.conf
+      - ignore-systemd.conf
+    notify: Restart rsyslog.service
