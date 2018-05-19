@@ -3,7 +3,7 @@
     lineinfile:
       dest: /etc/default/grub
       regexp: "^GRUB_CMDLINE_LINUX="
-      line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root nomodeset"'
+      line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root nomodeset"' # XXX make this dynamic fedora/root or dragons ahead
       state: present
     notify: grub2-mkconfig -o /boot/grub2/grub.cfg
 

@@ -8,34 +8,44 @@
       # validate: "postconf -n" # XXX requires %s present but -c uses directory
     with_dict: {
       "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
-      "myhostname": "invadelabs.com",
+      "myhostname": "{{ansible_fqdn}}",
       "alias_maps": "hash:/etc/aliases",
       "alias_database": "hash:/etc/aliases",
-      "myorigin": "/etc/mailname",
-      "mydestination": "invadelabs.com, $myhostname, localhost",
+      "mydestination": "$myhostname, localhost",
       "relayhost": "[smtp.sendgrid.net]:2525",
       "mynetworks": "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128",
       "mailbox_size_limit": "0",
       "recipient_delimiter": "+",
       "inet_interfaces": "all",
       "inet_protocols": "all",
-
       "mtp_tls_security_level": "encrypt",
       "smtp_sasl_auth_enable": "yes",
       "smtp_sasl_password_maps": "hash:/etc/postfix/sasl_passwd",
       "header_size_limit": "4096000",
       "smtp_sasl_security_options": "noanonymous"
-      }
+      } # "myorigin": "/etc/mailname", # XXX removed for Fedora
     notify: Restart postfix.service
+
+
+  - name: postfix; check if /etc/postfix/sasl_passwd.db exists
+    stat:
+      path: /etc/postfix/sasl_passwd.db
+    register: stat_sasl_passwd
+    no_log: true
 
   - name: postfix; set sasl_passwd
     shell: cat /root/postfix_passwd
     register: sasl_passwd
+    when: stat_sasl_passwd.stat.exists == False
+    no_log: true
 
   - name: postfix; create /etc/postfix/sasl_passwd
-    command: "echo {{ sasl_passwd.stdout }} >  /etc/postfix/sasl_passwd"
-    args:
-      creates: /etc/postfix/sasl_passwd.db
+    copy:
+      dest: /etc/postfix/sasl_passwd
+      content: "{{ sasl_passwd.stdout }}"
+      mode: 0400
+    when: stat_sasl_passwd.stat.exists == False
+    no_log: true
 
   - name: postfix; postmap /etc/postfix/sasl_passwd
     shell: |
@@ -45,6 +55,7 @@
       chdir: /etc/postfix
       creates: /etc/postfix/sasl_passwd.db
     notify: Restart postfix.service
+    when: stat_sasl_passwd.stat.exists == False
 
   - name: postfix; add .forward
     copy:

@@ -6,9 +6,11 @@
     line: "allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     state: present
   notify: Restart nrpe.service
+  when: ansible_distribution == "Fedora"
 
 - name: Add /etc/nrpe.d/nrpe_local.cfg template
   template:
     src: templates/etc/nrpe.d/nrpe_local.cfg.j2
     dest: /etc/nrpe.d/nrpe_local.cfg
   notify: Restart nrpe.service
+  when: ansible_distribution == "Fedora"

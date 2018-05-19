@@ -1,5 +1,5 @@
 ---
-  - name: Initial site deploy invadelabs.com
+  - name: invadelabs.com; initial site deploy invadelabs.com
     shell: |
       mkdir -p /var/www/invadelabs.com
       git clone --depth 1 https://github.com/invadelabs/invadelabs.com.git /tmp/inv-first

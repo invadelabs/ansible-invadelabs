@@ -1,16 +1,27 @@
 ---
-  - name: drive; Install drive via snap
+  - name: drive; symlink /var/lib/snapd/snap to /snap for fedora 28 work around
+    file:
+      src: /var/lib/snapd/snap
+      dest: /snap
+      owner: root
+      group: root
+      state: link
+    when: ansible_distribution == 'Fedora'
+
+  - name: drive; install drive via snap
     command: snap install drive --classic
     args:
       creates: /snap/bin/drive
 
-  # when this fails drive is not initialized! `cd /root; drive init`
+  # XXX look for a way to exit the run of this is not work
+  # when this fails - drive is not initialized! `cd /root; drive init`
   - name: drive; Get invadelabs.com-bkup-latest.tar.xz backup
     shell: |
       /snap/bin/drive pull -piped $(/snap/bin/drive ls Backup/Web | grep invadelabs.com | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/invadelabs.com-bkup-latest.tar.xz
     args:
       chdir: /root
       creates: /home/drew/invadelabs.com-bkup-latest.tar.xz
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: drive; Extract invadelabs.com-bkup-latest.tar.xz
     unarchive:
@@ -18,6 +29,7 @@
       dest: /home/drew
       remote_src: yes
       creates: /var/www/data/drew_wiki.sqlite
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: drive; copy /home/drew/letsencrypt /etc/letsencrypt
     shell: |
@@ -25,6 +37,7 @@
       mv /home/drew/letsencrypt /etc
     args:
       creates: /etc/letsencrypt/live
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: drive; mkdir /var/www/data
     file:
@@ -32,6 +45,7 @@
       state: directory
       owner: www-data
       group: www-data
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: mv /home/drew/drew_wiki.sqlite /var/www/data
     shell: |
@@ -39,6 +53,7 @@
       chown www-data:www-data /var/www/data/drew_wiki.sqlite
     args:
       creates: /var/www/data/drew_wiki.sqlite
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: drive; mkdir /var/www/drew.invadelabs.com
     file:
@@ -46,6 +61,7 @@
       state: directory
       owner: www-data
       group: www-data
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   - name: drive; mkdir -p /var/www/drew.invadelabs.com; mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
     shell: |
@@ -53,3 +69,4 @@
       chown www-data:www-data /var/www/drew.invadelabs.com/LocalSettings.php
     args:
       creates: /var/www/drew.invadelabs.com/LocalSettings.php
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
