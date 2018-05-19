@@ -18,11 +18,14 @@ sudo apt-get install -y python-minimal
 
 # Install Ansible Galaxy roles, check, and run our playbook:
 ~~~
+# Download community modules
 ansible-galaxy install -r requirements.yml -p roles/
 
+# Check (don't take action) and show diff:
 ansible-playbook -i hosts drew-serv.yml --check --diff
 ansible-playbook -i hosts invadelabs.com.yml --check --diff --private-key=~/.ssh/google_compute_engine
 
+# Take action and show diff:
 ansible-playbook -i hosts drew-serv.yml --diff
 ansible-playbook -i hosts invadelabs.com.yml --diff --private-key=~/.ssh/google_compute_engine
 ~~~
