@@ -5,22 +5,6 @@
       dest: /root/scripts
       depth: 1
 
-  - name: cron; Add cron gen_sitemap.sh
-    cron:
-      name: gen_sitemap.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gen_sitemap.sh -s
-
-  - name: cron; Add cron gdrive_backup.sh
-    cron:
-      name: gdrive_backup.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
-
   - name: cron; Add cron check_lynis.sh
     cron:
       name: check_lynis.sh
@@ -29,6 +13,49 @@
       weekday: 6
       user: root
       job: /root/scripts/check_lynis.sh
+
+  - name: cron; cron check_ddns.sh
+    cron:
+      name: check_ddns.sh
+      minute: "*/5"
+      user: root
+      job: /root/scripts/check_ddns.sh
+    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+
+  - name: cron; gdrive_backup.sh
+    cron:
+      name: gdrive_backup.sh
+      minute: "0"
+      hour: "23"
+      user: root
+      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_nagios-drewserv.txt -s
+    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+
+  - name: cron; check_docker.sh
+    cron:
+      name: check_docker.sh
+      minute: "*/1"
+      user: root
+      job: /root/scripts/check_docker.sh
+    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+
+  - name: cron; Add cron gen_sitemap.sh
+    cron:
+      name: gen_sitemap.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gen_sitemap.sh -s
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
+
+  - name: cron; Add cron gdrive_backup.sh
+    cron:
+      name: gdrive_backup.sh
+      minute: 0
+      hour: 5
+      user: root
+      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
 
   # - name: cron; Add cron certbot
   #   cron:
@@ -44,3 +71,4 @@
       minute: 0
       user: root
       job: hostname invadelabs.com
+    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking

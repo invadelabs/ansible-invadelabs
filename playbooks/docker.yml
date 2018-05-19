@@ -11,6 +11,6 @@
   - name: docker; append "drew" to "docker" group
     user:
       name: drew
-      uid: 1000 # 1001 on invadelabs, fix this
+      uid: 1000 # XXX 1001 on invadelabs, fix this
       groups: docker
       append: yes
