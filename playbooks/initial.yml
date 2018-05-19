@@ -11,10 +11,17 @@
       line: 'drew ALL=(ALL) NOPASSWD: ALL'
       validate: '/usr/sbin/visudo -cf %s'
 
-  - name: Add /etc/motd template
+  - name: initial; add /etc/motd
     template:
       src: templates/etc/motd.j2
       dest: /etc/motd
+
+  - name: initial; add /etc/sshguard/whitelist
+    template:
+      src: templates/etc/sshguard/whitelist.j2
+      dest: /etc/sshguard/whitelist
+    when: ansible_distribution == "Ubuntu"
+    notify: Restart sshguard.service
 
   - name: initial; apt; install etckeeper and initial packages
     apt: name={{item}} state=present # update_cache=yes
