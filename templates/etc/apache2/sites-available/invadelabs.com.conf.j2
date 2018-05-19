@@ -3,6 +3,12 @@
   ServerAdmin drew@invadelabs.com
   DocumentRoot /var/www/invadelabs.com
 
+  <Directory /var/www/invadelabs.com>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+
   ErrorLog ${APACHE_LOG_DIR}/invadelabs.com.error.log
   CustomLog ${APACHE_LOG_DIR}/invadelabs.com.access.log combined
 
@@ -19,6 +25,12 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
   ServerName invadelabs.com
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/invadelabs.com
+
+  <Directory /var/www/invadelabs.com>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
 
   SetEnv GITDIR_ENV {{ gitdir_env.stdout }}
   SetEnv DEPLOY_ENV {{ deploy_env.stdout }}
