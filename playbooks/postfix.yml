@@ -70,14 +70,3 @@
       creates: /etc/postfix/sasl_passwd.db
     notify: Restart postfix.service
     when: stat_sasl_passwd.stat.exists == False
-
-  - name: postfix; add .forward
-    copy:
-      dest: "{{item.value}}/.forward"
-      owner: "{{ item.key }}"
-      group: "{{ item.key }}"
-      content: "drewderivative@gmail.com"
-    with_dict: {
-      "drew": "/home/drew",
-      "root": "/root"
-      }
