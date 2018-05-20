@@ -16,6 +16,7 @@
     when: ansible_hostname == "drew-piv3"
 
   - include: playbooks/postfix_relay.yml # sendgrid relay config
+  - include: playbooks/nrpe.yml
 
   # - include: playbooks/postfix.yml # sendgrid relay config
   # - include: playbooks/drive.yml # initalize drive, configures letsencrypt
@@ -32,6 +33,8 @@
    - name: Start postfix.service
      service: name=postfix state=started enabled=yes
 
+   - name: Restart nagios-nrpe-server.service
+     service: name=nagios-nrpe-server state=restarted
    - name: Restart sshd.service
      service: name=sshd state=restarted
    - name: Restart postfix.service
