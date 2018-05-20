@@ -1,7 +1,7 @@
 ---
   - name: initial; set hostname
     command: hostname invadelabs.com
-    when: (ansible_fqdn != "invadelabs.com") and (ansible_distribution == "Ubuntu") # XXX better bounds checking
+    when: ansible_host == "invadelabs.com"
 
   - name: initial; ensure "drew" is in sudoers
     lineinfile:
@@ -20,7 +20,7 @@
     template:
       src: templates/etc/sshguard/whitelist.j2
       dest: /etc/sshguard/whitelist
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_fqdn == "invadelabs.com"
     notify: Restart sshguard.service
 
   - name: initial; apt; install etckeeper and initial packages
@@ -28,8 +28,7 @@
     with_items:
     - etckeeper
     - python-apt # for ansible
-    # - fail2ban # sshguard in ubuntu 18.04
-    when: ansible_distribution == 'Ubuntu'
+    when: ansible_os_family == 'Debian'
 
   - name: initial; dnf; install etckeeper
     dnf: name=etckeeper state=present
@@ -52,12 +51,6 @@
     args:
       chdir: /etc
       creates: /etc/.git
-
-  - name: initial; update-alternatives editor to vim-basic
-    alternatives:
-      name: editor
-      path: /usr/bin/vim.basic
-    when: ansible_distribution == 'Ubuntu'
 
   - name: Set SELinux to permissive
     selinux:
