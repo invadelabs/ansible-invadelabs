@@ -11,28 +11,17 @@
     debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
   - name: pkgs; install packages
-    apt: name={{item}} state=latest # update_cache=yes
+    apt: name={{item}} state=present # update_cache=yes
     with_items:
     - mailutils
     - postfix
     - libsasl2-modules # needed for postfix sendgrid
 
-    - apache2
-    - libapache2-mod-php
-    - php-sqlite3
-    - php-mbstring
-    - php-xml
-    - php-curl
-    - php-apcu
-
-    - certbot
-    - python-certbot-apache
-
+    - vim
     - logwatch
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
     - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
-    - snapd # for invadelabs/cron-invadelabs/gdrive.sh
     - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
     - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
     - pxz # for invadelabs/cron-invadelabs/gdrive.sh
@@ -42,9 +31,32 @@
     - Start apache2.service
     - Start postfix.service
 
+  - name: pkgs; certbot
+    apt: name={{item}} state=present
+    with_items:
+      - snapd # for invadelabs/cron-invadelabs/gdrive.sh
+
+      - apache2
+      - libapache2-mod-php
+      - php-sqlite3
+      - php-mbstring
+      - php-xml
+      - php-curl
+      - php-apcu
+
+      - certbot
+      - python-certbot-apache
+    when: ansible_host == "invadelabs.com"
+
   - name: pkgs; etckeeper post-install
     shell: |
       touch /var/log/firstpkg.run
       etckeeper post-install
     args:
       creates: /var/log/firstpkg.run
+
+  - name: initial; update-alternatives editor to vim-basic
+    alternatives:
+      name: editor
+      path: /usr/bin/vim.basic
+    when: ansible_os_family == 'Debian'
