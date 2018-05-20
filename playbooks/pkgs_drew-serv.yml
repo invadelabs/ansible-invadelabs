@@ -40,6 +40,7 @@
   - nagios-plugins-disk
   - nagios-plugins-procs
   - nagios-plugins-check-updates
+  - nagios-plugins-mailq
   # qemu-kvm
   - qemu-kvm
   - libvirt
