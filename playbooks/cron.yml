@@ -20,7 +20,7 @@
       minute: "*/5"
       user: root
       job: /root/scripts/check_ddns.sh
-    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+    when: ansible_hostname == 'drew-serv.invadelabs.com'
 
   - name: cron; gdrive_backup.sh
     cron:
@@ -29,7 +29,7 @@
       hour: "23"
       user: root
       job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_nagios-drewserv.txt -s
-    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+    when: ansible_hostname == 'drew-serv.invadelabs.com'
 
   - name: cron; check_docker.sh
     cron:
@@ -37,7 +37,7 @@
       minute: "*/1"
       user: root
       job: /root/scripts/check_docker.sh
-    when: ansible_distribution == 'Fedora' # XXX add better bounds checking
+    when: ansible_hostname == 'drew-serv.invadelabs.com'
 
   - name: cron; Add cron gen_sitemap.sh
     cron:
@@ -46,7 +46,7 @@
       hour: 5
       user: root
       job: /root/scripts/gen_sitemap.sh -s
-    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
+    when: ansible_hostname == 'invadelabs.com'
 
   - name: cron; Add cron gdrive_backup.sh
     cron:
@@ -55,7 +55,7 @@
       hour: 5
       user: root
       job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
-    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
+    when: ansible_hostname == 'invadelabs.com'
 
   # - name: cron; Add cron certbot
   #   cron:
@@ -71,4 +71,4 @@
       minute: 0
       user: root
       job: hostname invadelabs.com
-    when: ansible_distribution == 'Ubuntu' # XXX add better bounds checking
+    when: ansible_hostname == 'invadelabs.com'
