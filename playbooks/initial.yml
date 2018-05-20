@@ -1,7 +1,12 @@
 ---
-  - name: initial; set hostname
+  - name: initial; get Name cloud attribute from meta-data
+    shell: curl -s --connect-timeout .1 http://169.254.169.254/0.1/meta-data/attributes/Name || true
+    register: cloud_Name
+    warn: False
+
+  - name: initial; set hostname invadelabs.com
     command: hostname invadelabs.com
-    when: ansible_host == "invadelabs.com"
+    when: 'cloud_Name.stdout == "invadelabs.com"'
 
   - name: initial; ensure "drew" is in sudoers
     lineinfile:

@@ -1,16 +1,81 @@
 ---
-- name: nrpe.cfg allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1
+- name: nrpe; nrpe.cfg allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1
   lineinfile:
     dest: /etc/nagios/nrpe.cfg
     regexp: "^allowed_hosts="
     line: "allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     state: present
   notify: Restart nrpe.service
-  when: ansible_distribution == "Fedora"
+  when: 'ansible_default_ipv4.network == "192.168.1.0"'
 
-- name: Add /etc/nrpe.d/nrpe_local.cfg template
+# for drew-serv.invadelabs.com at the moment
+- name: nrpe; add /etc/nrpe.d/nrpe_local.cfg template
   template:
     src: templates/etc/nrpe.d/nrpe_local.cfg.j2
     dest: /etc/nrpe.d/nrpe_local.cfg
   notify: Restart nrpe.service
   when: ansible_distribution == "Fedora"
+  # XXX better bounds checking, fedora / debian use diff nrpe default config location though
+
+- name: nrpe; /etc/nagios/nrpe_local.cfg
+  lineinfile:
+    dest: /etc/nagios/nrpe_local.cfg
+    regexp: "^command\\[{{item.key}}\\]"
+    line: "command[{{item.key}}]={{item.value}}"
+    state: present
+  with_dict: {
+    "check_users": "/usr/lib/nagios/plugins/check_users -w 5 -c 10",
+    "check_load": "/usr/lib/nagios/plugins/check_load -r -w 4,2,1 -c 6,4,2",
+    "check_zombie_procs": "/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z",
+    "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 150 -c 200",
+    "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60"
+    }
+  notify: Restart nagios-nrpe-server.service
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+# drew-piv3 uses /dev/root /dev/mmcblk0p2
+- name: nrpe; drew-piv3; nrpe_local.cfg; check_sda1
+  lineinfile:
+    dest: /etc/nagios/nrpe_local.cfg
+    regexp: "^command\\[check_sda1\\]"
+    line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
+    state: present
+  notify: Restart nagios-nrpe-server.service
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+
+# drew-pine64 uses /dev/root /dev/mmcblk0p2
+- name: nrpe; drew-pine64; nrpe_local.cfg; check_sda1
+  lineinfile:
+    dest: /etc/nagios/nrpe_local.cfg
+    regexp: "^command\\[check_sda1\\]"
+    line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
+    state: present
+  notify: Restart nagios-nrpe-server.service
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+
+# dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
+- name: nrpe; add fail2ban.sh
+  get_url:
+    url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
+    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
+    mode: 0755
+    force: no
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+
+- name: nrpe; /var/run/fail2ban/fail2ban.sock perms
+  file:
+    dest: /var/run/fail2ban/fail2ban.sock
+    owner: root
+    group: nagios
+    mode: 0770
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+
+# drew-piv3 add fail2ban check
+- name: nrpe; drew-piv3; nrpe_local.cfg; check_fail2ban
+  lineinfile:
+    dest: /etc/nagios/nrpe_local.cfg
+    regexp: "^command\\[check_fail2ban\\]"
+    line: "command[check_fail2ban]=/usr/lib/nagios/plugins/check_fail2ban.sh -w 1 -c 2"
+    state: present
+  notify: Restart nagios-nrpe-server.service
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"
