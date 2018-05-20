@@ -33,7 +33,7 @@
    - name: Start postfix.service
      service: name=postfix state=started enabled=yes
 
-   - name: Restart nagios-nrpe-server.service
+   - name: Restart nrpe.service
      service: name=nagios-nrpe-server state=restarted
    - name: Restart sshd.service
      service: name=sshd state=restarted

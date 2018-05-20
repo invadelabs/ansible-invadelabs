@@ -30,7 +30,7 @@
     "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 150 -c 200",
     "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60"
     }
-  notify: Restart nagios-nrpe-server.service
+  notify: Restart nrpe.service
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
 # drew-piv3 uses /dev/root /dev/mmcblk0p2
@@ -40,7 +40,7 @@
     regexp: "^command\\[check_sda1\\]"
     line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
     state: present
-  notify: Restart nagios-nrpe-server.service
+  notify: Restart nrpe.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
 
 # drew-pine64 uses /dev/root /dev/mmcblk0p2
@@ -50,7 +50,7 @@
     regexp: "^command\\[check_sda1\\]"
     line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
     state: present
-  notify: Restart nagios-nrpe-server.service
+  notify: Restart nrpe.service
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
 # dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
@@ -77,5 +77,5 @@
     regexp: "^command\\[check_fail2ban\\]"
     line: "command[check_fail2ban]=/usr/lib/nagios/plugins/check_fail2ban.sh -w 1 -c 2"
     state: present
-  notify: Restart nagios-nrpe-server.service
+  notify: Restart Restart nrpe.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
