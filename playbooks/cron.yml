@@ -5,6 +5,18 @@
       dest: /root/scripts
       depth: 1
 
+  - name: cron; download lynis
+    get_url:
+      url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
+      dest: /root/installers/lynis_2.6.2-1_all.deb
+      force: no
+    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+  - name: cron; install lynis
+    apt:
+      deb: /root/installers/lynis_2.6.2-1_all.deb
+    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
   - name: cron; Add cron check_lynis.sh
     cron:
       name: check_lynis.sh
