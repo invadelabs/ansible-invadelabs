@@ -30,7 +30,7 @@
     "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 150 -c 200",
     "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60",
     "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
-    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -c 5"
+    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -c 10"
     }
   notify: Restart nrpe.service
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
