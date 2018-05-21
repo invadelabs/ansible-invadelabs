@@ -17,6 +17,10 @@
     - postfix
     - libsasl2-modules # needed for postfix sendgrid
 
+    - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
+    - monitoring-plugins-basic
+    - nagios-plugins-contrib
+
     - vim
     - logwatch
     - curl # for invadelabs/cron-invadelabs
