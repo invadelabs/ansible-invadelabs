@@ -17,6 +17,13 @@
   when: ansible_distribution == "Fedora"
   # XXX better bounds checking, fedora / debian use diff nrpe default config location though
 
+- name: nrpe; download check_temp.sh
+  get_url:
+    url: https://raw.githubusercontent.com/invadelabs/cron-invadelabs/master/check_temp.sh
+    dest: /usr/local/bin/check_temp.sh
+    mode: 0755
+    force: no
+
 - name: nrpe; /etc/nagios/nrpe_local.cfg
   lineinfile:
     dest: /etc/nagios/nrpe_local.cfg
@@ -30,7 +37,8 @@
     "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 150 -c 200",
     "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60",
     "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
-    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -c 10"
+    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -c 10",
+    "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 50 -c 55"
     }
   notify: Restart nrpe.service
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")

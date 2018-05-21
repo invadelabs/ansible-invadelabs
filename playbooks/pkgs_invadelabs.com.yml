@@ -17,7 +17,6 @@
     - postfix
     - libsasl2-modules # needed for postfix sendgrid
 
-    - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
     - monitoring-plugins-basic
     - nagios-plugins-contrib
 
@@ -35,7 +34,13 @@
     - Start apache2.service
     - Start postfix.service
 
-  - name: pkgs; certbot
+  - name: pkgs; debian servers
+    apt: name={{item}} state=present
+    with_items:
+      - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
+    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+  - name: pkgs; invadelabs.com
     apt: name={{item}} state=present
     with_items:
       - snapd # for invadelabs/cron-invadelabs/gdrive.sh
