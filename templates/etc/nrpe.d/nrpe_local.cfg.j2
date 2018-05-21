@@ -11,3 +11,4 @@ command[check_root]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -p /
 command[check_updates]=/usr/lib64/nagios/plugins/check_updates -t 60
 command[check_mailq]=/usr/lib64/nagios/plugins/check_mailq -w 1 -c 2
 command[check_uptime]=/usr/lib64/nagios/plugins/check_uptime -c 10:
+command[check_temp]=/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 50 -c 55
