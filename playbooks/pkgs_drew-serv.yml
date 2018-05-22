@@ -42,6 +42,8 @@
   - nagios-plugins-check-updates
   - nagios-plugins-mailq
   - nagios-plugins-uptime
+  - perl-Nagios-Plugin
+  - perl-Monitoring-Plugin
   # qemu-kvm
   - qemu-kvm
   - libvirt
