@@ -26,11 +26,11 @@
     service: name=apache2 state=started enabled=yes
   - name: Start postfix.service
     service: name=postfix state=started enabled=yes
-    
+
   - name: Restart sshd.service
     service: name=sshd state=restarted
   - name: Restart sshguard.service
-    service: name=sshguard state=restarte
+    service: name=sshguard state=restarted
   - name: Restart apache2.service
     service: name=apache2 state=restarted
   - name: Restart postfix.service
