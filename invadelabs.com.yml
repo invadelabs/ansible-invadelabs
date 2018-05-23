@@ -22,19 +22,19 @@
       msg: "Create /root/{apache_env,github_token,postfix_password,slacktee.conf}"
 
   handlers:
-   - name: Start apache2.service
-     service: name=apache2 state=started enabled=yes
-   - name: Start postfix.service
-     service: name=postfix state=started enabled=yes
-
-   - name: Restart sshd.service
-     service: name=sshd state=restarted
-   - name: Restart sshguard.service
-     service: name=sshguard state=restarte
-   - name: Restart apache2.service
-     service: name=apache2 state=restarted
-   - name: Restart postfix.service
-     service: name=postfix state=restarted
+  - name: Start apache2.service
+    service: name=apache2 state=started enabled=yes
+  - name: Start postfix.service
+    service: name=postfix state=started enabled=yes
+    
+  - name: Restart sshd.service
+    service: name=sshd state=restarted
+  - name: Restart sshguard.service
+    service: name=sshguard state=restarte
+  - name: Restart apache2.service
+    service: name=apache2 state=restarted
+  - name: Restart postfix.service
+    service: name=postfix state=restarted
 
   roles:
   # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last

@@ -37,7 +37,7 @@
     lineinfile:
       dest: /etc/postfix/main.cf
       regexp: "^mynetworks"
-      line: "mynetworks = 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
+      line: "mynetworks = 172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
     notify: Restart postfix.service
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 

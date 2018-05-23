@@ -39,73 +39,74 @@
   #   - Create container nagios4
 
   handlers:
-   - name: Start docker.service
-     service: name=docker state=started enabled=yes
-   # base
-   - name: Start chronyd.service
-     service: name=chronyd state=started enabled=yes
-   - name: Start mcelog.service
-     service: name=mcelog state=started enabled=yes
-   - name: Start lldpd.service
-     service: name=lldpd state=started enabled=yes
-   - name: Start smb.service
-     service: name=smb state=started enabled=yes
-   - name: Start nmb.service
-     service: name=nmb state=started enabled=yes
-   - name: Start httpd.service
-     service: name=httpd state=started enabled=yes
-   - name: Start postfix.service
-     service: name=postfix state=started enabled=yes
-   - name: Start rsyslog.service
-     service: name=rsyslog state=started enabled=yes
-   # nagios
-   - name: Start nrpe.service
-     service: name=nrpe state=started enabled=yes
-   # kvm
-   - name: Start libvirtd.service
-     service: name=libvirtd state=started enabled=yes
+  - name: Start docker.service
+    service: name=docker state=started enabled=yes
+  # base
+  - name: Start chronyd.service
+    service: name=chronyd state=started enabled=yes
+  - name: Start mcelog.service
+    service: name=mcelog state=started enabled=yes
+  - name: Start lldpd.service
+    service: name=lldpd state=started enabled=yes
+  - name: Start smb.service
+    service: name=smb state=started enabled=yes
+  - name: Start nmb.service
+    service: name=nmb state=started enabled=yes
+  - name: Start httpd.service
+    service: name=httpd state=started enabled=yes
+  - name: Start postfix.service
+    service: name=postfix state=started enabled=yes
+  - name: Start rsyslog.service
+    service: name=rsyslog state=started enabled=yes
+  # nagios
+  - name: Start nrpe.service
+    service: name=nrpe state=started enabled=yes
+  # kvm
+  - name: Start libvirtd.service
+    service: name=libvirtd state=started enabled=yes
 
-   - name: Setup lm_sensors
-     command: sensors-detect --auto # XXX not when modules have already been inserted
+  - name: Setup lm_sensors
+    command: sensors-detect --auto # XXX not when modules have already been inserted
 
-   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
-     command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  - name: grub2-mkconfig -o /boot/grub2/grub.cfg
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
-   - name: Restart postfix.service
-     service: name=postfix state=restarted
-   - name: Restart systemd-journald.service
-     service: name=systemd-journald state=restarted
-   - name: Restart smartd.service
-     service: name=smartd state=restarted
-   - name: Restart sshd.service
-     service: name=sshd state=restarted
-   - name: Restart nrpe.service
-     service: name=nrpe state=restarted
-   - name: Restart smb.service
-     service: name=smb state=restarted
-   - name: Restart rsyslog.service
-     service: name=rsyslog state=restarted
+  - name: Restart postfix.service
+    service: name=postfix state=restarted
+  - name: Restart systemd-journald.service
+    service: name=systemd-journald state=restarted
+  - name: Restart smartd.service
+    service: name=smartd state=restarted
+  - name: Restart sshd.service
+    service: name=sshd state=restarted
+  - name: Restart nrpe.service
+    service: name=nrpe state=restarted
+  - name: Restart smb.service
+    service: name=smb state=restarted
+  - name: Restart rsyslog.service
+    service: name=rsyslog state=restarted
 
-   - name: Extract nagios-bkup-latest.tar.xz
-     unarchive:
-       src: /srv/nagios-bkup-latest.tar.xz
-       dest: /srv
-       remote_src: yes
-       # system_u:object_r:container_file_t
-       setype: container_file_t
-       serole: object_r
-       seuser: system_u
+  - name: Extract nagios-bkup-latest.tar.xz
+    unarchive:
+      src: /srv/nagios-bkup-latest.tar.xz
+      dest: /srv
+      remote_src: yes
+      # system_u:object_r:container_file_t
+      setype: container_file_t
+      serole: object_r
+      seuser: system_u
 
-   - name: Create container nagios4
-     docker_container:
-       name: nagios4
-       image: jasonrivers/nagios:latest
-       state: started
-       restart_policy: unless-stopped
-       volumes:
-         - /srv/nagios4/etc:/opt/nagios/etc
-         - /srv/nagios4/var:/opt/nagios/var
-         - /srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
-         - /srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var
-       ports:
-         - "0.0.0.0:8080:80"
+  - name: Create container nagios4
+    docker_container:
+      name: nagios4
+      image: jasonrivers/nagios:latest
+      state: started
+      restart_policy: unless-stopped
+      volumes:
+        - /srv/nagios4/etc:/opt/nagios/etc
+        - /srv/nagios4/var:/opt/nagios/var
+        - /srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
+        - /srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var
+        - /srv/nagios4/main.cf:/etc/postfix/main.cf
+      ports:
+        - "0.0.0.0:8080:80"
