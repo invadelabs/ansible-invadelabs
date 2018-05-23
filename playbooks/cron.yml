@@ -32,7 +32,7 @@
       minute: "*/5"
       user: root
       job: /root/scripts/check_ddns.sh
-    when: ansible_hostname == 'drew-serv.invadelabs.com'
+    when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
   - name: cron; gdrive_backup.sh
     cron:
@@ -40,8 +40,8 @@
       minute: "0"
       hour: "23"
       user: root
-      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_nagios-drewserv.txt -s
-    when: ansible_hostname == 'drew-serv.invadelabs.com'
+      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+    when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
   - name: cron; check_docker.sh
     cron:
@@ -49,7 +49,7 @@
       minute: "*/1"
       user: root
       job: /root/scripts/check_docker.sh
-    when: ansible_hostname == 'drew-serv.invadelabs.com'
+    when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
   - name: cron; Add cron gen_sitemap.sh
     cron:
@@ -58,7 +58,7 @@
       hour: 5
       user: root
       job: /root/scripts/gen_sitemap.sh -s
-    when: ansible_hostname == 'invadelabs.com'
+    when: ansible_fqdn == 'invadelabs.com'
 
   - name: cron; Add cron gdrive_backup.sh
     cron:
@@ -66,8 +66,8 @@
       minute: 0
       hour: 5
       user: root
-      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_backup_invadelabs.com.txt -s
-    when: ansible_hostname == 'invadelabs.com'
+      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
+    when: ansible_fqdn == 'invadelabs.com'
 
   # - name: cron; Add cron certbot
   #   cron:
@@ -83,4 +83,4 @@
       minute: 0
       user: root
       job: hostname invadelabs.com
-    when: ansible_hostname == 'invadelabs.com'
+    when: ansible_fqdn == 'invadelabs.com'
