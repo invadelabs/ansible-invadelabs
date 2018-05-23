@@ -108,5 +108,6 @@
         - /srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins
         - /srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var
         - /srv/nagios4/main.cf:/etc/postfix/main.cf
+        - /srv/nagios4/nagios.conf:/etc/apache2/sites-available/nagios.conf
       ports:
         - "0.0.0.0:8080:80"
