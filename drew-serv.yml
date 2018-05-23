@@ -28,7 +28,7 @@
   #   shell: |
   #     P="/var/lib/snapd/snap/bin"
   #     $P/drive pull \
-  #     -piped "$($P/drive ls Backup/Web | grep nagios-drewserv | \
+  #     -piped "$($P/drive ls Backup/Web | grep drew-serv | \
   #     grep -v sha256 | sort | tail -n 1 | cut -c 2-)" > \
   #     /srv/nagios-bkup-latest.tar.xz
   #   args:
