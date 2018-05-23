@@ -57,7 +57,7 @@
       - python-certbot-apache
     notify:
     - Start apache2.service
-    when: ansible_host == "invadelabs.com"
+    when: ansible_fqdn == "invadelabs.com"
 
   - name: pkgs; etckeeper post-install
     shell: |
