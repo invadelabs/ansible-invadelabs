@@ -18,7 +18,7 @@
     - libsasl2-modules # needed for postfix sendgrid
 
     - monitoring-plugins-basic
-    - nagios-plugins-contrib
+    - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
     - vim
     - logwatch
@@ -31,12 +31,12 @@
     - gawk # for lynis and ansi2html
     - dbus # for lynis and ansi2html
     notify:
-    - Start apache2.service
     - Start postfix.service
 
   - name: pkgs; debian servers
     apt: name={{item}} state=present
     with_items:
+      - docker.io
       - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
     when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
@@ -55,6 +55,8 @@
 
       - certbot
       - python-certbot-apache
+    notify:
+    - Start apache2.service
     when: ansible_host == "invadelabs.com"
 
   - name: pkgs; etckeeper post-install

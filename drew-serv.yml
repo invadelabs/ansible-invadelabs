@@ -8,7 +8,7 @@
 
   tasks:
   - include: playbooks/initial.yml
-  - include: playbooks/pkgs_drew-serv.yml
+  - include: playbooks/pkgs_fedora.yml
   - include: playbooks/hw_drew-serv.yml # hardware specifics
   - include: playbooks/logging.yml
   - include: playbooks/sshd_config.yml
