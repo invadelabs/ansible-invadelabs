@@ -40,7 +40,7 @@
       minute: "0"
       hour: "23"
       user: root
-      job: /root/scripts/gdrive_backup.sh -a nagios-drewserv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+      job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
     when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
   - name: cron; check_docker.sh
