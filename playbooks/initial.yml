@@ -20,12 +20,15 @@
       src: templates/etc/motd.j2
       dest: /etc/motd
 
-  - name: initial; add /etc/sshguard/whitelist
-    template:
-      src: templates/etc/sshguard/whitelist.j2
-      dest: /etc/sshguard/whitelist
-    when: ansible_fqdn == "invadelabs.com"
-    notify: Restart sshguard.service
+  # will be handled by gce firewall list
+  - name: disable sshguard
+    service: name=sshguard state=stopped enabled=no
+  # - name: initial; add /etc/sshguard/whitelist
+  #   template:
+  #     src: templates/etc/sshguard/whitelist.j2
+  #     dest: /etc/sshguard/whitelist
+  #   when: ansible_fqdn == "invadelabs.com"
+  #   notify: Restart sshguard.service
 
   - name: initial; apt; install etckeeper and initial packages
     apt: name={{item}} state=present # update_cache=yes
