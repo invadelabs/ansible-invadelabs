@@ -1,6 +1,6 @@
 # ansible-invadelabs
 
-Ansible run for invadelabs using either [invadelabs/vbox-invadelabs](https://github.com/invadelabs/vbox-invadelabs) on local or terraform for cloud.
+Ansible run for invadelabs.
 
 # Install Ansible on controller machine
 ~~~
