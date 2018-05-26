@@ -21,8 +21,9 @@
     - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
     - vim
+    - ansible
     - logwatch
-    - libdate-manip-perl # needed for logwatch
+    - libdate-manip-perl # needed for logwatch date ranges
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
     - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
@@ -47,6 +48,7 @@
       - snapd # for invadelabs/cron-invadelabs/gdrive.sh
 
       - apache2
+      - php7.2-fpm
       - libapache2-mod-php
       - php-sqlite3
       - php-mbstring
@@ -58,6 +60,7 @@
       - python-certbot-apache
     notify:
     - Start apache2.service
+    - Start php7.2-fpm.service
     when: ansible_fqdn == "invadelabs.com"
 
   - name: pkgs; etckeeper post-install

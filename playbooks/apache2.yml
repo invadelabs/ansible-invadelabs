@@ -19,6 +19,15 @@
     notify: Restart apache2.service
 
   # apahce2 mods
+  - name: apache2; a2dismod
+    apache2_module:
+      state: absent
+      name: "{{item}}"
+    with_items:
+      - mpm_prefork
+      - php7.2
+    notify: Restart apache2.service
+
   - name: apache2; a2enmod
     apache2_module:
       state: present
@@ -27,8 +36,19 @@
       - ssl
       - rewrite
       - headers
-      - php7.2
       - pagespeed
+      - http2
+      - mpm_event
+      - proxy_fcgi
+      - setenvif
+    notify: Restart apache2.service
+
+  - name: apache2; a2enconf
+    command: a2enconf {{item}}
+    args:
+      creates: /etc/apache2/conf-enabled/{{item}}.conf
+    with_items:
+      - php7.2-fpm
     notify: Restart apache2.service
 
   # apahce2 env variables

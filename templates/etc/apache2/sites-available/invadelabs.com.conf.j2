@@ -1,4 +1,5 @@
 <VirtualHost *:80>
+  Protocols h2 http/1.1
   ServerName invadelabs.com
   ServerAdmin drew@invadelabs.com
   DocumentRoot /var/www/invadelabs.com
@@ -22,6 +23,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 <IfModule mod_ssl.c>
 
 <VirtualHost *:443>
+  Protocols h2 http/1.1
   ServerName invadelabs.com
   ServerAdmin webmaster@localhost
   DocumentRoot /var/www/invadelabs.com
