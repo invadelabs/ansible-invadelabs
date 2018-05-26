@@ -31,7 +31,7 @@
       name: check_ddns.sh
       minute: "*/5"
       user: root
-      job: /root/scripts/check_ddns.sh
+      job: /root/scripts/check_ddns.sh nm.invadelabs.com
     when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
   - name: cron; gdrive_backup.sh
