@@ -29,6 +29,7 @@
       - headers
       - php7.2
       - pagespeed
+      - http2
     notify: Restart apache2.service
 
   # apahce2 env variables
