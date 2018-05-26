@@ -48,6 +48,7 @@
       - snapd # for invadelabs/cron-invadelabs/gdrive.sh
 
       - apache2
+      - php7.2-fpm
       - libapache2-mod-php
       - php-sqlite3
       - php-mbstring
@@ -59,6 +60,7 @@
       - python-certbot-apache
     notify:
     - Start apache2.service
+    - Start php7.2-fpm.service
     when: ansible_fqdn == "invadelabs.com"
 
   - name: pkgs; etckeeper post-install

@@ -24,6 +24,8 @@
   handlers:
   - name: Start apache2.service
     service: name=apache2 state=started enabled=yes
+  - name: Start php7.2-fpm.service
+    service: name=php7.2-fpm.service state=started enabled=yes
   - name: Start postfix.service
     service: name=postfix state=started enabled=yes
 
