@@ -83,3 +83,23 @@
       "drew": "/home/drew",
       "root": "/root"
       }
+
+  - name: initial; remove logwatch daily
+    file:
+      path: '{{item}}'
+      state: absent
+    with_items:
+      - /etc/cron.daily/00logwatch
+      - /etc/cron.daily/0logwatch
+
+  - name: initial; logwatch.conf
+    lineinfile:
+      path: /etc/logwatch/conf/logwatch.conf
+      state: present
+      create: yes
+      regexp: '^{{item.key}}'
+      line: '{{item.key}} = {{item.value}}'
+    with_dict: {
+      "Range": "between -7 days and -1 days",
+      "Archives": "yes"
+      }
