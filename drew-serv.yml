@@ -24,7 +24,7 @@
       msg: "Init drive, place check_dns.cred, postfix_password and slacktee.conf"
 
   # # when this fails drive is not initialized! `cd /root; drive init`
-  # - name: Get nagios-bkup-latest.tar.xz backup
+  # - name: docker; get drew-serv-bkup-latest.tar.xz backup
   #   shell: |
   #     P="/var/lib/snapd/snap/bin"
   #     $P/drive pull \
@@ -33,7 +33,7 @@
   #     /srv/nagios-bkup-latest.tar.xz
   #   args:
   #     chdir: /root
-  #     creates: /srv/nagios-bkup-latest.tar.xz
+  #     creates: /srv/drew-serv-bkup-latest.tar.xz
   #   notify:
   #   - Extract nagios-bkup-latest.tar.xz
   #   - Create container nagios4
@@ -86,9 +86,9 @@
   - name: Restart rsyslog.service
     service: name=rsyslog state=restarted
 
-  - name: Extract nagios-bkup-latest.tar.xz
+  - name: docker; extract nagios-bkup-latest.tar.xz
     unarchive:
-      src: /srv/nagios-bkup-latest.tar.xz
+      src: /srv/drew-serv-bkup-latest.tar.xz
       dest: /srv
       remote_src: yes
       # system_u:object_r:container_file_t
@@ -96,7 +96,7 @@
       serole: object_r
       seuser: system_u
 
-  - name: Create container nagios4
+  - name: docker; create container nagios4
     docker_container:
       name: nagios4
       image: jasonrivers/nagios:latest
