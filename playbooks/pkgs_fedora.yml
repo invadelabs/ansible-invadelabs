@@ -4,6 +4,7 @@
   with_items:
   - docker # docker-ce when fedora 28 stable pkgs are available
   # base
+  - ansible
   - redhat-lsb-core
   - vim-enhanced
   - mcelog

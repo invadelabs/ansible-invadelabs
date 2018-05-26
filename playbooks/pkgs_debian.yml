@@ -21,8 +21,9 @@
     - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
     - vim
+    - ansible
     - logwatch
-    - libdate-manip-perl # needed for logwatch
+    - libdate-manip-perl # needed for logwatch date ranges
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
     - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
