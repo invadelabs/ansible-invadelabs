@@ -62,6 +62,13 @@
       state: permissive
     when: ansible_distribution == 'Fedora'
 
+  - name: initial; ensure "compress" is in logrotate.conf
+    lineinfile:
+      path: /etc/logrotate.conf
+      state: present
+      regexp: '^compress'
+      line: 'compress'
+
   - name: initial; add .forward
     copy:
       dest: "{{item.value}}/.forward"

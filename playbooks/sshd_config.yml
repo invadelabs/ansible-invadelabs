@@ -23,3 +23,13 @@
       validate: '/usr/sbin/sshd -t -f %s'
     notify: Restart sshd.service
     when: ansible_os_family == "Debian"
+
+  - name: sshd_config; Banner no
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^Banner"
+      line: "Banner no"
+      state: present
+      validate: '/usr/sbin/sshd -t -f %s'
+    notify: Restart sshd.service
+    when: ansible_fqdn == "drew-piv3.invadelabs.com"
