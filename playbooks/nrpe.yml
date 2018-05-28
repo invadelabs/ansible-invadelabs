@@ -66,7 +66,7 @@
     "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 150 -c 200",
     "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60",
     "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
-    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -c 10",
+    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -f -c 10",
     "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 50 -c 55",
     "check_memory": "/usr/local/bin/check_memory.pl -u M -w 10% -c 20%"
     }
