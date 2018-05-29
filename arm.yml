@@ -17,6 +17,7 @@
 
   - include: playbooks/postfix_relay.yml # sendgrid relay config
   - include: playbooks/nrpe.yml
+  - include: playbooks/docker.yml
 
   # - include: playbooks/postfix.yml # sendgrid relay config
   # - include: playbooks/drive.yml # initalize drive, configures letsencrypt

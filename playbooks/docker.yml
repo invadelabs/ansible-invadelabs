@@ -1,4 +1,8 @@
 ---
+  - name: docker; install setuptools pip module # needed for ubuntu16.04-armhf docker-py
+    pip:
+      name: setuptools
+
   - name: docker; install docker-py pip module
     pip:
       name: docker-py
@@ -11,6 +15,5 @@
   - name: docker; append "drew" to "docker" group
     user:
       name: drew
-      uid: 1000 # XXX 1001 on invadelabs, fix this
       groups: docker
       append: yes

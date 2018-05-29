@@ -23,6 +23,7 @@
     - vim
     - ansible
     - logwatch
+    - python-pip # needed for docker-py
     - libdate-manip-perl # needed for logwatch date ranges
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
