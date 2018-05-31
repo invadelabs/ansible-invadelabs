@@ -1,19 +1,19 @@
 ---
-  - name: docker; install setuptools pip module # needed for ubuntu16.04-armhf docker-py
-    pip:
-      name: setuptools
+- name: docker; install setuptools pip module # needed for ubuntu16.04-armhf docker-py
+  pip:
+    name: setuptools
 
-  - name: docker; install docker-py pip module
-    pip:
-      name: docker-py
+- name: docker; install docker-py pip module
+  pip:
+    name: docker-py
 
-  - name: docker; ensure group "docker" exists
-    group:
-      name: docker
-      state: present
+- name: docker; ensure group "docker" exists
+  group:
+    name: docker
+    state: present
 
-  - name: docker; append "drew" to "docker" group
-    user:
-      name: drew
-      groups: docker
-      append: yes
+- name: docker; append "drew" to "docker" group
+  user:
+    name: drew
+    groups: docker
+    append: yes

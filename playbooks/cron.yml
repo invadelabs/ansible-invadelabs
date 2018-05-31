@@ -1,95 +1,104 @@
 ---
-  - name: cron; git clone --depth 1 invadelabs.com/cron-invadelabs
-    git:
-      repo: https://github.com/invadelabs/cron-invadelabs.git
-      dest: /root/scripts
-      depth: 1
+- name: cron; git clone --depth 1 invadelabs.com/cron-invadelabs
+  git:
+    repo: https://github.com/invadelabs/cron-invadelabs.git
+    dest: /root/scripts
+    depth: 1
 
-  - name: cron; download lynis
-    get_url:
-      url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
-      dest: /root/installers/lynis_2.6.2-1_all.deb
-      force: no
-    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+- name: cron; download lynis
+  get_url:
+    url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
+    dest: /root/installers/lynis_2.6.2-1_all.deb
+    force: no
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
-  - name: cron; install lynis
-    apt:
-      deb: /root/installers/lynis_2.6.2-1_all.deb
-    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+- name: cron; install lynis
+  apt:
+    deb: /root/installers/lynis_2.6.2-1_all.deb
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
-  - name: cron; logwatch weekly
-    cron:
-      name: logwatch weekly
-      minute: 0
-      hour: 23
-      weekday: 6
-      user: root
-      job: /usr/sbin/logwatch --output mail
+- name: cron; Add cron check_lynis.sh
+  cron:
+    name: check_lynis.sh
+    minute: 59
+    hour: 4
+    weekday: 6
+    user: root
+    job: /root/scripts/check_lynis.sh
 
-  - name: cron; Add cron check_lynis.sh
-    cron:
-      name: check_lynis.sh
-      minute: 59
-      hour: 4
-      weekday: 6
-      user: root
-      job: /root/scripts/check_lynis.sh
+- name: cron; ansible-pull
+  cron:
+    name: ansible-pull
+    minute: 30
+    hour: "*/2"
+    user: root
+    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -i hosts -l $(hostname -i) | systemd-cat
+  when: ansible_fqdn != "invadelabs.com"
 
-  - name: cron; cron check_ddns.sh
-    cron:
-      name: check_ddns.sh
-      minute: "*/5"
-      user: root
-      job: /root/scripts/check_ddns.sh nm.invadelabs.com
-    when: ansible_fqdn == 'drew-serv.invadelabs.com'
+- name: cron; logwatch weekly
+  cron:
+    name: logwatch weekly
+    minute: 0
+    hour: 23
+    weekday: 6
+    user: root
+    job: /usr/sbin/logwatch --output mail
 
-  - name: cron; gdrive_backup.sh
-    cron:
-      name: gdrive_backup.sh
-      minute: "0"
-      hour: "23"
-      user: root
-      job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
-    when: ansible_fqdn == 'drew-serv.invadelabs.com'
+- name: cron; cron check_ddns.sh
+  cron:
+    name: check_ddns.sh
+    minute: "*/5"
+    user: root
+    job: /root/scripts/check_ddns.sh nm.invadelabs.com
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-  - name: cron; check_docker.sh
-    cron:
-      name: check_docker.sh
-      minute: "*/1"
-      user: root
-      job: /root/scripts/check_docker.sh
-    when: ansible_fqdn == 'drew-serv.invadelabs.com'
+- name: cron; gdrive_backup.sh
+  cron:
+    name: gdrive_backup.sh
+    minute: "0"
+    hour: "23"
+    user: root
+    job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-  - name: cron; Add cron gen_sitemap.sh
-    cron:
-      name: gen_sitemap.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gen_sitemap.sh -s
-    when: ansible_fqdn == 'invadelabs.com'
+- name: cron; check_docker.sh
+  cron:
+    name: check_docker.sh
+    minute: "*/1"
+    user: root
+    job: /root/scripts/check_docker.sh
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-  - name: cron; Add cron gdrive_backup.sh
-    cron:
-      name: gdrive_backup.sh
-      minute: 0
-      hour: 5
-      user: root
-      job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
-    when: ansible_fqdn == 'invadelabs.com'
+- name: cron; Add cron gen_sitemap.sh
+  cron:
+    name: gen_sitemap.sh
+    minute: 0
+    hour: 5
+    user: root
+    job: /root/scripts/gen_sitemap.sh -s
+  when: ansible_fqdn == 'invadelabs.com'
 
-  # - name: cron; Add cron certbot
-  #   cron:
-  #     name: certbot
-  #     minute: 0
-  #     hour: 3,15
-  #     user: root
-  #     job: certbot --apache renew --quiet
+- name: cron; Add cron gdrive_backup.sh
+  cron:
+    name: gdrive_backup.sh
+    minute: 0
+    hour: 5
+    user: root
+    job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
+  when: ansible_fqdn == 'invadelabs.com'
 
-  - name: cron; Add cron `hostname invadelabs.com`
-    cron:
-      name: hostname invadelabs.com
-      minute: 0
-      user: root
-      job: hostname invadelabs.com
-    when: ansible_fqdn == 'invadelabs.com'
+# - name: cron; Add cron certbot
+#   cron:
+#     name: certbot
+#     minute: 0
+#     hour: 3,15
+#     user: root
+#     job: certbot --apache renew --quiet
+
+- name: cron; Add cron `hostname invadelabs.com`
+  cron:
+    name: hostname invadelabs.com
+    minute: 0
+    user: root
+    job: hostname invadelabs.com
+  when: ansible_fqdn == 'invadelabs.com'

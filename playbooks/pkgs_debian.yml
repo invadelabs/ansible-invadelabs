@@ -1,78 +1,93 @@
 ---
-  - name: pkgs; mkdir /root/installers
-    file:
-      path: /root/installers
-      state: directory
+- name: pkgs; mkdir /root/installers
+  file:
+    path: /root/installers
+    state: directory
 
-  - name: pkgs; debconf; postfix; option type 'Internet with smarthost'
-    debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
+- name: pkgs; debconf; postfix; option type 'Internet with smarthost'
+  debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
 
-  - name: pkgs; debconf; postfix; option type 'System mail name'
-    debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
+- name: pkgs; debconf; postfix; option type 'System mail name'
+  debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
-  - name: pkgs; install packages
-    apt: name={{item}} state=present # update_cache=yes
-    with_items:
-    - mailutils
-    - postfix
-    - libsasl2-modules # needed for postfix sendgrid
+- name: pkgs; install packages
+  apt: name={{item}} state=present # update_cache=yes
+  with_items:
+  - mailutils
+  - postfix
+  - libsasl2-modules # needed for postfix sendgrid
 
-    - monitoring-plugins-basic
-    - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
+  - monitoring-plugins-basic
+  - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
-    - vim
+  #- ansible # will be installed via pip for arm devices
+  - software-properties-common # for ansible
+
+  - vim
+  - logwatch
+  - python-pip # needed for docker-py
+  - libdate-manip-perl # needed for logwatch date ranges
+  - curl # for invadelabs/cron-invadelabs
+  - highlight # for invadelabs/cron-invadelabs
+  - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
+  - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+  - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+  - pxz # for invadelabs/cron-invadelabs/gdrive.sh
+  - gawk # for lynis and ansi2html
+  - dbus # for lynis and ansi2html
+  notify:
+  - Start postfix.service
+
+- name: pkgs; pine64 extras needed for pip
+  apt: name={{item}} state=present
+  with_items:
+    - python-dev # needed to build ansible via pip on pine64 u16.04
+    - libffi-dev # needed to build ansible via pip on pine64 u16.04
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+
+- name: pkgs; install ansible via pip on arm
+  pip:
+    name: ansible
+  when: ( ansible_fqdn == "drew-pine64.invadelabs.com" ) or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
+
+- name: pkgs; debian servers
+  apt: name={{item}} state=present
+  with_items:
+    - docker.io
+    - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+- name: pkgs; invadelabs.com
+  apt: name={{item}} state=present
+  with_items:
+    - snapd # for invadelabs/cron-invadelabs/gdrive.sh
     - ansible
-    - logwatch
-    - python-pip # needed for docker-py
-    - libdate-manip-perl # needed for logwatch date ranges
-    - curl # for invadelabs/cron-invadelabs
-    - highlight # for invadelabs/cron-invadelabs
-    - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
-    - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-    - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-    - pxz # for invadelabs/cron-invadelabs/gdrive.sh
-    - gawk # for lynis and ansi2html
-    - dbus # for lynis and ansi2html
-    notify:
-    - Start postfix.service
 
-  - name: pkgs; debian servers
-    apt: name={{item}} state=present
-    with_items:
-      - docker.io
-      - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
-    when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+    - apache2
+    - php7.2-fpm
+    - libapache2-mod-php
+    - php-sqlite3
+    - php-mbstring
+    - php-xml
+    - php-curl
+    - php-apcu
 
-  - name: pkgs; invadelabs.com
-    apt: name={{item}} state=present
-    with_items:
-      - snapd # for invadelabs/cron-invadelabs/gdrive.sh
+    - certbot
+    - python-certbot-apache
+  notify:
+  - Start apache2.service
+  - Start php7.2-fpm.service
+  when: ansible_fqdn == "invadelabs.com"
 
-      - apache2
-      - php7.2-fpm
-      - libapache2-mod-php
-      - php-sqlite3
-      - php-mbstring
-      - php-xml
-      - php-curl
-      - php-apcu
+- name: pkgs; etckeeper post-install
+  shell: |
+    touch /var/log/firstpkg.run
+    etckeeper post-install
+  args:
+    creates: /var/log/firstpkg.run
 
-      - certbot
-      - python-certbot-apache
-    notify:
-    - Start apache2.service
-    - Start php7.2-fpm.service
-    when: ansible_fqdn == "invadelabs.com"
-
-  - name: pkgs; etckeeper post-install
-    shell: |
-      touch /var/log/firstpkg.run
-      etckeeper post-install
-    args:
-      creates: /var/log/firstpkg.run
-
-  - name: initial; update-alternatives editor to vim-basic
-    alternatives:
-      name: editor
-      path: /usr/bin/vim.basic
-    when: ansible_os_family == 'Debian'
+- name: initial; update-alternatives editor to vim-basic
+  alternatives:
+    name: editor
+    path: /usr/bin/vim.basic
+  when: ansible_os_family == 'Debian'

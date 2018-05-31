@@ -1,105 +1,109 @@
 ---
-  # - name: initial; get Name cloud attribute from meta-data
-  #   shell: curl -s --connect-timeout .1 http://169.254.169.254/0.1/meta-data/attributes/Name || true
-  #   register: cloud_Name
+# - name: initial; get Name cloud attribute from meta-data
+#   shell: curl -s --connect-timeout .1 http://169.254.169.254/0.1/meta-data/attributes/Name || true
+#   register: cloud_Name
 
-  # - name: initial; set hostname invadelabs.com
-  #   command: hostname invadelabs.com
-  #   when: 'cloud_Name.stdout == "invadelabs.com"'
+# - name: initial; set hostname invadelabs.com
+#   command: hostname invadelabs.com
+#   when: 'cloud_Name.stdout == "invadelabs.com"'
 
-  - name: initial; ensure "drew" is in sudoers
-    lineinfile:
-      path: /etc/sudoers
-      state: present
-      regexp: '^drew ALL='
-      line: 'drew ALL=(ALL) NOPASSWD: ALL'
-      validate: '/usr/sbin/visudo -cf %s'
+- name: initial; ensure "drew" is in sudoers
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^drew ALL='
+    line: 'drew ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
 
-  - name: initial; add /etc/motd
-    template:
-      src: templates/etc/motd.j2
-      dest: /etc/motd
+- name: initial; add /etc/motd
+  template:
+    src: templates/etc/motd.j2
+    dest: /etc/motd
 
-  # will be handled by gce firewall list
-  - name: disable sshguard
-    service: name=sshguard state=stopped enabled=no
-    when: ansible_fqdn == "invadelabs.com"
-  # - name: initial; add /etc/sshguard/whitelist
-  #   template:
-  #     src: templates/etc/sshguard/whitelist.j2
-  #     dest: /etc/sshguard/whitelist
-  #   when: ansible_fqdn == "invadelabs.com"
-  #   notify: Restart sshguard.service
+# will be handled by gce firewall list
+- name: disable sshguard
+  service: name=sshguard state=stopped enabled=no
+  when: ansible_fqdn == "invadelabs.com"
+# - name: initial; add /etc/sshguard/whitelist
+#   template:
+#     src: templates/etc/sshguard/whitelist.j2
+#     dest: /etc/sshguard/whitelist
+#   when: ansible_fqdn == "invadelabs.com"
+#   notify: Restart sshguard.service
 
-  - name: initial; apt; install etckeeper and initial packages
-    apt: name={{item}} state=present # update_cache=yes
-    with_items:
-    - etckeeper
-    - python-apt # for ansible
-    when: ansible_os_family == 'Debian'
+- name: arm; drew-piv3; apt; install fail2ban
+  apt: name=fail2ban state=present # update_cache=yes
+  when: ansible_hostname == "drew-piv3"
 
-  - name: initial; dnf; install etckeeper
-    dnf: name=etckeeper state=present
-    when: ansible_distribution == 'Fedora'
+- name: initial; apt; install etckeeper and initial packages
+  apt: name={{item}} state=present # update_cache=yes
+  with_items:
+  - etckeeper
+  - python-apt # for ansible
+  when: ansible_os_family == 'Debian'
 
-  - name: initial; gitconfig
-    git_config:
-      name: "{{item.key}}"
-      scope: global
-      value: "{{item.value}}"
-    with_dict: {
-      'user.email': 'drew@invadelabs.com',
-      'user.name': 'Drew Holt'
-      }
+- name: initial; dnf; install etckeeper
+  dnf: name=etckeeper state=present
+  when: ansible_distribution == 'Fedora'
 
-  - name: initial; Initalize etckeeper
-    shell: |
-      etckeeper init
-      etckeeper post-install
-    args:
-      chdir: /etc
-      creates: /etc/.git
+- name: initial; gitconfig
+  git_config:
+    name: "{{item.key}}"
+    scope: global
+    value: "{{item.value}}"
+  with_dict: {
+    'user.email': 'drew@invadelabs.com',
+    'user.name': 'Drew Holt'
+    }
 
-  - name: initial; set SELinux to permissive
-    selinux:
-      policy: targeted
-      state: permissive
-    when: ansible_distribution == 'Fedora'
+- name: initial; Initalize etckeeper
+  shell: |
+    etckeeper init
+    etckeeper post-install
+  args:
+    chdir: /etc
+    creates: /etc/.git
 
-  - name: initial; ensure "compress" is in logrotate.conf
-    lineinfile:
-      path: /etc/logrotate.conf
-      state: present
-      regexp: '^compress'
-      line: 'compress'
+- name: initial; set SELinux to permissive
+  selinux:
+    policy: targeted
+    state: permissive
+  when: ansible_distribution == 'Fedora'
 
-  - name: initial; add .forward
-    copy:
-      dest: "{{item.value}}/.forward"
-      owner: "{{ item.key }}"
-      group: "{{ item.key }}"
-      content: "drewderivative@gmail.com"
-    with_dict: {
-      "drew": "/home/drew",
-      "root": "/root"
-      }
+- name: initial; ensure "compress" is in logrotate.conf
+  lineinfile:
+    path: /etc/logrotate.conf
+    state: present
+    regexp: '^compress'
+    line: 'compress'
 
-  - name: initial; remove logwatch daily
-    file:
-      path: '{{item}}'
-      state: absent
-    with_items:
-      - /etc/cron.daily/00logwatch
-      - /etc/cron.daily/0logwatch
+- name: initial; add .forward
+  copy:
+    dest: "{{item.value}}/.forward"
+    owner: "{{ item.key }}"
+    group: "{{ item.key }}"
+    content: "drewderivative@gmail.com"
+  with_dict: {
+    "drew": "/home/drew",
+    "root": "/root"
+    }
 
-  - name: initial; logwatch.conf
-    lineinfile:
-      path: /etc/logwatch/conf/logwatch.conf
-      state: present
-      create: yes
-      regexp: '^{{item.key}}'
-      line: '{{item.key}} = {{item.value}}'
-    with_dict: {
-      "Range": "between -7 days and -1 days",
-      "Archives": "yes"
-      }
+- name: initial; remove logwatch daily
+  file:
+    path: '{{item}}'
+    state: absent
+  with_items:
+    - /etc/cron.daily/00logwatch
+    - /etc/cron.daily/0logwatch
+
+- name: initial; logwatch.conf
+  lineinfile:
+    path: /etc/logwatch/conf/logwatch.conf
+    state: present
+    create: yes
+    regexp: '^{{item.key}}'
+    line: '{{item.key}} = {{item.value}}'
+  with_dict: {
+    "Range": "between -7 days and -1 days",
+    "Archives": "yes"
+    }

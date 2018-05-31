@@ -1,45 +1,45 @@
 ---
-  - name: drewwiki; Extract mediawiki for drew.invadelabs.com
-    unarchive:
-      remote_src: yes
-      src: https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
-      dest: /var/www/drew.invadelabs.com
-      owner: www-data
-      group: www-data
-      extra_opts: ['--strip-components=1']
-      creates: /var/www/drew.invadelabs.com/index.php
+- name: drewwiki; Extract mediawiki for drew.invadelabs.com
+  unarchive:
+    remote_src: yes
+    src: https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
+    dest: /var/www/drew.invadelabs.com
+    owner: www-data
+    group: www-data
+    extra_opts: ['--strip-components=1']
+    creates: /var/www/drew.invadelabs.com/index.php
 
-  - name: drewwiki; add mediawiki extensions
-    unarchive:
-      remote_src: yes
-      src: "{{ item.value }}"
-      dest: /var/www/drew.invadelabs.com/extensions
-      owner: www-data
-      group: www-data
-      creates: "/var/www/drew.invadelabs.com/extensions/{{ item.key }}"
-    with_dict: {
-      "googleAnalytics": "https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz",
-      "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz",
-      "Description2": "https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz"
-      }
+- name: drewwiki; add mediawiki extensions
+  unarchive:
+    remote_src: yes
+    src: "{{ item.value }}"
+    dest: /var/www/drew.invadelabs.com/extensions
+    owner: www-data
+    group: www-data
+    creates: "/var/www/drew.invadelabs.com/extensions/{{ item.key }}"
+  with_dict: {
+    "googleAnalytics": "https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz",
+    "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz",
+    "Description2": "https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz"
+    }
 
-  - name: drewwiki; add logo
-    copy:
-      src: templates/omgz_square.gif
-      dest: /var/www/drew.invadelabs.com/omgz_square.gif
-      owner: www-data
-      group: www-data
+- name: drewwiki; add logo
+  copy:
+    src: templates/omgz_square.gif
+    dest: /var/www/drew.invadelabs.com/omgz_square.gif
+    owner: www-data
+    group: www-data
 
-  # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
-  - name: drewwiki; remove softwareInformation SpecialVersion.php
-    lineinfile:
-      dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
-      regexp: '\$this\-\>softwareInformation\(\) \.'
-      line: '//$this->softwareInformation() .'
-      state: present
+# https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
+- name: drewwiki; remove softwareInformation SpecialVersion.php
+  lineinfile:
+    dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
+    regexp: '\$this\-\>softwareInformation\(\) \.'
+    line: '//$this->softwareInformation() .'
+    state: present
 
-  - name: drewwiki; wiki_to_md.sh; git clone --depth 1 https://github.com/drew-holt/mediawiki_to_git_md.git
-    git:
-      repo: https://github.com/drew-holt/mediawiki_to_git_md.git
-      dest: /root/mediawiki_to_git_md
-      depth: 1
+- name: drewwiki; wiki_to_md.sh; git clone --depth 1 https://github.com/drew-holt/mediawiki_to_git_md.git
+  git:
+    repo: https://github.com/drew-holt/mediawiki_to_git_md.git
+    dest: /root/mediawiki_to_git_md
+    depth: 1

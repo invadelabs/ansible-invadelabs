@@ -51,7 +51,7 @@
     url: https://raw.githubusercontent.com/invadelabs/cron-invadelabs/master/check_temp.sh
     dest: /usr/local/bin/check_temp.sh
     mode: 0755
-    force: yes
+    force: no
 
 - name: nrpe; /etc/nagios/nrpe_local.cfg
   lineinfile:
