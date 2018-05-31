@@ -20,6 +20,17 @@
     src: templates/etc/motd.j2
     dest: /etc/motd
 
+- name: initial; stat /etc/localtime
+  stat: path=/etc/localtime
+  register: tz_localtime
+
+# - debug:
+#     msg: "{{ tz_localtime.stat.lnk_target }}"
+
+- name: initial; set timezone
+  command: timedatectl set-timezone America/Denver
+  when: tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver"
+
 # will be handled by gce firewall list
 - name: disable sshguard
   service: name=sshguard state=stopped enabled=no
