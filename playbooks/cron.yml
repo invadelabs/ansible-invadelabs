@@ -33,7 +33,7 @@
     hour: "*/2"
     user: root
     #job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) | systemd-cat
-    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) >> /var/log/ansible-pull.log
+    job: PATH=/usr/local/bin:$PATH ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) >> /var/log/ansible-pull.log
   when: ansible_fqdn != "invadelabs.com"
 
 - name: cron; logwatch weekly
