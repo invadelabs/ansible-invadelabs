@@ -1,5 +1,5 @@
 ---
-- hosts: drew-serv
+- hosts: nm
   become: true
   become_method: sudo
   # gather_facts: no
@@ -7,18 +7,35 @@
   #   MAILTO: drew@invadelabs.com
 
   tasks:
-  - include: playbooks/initial.yml
+  - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+
   - include: playbooks/pkgs_fedora.yml
+    when: ansible_os_family == "Fedora"
+
+  - include: playbooks/pkgs_debian.yml
+    when: ansible_os_family == "Debian"
+
   - include: playbooks/hw_drew-serv.yml # hardware specifics
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
   - include: playbooks/logging.yml
-  - include: playbooks/sshd_config.yml
-  - include: playbooks/nrpe.yml # Nagios NRPE config
-  - include: playbooks/docker.yml
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
   - include: playbooks/drive.yml # Nagios NRPE config
-  - include: playbooks/cron.yml
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
   - include: playbooks/mount.yml
-  - include: playbooks/postfix.yml
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
   - include: playbooks/samba.yml
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+  - include: playbooks/postfix.yml
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+  - include: playbooks/postfix_relay.yml
+    when: (ansible_fqdn == "drew-pine64.invadelabs.com") or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
+
+  - include: playbooks/docker.yml
+  - include: playbooks/sshd_config.yml
+  - include: playbooks/nrpe.yml
+  - include: playbooks/cron.yml
+
   - name: Notify message to place check_dns.cred, postfix_password, and slacktee.conf
     debug:
       msg: "Init drive, place check_dns.cred, postfix_password and slacktee.conf"
@@ -34,6 +51,7 @@
   #   args:
   #     chdir: /root
   #     creates: /srv/drew-serv-bkup-latest.tar.xz
+  #   when: ansible_fqdn == "drew-serv.invadelabs.com"
   #   notify:
   #   - Extract nagios-bkup-latest.tar.xz
   #   - Create container nagios4
@@ -46,8 +64,6 @@
     service: name=chronyd state=started enabled=yes
   - name: Start mcelog.service
     service: name=mcelog state=started enabled=yes
-  - name: Start lldpd.service
-    service: name=lldpd state=started enabled=yes
   - name: Start smb.service
     service: name=smb state=started enabled=yes
   - name: Start nmb.service
@@ -81,6 +97,10 @@
     service: name=sshd state=restarted
   - name: Restart nrpe.service
     service: name=nrpe state=restarted
+    when: ansible_os_family == "Fedora"
+  - name: Restart nrpe.service
+    service: name=nagios-nrpe-server state=restarted
+    when: ansible_os_family == "Debian"
   - name: Restart smb.service
     service: name=smb state=restarted
   - name: Restart rsyslog.service
@@ -95,6 +115,7 @@
       setype: container_file_t
       serole: object_r
       seuser: system_u
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: docker; create container nagios4
     docker_container:
@@ -117,3 +138,4 @@
         }
       ports:
         - "0.0.0.0:8080:80"
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
