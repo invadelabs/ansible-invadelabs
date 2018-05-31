@@ -31,6 +31,10 @@
   #   when: ansible_fqdn == "invadelabs.com"
   #   notify: Restart sshguard.service
 
+  - name: arm; drew-piv3; apt; install fail2ban
+    apt: name=fail2ban state=present # update_cache=yes
+    when: ansible_hostname == "drew-piv3"
+
   - name: initial; apt; install etckeeper and initial packages
     apt: name={{item}} state=present # update_cache=yes
     with_items:

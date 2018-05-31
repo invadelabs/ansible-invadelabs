@@ -18,7 +18,6 @@
   - pxz # parallel xz for backups
   - wget
   - chrony
-  - lldpd
   - samba
   - httpd
   - postfix
