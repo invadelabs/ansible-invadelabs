@@ -5,7 +5,9 @@
     regexp: "^allowed_hosts="
     line: "allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     state: present
-  notify: Restart nrpe.service
+  notify:
+    - Restart nrpe.service
+    - Restart nagios-nrpe-server.service
   when: 'ansible_default_ipv4.network == "192.168.1.0"'
 
 # for drew-serv.invadelabs.com at the moment
@@ -70,7 +72,7 @@
     "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
     "check_memory": "/usr/local/bin/check_memory.pl -u M -w 10% -c 20%"
     }
-  notify: Restart nrpe.service
+  notify: Restart nagios-nrpe-server.service
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
 # drew-piv3 uses /dev/root /dev/mmcblk0p2
@@ -80,7 +82,7 @@
     regexp: "^command\\[check_sda1\\]"
     line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
     state: present
-  notify: Restart nrpe.service
+  notify: Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
 
 # drew-pine64 uses /dev/root /dev/mmcblk0p2
@@ -90,7 +92,7 @@
     regexp: "^command\\[check_sda1\\]"
     line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
     state: present
-  notify: Restart nrpe.service
+  notify: Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
 # dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
@@ -117,5 +119,5 @@
     regexp: "^command\\[check_fail2ban\\]"
     line: "command[check_fail2ban]=/usr/lib/nagios/plugins/check_fail2ban.sh -w 1 -c 2"
     state: present
-  notify: Restart Restart nrpe.service
+  notify: Restart Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
