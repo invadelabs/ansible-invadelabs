@@ -1,23 +1,23 @@
 ---
-  - name: postfix; /etc/postfix/main.cf
-    lineinfile:
-      dest: /etc/postfix/main.cf
-      regexp: "^{{item.key}}"
-      line: "{{item.key}} = {{item.value}}"
-      state: present
-      # validate: "postconf -n" # XXX requires %s present but -c uses directory
-    with_dict: {
-      "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
-      "myhostname": "{{ansible_fqdn}}",
-      "alias_maps": "hash:/etc/aliases",
-      "alias_database": "hash:/etc/aliases",
-      "mydestination": "$myhostname, localhost",
-      "relayhost": "192.168.1.125",
-      "mailbox_size_limit": "0",
-      "recipient_delimiter": "+",
-      "inet_interfaces": "all",
-      "inet_protocols": "all",
-      "header_size_limit": "4096000",
-      "smtp_sasl_security_options": "noanonymous"
-      }
-    notify: Restart postfix.service
+- name: postfix; /etc/postfix/main.cf
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^{{item.key}}"
+    line: "{{item.key}} = {{item.value}}"
+    state: present
+    # validate: "postconf -n" # XXX requires %s present but -c uses directory
+  with_dict: {
+    "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
+    "myhostname": "{{ansible_fqdn}}",
+    "alias_maps": "hash:/etc/aliases",
+    "alias_database": "hash:/etc/aliases",
+    "mydestination": "$myhostname, localhost",
+    "relayhost": "192.168.1.125",
+    "mailbox_size_limit": "0",
+    "recipient_delimiter": "+",
+    "inet_interfaces": "all",
+    "inet_protocols": "all",
+    "header_size_limit": "4096000",
+    "smtp_sasl_security_options": "noanonymous"
+    }
+  notify: Restart postfix.service
