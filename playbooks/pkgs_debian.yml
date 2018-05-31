@@ -22,6 +22,7 @@
 
   - vim
   - ansible
+  - software-properties-common # for ansible
   - logwatch
   - python-pip # needed for docker-py
   - libdate-manip-perl # needed for logwatch date ranges
