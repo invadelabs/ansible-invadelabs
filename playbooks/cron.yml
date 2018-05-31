@@ -17,15 +17,6 @@
     deb: /root/installers/lynis_2.6.2-1_all.deb
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
-- name: cron; logwatch weekly
-  cron:
-    name: logwatch weekly
-    minute: 0
-    hour: 23
-    weekday: 6
-    user: root
-    job: /usr/sbin/logwatch --output mail
-
 - name: cron; Add cron check_lynis.sh
   cron:
     name: check_lynis.sh
@@ -34,6 +25,24 @@
     weekday: 6
     user: root
     job: /root/scripts/check_lynis.sh
+
+- name: cron; ansible-pull
+  cron:
+    name: ansible-pull
+    minute: 30
+    hour: "*/2"
+    user: root
+    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -i hosts -l $(hostname -i) | systemd-cat
+  when: ansible_fqdn != "invadelabs.com"
+
+- name: cron; logwatch weekly
+  cron:
+    name: logwatch weekly
+    minute: 0
+    hour: 23
+    weekday: 6
+    user: root
+    job: /usr/sbin/logwatch --output mail
 
 - name: cron; cron check_ddns.sh
   cron:

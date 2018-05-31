@@ -20,9 +20,10 @@
   - monitoring-plugins-basic
   - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
-  - vim
-  - ansible
+  #- ansible # will be installed via pip for arm devices
   - software-properties-common # for ansible
+
+  - vim
   - logwatch
   - python-pip # needed for docker-py
   - libdate-manip-perl # needed for logwatch date ranges
@@ -37,6 +38,18 @@
   notify:
   - Start postfix.service
 
+- name: pkgs; pine64 extras needed for pip
+  apt: name={{item}} state=present
+  with_items:
+    - python-dev # needed to build ansible via pip on pine64 u16.04
+    - libffi-dev # needed to build ansible via pip on pine64 u16.04
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+
+- name: pkgs; install ansible via pip on arm
+  pip:
+    name: ansible
+  when: ( ansible_fqdn == "drew-pine64.invadelabs.com" ) or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
+
 - name: pkgs; debian servers
   apt: name={{item}} state=present
   with_items:
@@ -48,6 +61,7 @@
   apt: name={{item}} state=present
   with_items:
     - snapd # for invadelabs/cron-invadelabs/gdrive.sh
+    - ansible
 
     - apache2
     - php7.2-fpm
