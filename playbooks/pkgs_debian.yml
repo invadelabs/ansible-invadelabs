@@ -17,6 +17,7 @@
   - postfix
   - libsasl2-modules # needed for postfix sendgrid
 
+  - nagios-nrpe-server
   - monitoring-plugins-basic
   - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
 
@@ -38,6 +39,7 @@
   notify:
   - Start postfix.service
 
+  # pine 64 requirements
 - name: pkgs; pine64 extras needed for pip
   apt: name={{item}} state=present
   with_items:
@@ -57,6 +59,7 @@
     - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
+  # invadelabs.com requirements
 - name: pkgs; invadelabs.com
   apt: name={{item}} state=present
   with_items:

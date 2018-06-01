@@ -79,8 +79,8 @@
 - name: nrpe; drew-piv3; nrpe_local.cfg; check_sda1
   lineinfile:
     dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_sda1\\]"
-    line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
+    regexp: "^command\\[check_root\\]"
+    line: "command[check_root]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
     state: present
   notify: Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
@@ -89,8 +89,8 @@
 - name: nrpe; drew-pine64; nrpe_local.cfg; check_sda1
   lineinfile:
     dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_sda1\\]"
-    line: "command[check_sda1]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
+    regexp: "^command\\[check_root\\]"
+    line: "command[check_root]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
     state: present
   notify: Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-pine64.invadelabs.com"

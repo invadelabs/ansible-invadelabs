@@ -121,6 +121,7 @@
       image: jasonrivers/nagios:latest
       state: started
       restart_policy: unless-stopped
+      hostname: nagios.invadelabs.com
       volumes:
         - /srv/nagios4/etc:/opt/nagios/etc
         - /srv/nagios4/var:/opt/nagios/var
@@ -136,4 +137,27 @@
         }
       ports:
         - "0.0.0.0:8080:80"
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+    # https://docs.gitlab.com/runner/install/docker.html
+  - name: docker; create container gitlab
+    docker_container:
+      name: gitlab
+      image: gitlab/gitlab-ce:latest
+      state: started
+      restart_policy: unless-stopped
+      hostname: gitlab.invadelabs.com
+      volumes:
+        - /srv/gitlab/config:/etc/gitlab
+        - /srv/gitlab/logs:/var/log/gitlab
+        - /srv/gitlab/data:/var/opt/gitlab
+      env: {
+        "MAIL_RELAY_HOST": "192.168.1.125",
+        "NAGIOS_FQDN": "nagios.invadelabs.com",
+        "NAGIOS_TIMEZONE": "America/Denver"
+        }
+      ports:
+        - "0.0.0.0:9443:443"
+        - "0.0.0.0:9980:80"
+        - "0.0.0.0:9922:22"
     when: ansible_fqdn == "drew-serv.invadelabs.com"
