@@ -61,6 +61,10 @@
 #     - slack_env
 #   register: r
 # - debug: var=r
+#- name: apache2; load secrets for apache env vars
+#  include_vars:
+#    file: /root/apache_env
+#  #no_log: true
 - name: apache2; Set gitdir_env
   shell: grep gitdir_env /root/apache_env | awk -F '"' '{print $2}'
   register: gitdir_env

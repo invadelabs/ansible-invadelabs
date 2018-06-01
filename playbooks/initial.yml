@@ -29,7 +29,7 @@
 
 - name: initial; set timezone
   command: timedatectl set-timezone America/Denver
-  when: tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver"
+  when: ( tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver" ) and ( ansible_fqdn != "invadelabs.com" )
 
 # will be handled by gce firewall list
 - name: disable sshguard
