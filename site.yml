@@ -143,7 +143,7 @@
   - name: docker; create container gitlab
     docker_container:
       name: gitlab
-      image: gitlab/gitlab-ce:latest
+      image: gitlab/gitlab-ce:latest # 10.8.2 / 10.8.2-ce.0
       state: started
       restart_policy: unless-stopped
       hostname: gitlab.invadelabs.com
