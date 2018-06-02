@@ -34,10 +34,9 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
       Require all granted
   </Directory>
 
-  SetEnv GITDIR_ENV {{ gitdir_env.stdout }}
-  SetEnv DEPLOY_ENV {{ deploy_env.stdout }}
-  SetEnv EMAIL_ENV {{ email_env.stdout }}
-  SetEnv SLACK_ENV {{ slack_env.stdout }}
+  SetEnv DEPLOY_ENV {{ apache_env_vars.results[0].stdout }}
+  SetEnv EMAIL_ENV {{ apache_env_vars.results[1].stdout }}
+  SetEnv SLACK_ENV {{ apache_env_vars.results[2].stdout }}
 
   ErrorLog ${APACHE_LOG_DIR}/invadelabs.com-secure.error.log
   CustomLog ${APACHE_LOG_DIR}/invadelabs.com.access-secure.log combined

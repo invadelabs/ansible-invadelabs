@@ -59,6 +59,44 @@
   - name: Restart postfix.service
     service: name=postfix state=restarted
 
+  - name: apache2; set env variables
+    shell: grep {{item}} /root/apache_env | awk -F '"' '{print $2}'
+    with_items:
+      - deploy_env
+      - email_env
+      - slack_env
+    register: apache_env_vars # XXX Fix this for invadelabs.com.conf.j2 temlate
+    no_log: true
+    notify: apache2; add site templates
+
+  #- debug:
+  #    msg: "{{ apache_env_vars.results[0].stdout }}"
+
+  # apahce2 vhosts
+  - name: apache2; add site templates
+    template:
+      src: templates/etc/apache2/sites-available/{{item}}.conf.j2
+      dest: /etc/apache2/sites-available/{{item}}.conf
+    with_items:
+      - drew.invadelabs.com
+      - invadelabs.com
+      - www.invadelabs.com
+    no_log: true
+    notify:
+      - apache2; a2ensite templates
+      - Restart apache2.service
+
+  # XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
+  - name: apache2; a2ensite templates
+    command: a2ensite {{item}}
+    args:
+      creates: /etc/apache2/sites-enabled/{{item}}.conf
+    with_items:
+      - drew.invadelabs.com
+      - invadelabs.com
+      - www.invadelabs.com
+    notify: Restart apache2.service
+
   roles:
   # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
   # - { role: mongrelion.docker, userland-proxy: false }
