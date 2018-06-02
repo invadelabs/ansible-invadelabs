@@ -74,7 +74,7 @@
   cron:
     name: gen_sitemap.sh
     minute: 0
-    hour: 5
+    hour: 23
     user: root
     job: /root/scripts/gen_sitemap.sh -s
   when: ansible_fqdn == 'invadelabs.com'
@@ -83,7 +83,7 @@
   cron:
     name: gdrive_backup.sh
     minute: 0
-    hour: 5
+    hour: 23
     user: root
     job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
   when: ansible_fqdn == 'invadelabs.com'
