@@ -7,6 +7,31 @@
   #   MAILTO: drew@invadelabs.com
 
   tasks:
+  - name: fail if hostname not set
+    fail:
+      msg: "Host name {{ansible_fqdn}} is not! Run; hostnamectl set-hostname invadelabs.com"
+    when: ansible_fqdn == "localhost"
+
+  - name: stat required files in /root
+    stat:
+      path: "{{item}}"
+    with_items:
+      - /root/check_ddns.cred
+      - /root/postfix_passwd
+      - /root/slacktee.conf
+    register: item
+    failed_when: item.stat.exists == False
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+  - name: check if drive initalized
+    shell: touch /var/log/drive-init.touch; /var/lib/snapd/snap/bin/drive quota >/dev/null
+    args:
+      chdir: /root
+      creates: /var/log/drive-init.touch
+    register: drive_stat
+    failed_when: drive_stat.rc != 0 # rc = proccess exit code
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
   - include: playbooks/pkgs_fedora.yml
@@ -36,26 +61,23 @@
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
 
-  - name: Notify message to place check_dns.cred, postfix_password, and slacktee.conf
-    debug:
-      msg: "Init drive, place check_dns.cred, postfix_password and slacktee.conf"
-
-  # # when this fails drive is not initialized! `cd /root; drive init`
-  # - name: docker; get drew-serv-bkup-latest.tar.xz backup
-  #   shell: |
-  #     P="/var/lib/snapd/snap/bin"
-  #     $P/drive pull \
-  #     -piped "$($P/drive ls Backup/Web | grep drew-serv | \
-  #     grep -v sha256 | sort | tail -n 1 | cut -c 2-)" > \
-  #     /srv/drew-serv-bkup-latest.tar.xz
-  #     touch /srv/first-run
-  #   args:
-  #     chdir: /root
-  #     creates: /srv/first-run
-  #   when: ansible_fqdn == "drew-serv.invadelabs.com"
-  #   notify:
-  #   - Extract drew-serv-bkup-latest.tar.xz
-  #   - Create container nagios4
+  # if this fails drive is not initialized! `cd /root; drive init`
+  - name: docker; get drew-serv-bkup-latest.tar.xz backup
+    shell: |
+      P="/var/lib/snapd/snap/bin"
+      $P/drive pull \
+      -piped "$($P/drive ls Backup/Web | grep drew-serv | \
+      grep -v sha256 | sort | tail -n 1 | cut -c 2-)" > \
+      /srv/drew-serv-bkup-latest.tar.xz
+      touch /srv/first-run
+    args:
+      chdir: /root
+      creates: /srv/first-run
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    notify:
+    - Extract drew-serv-bkup-latest.tar.xz
+    - docker; create container nagios4
+    - docker; create container gitlab
 
   handlers:
   - name: Start docker.service
@@ -105,7 +127,7 @@
   - name: Restart rsyslog.service
     service: name=rsyslog state=restarted
 
-  - name: docker; extract nagios-bkup-latest.tar.xz
+  - name: docker; extract drew-serv-bkup-latest.tar.xz
     unarchive:
       src: /srv/drew-serv-bkup-latest.tar.xz
       dest: /srv
@@ -162,3 +184,27 @@
         - "0.0.0.0:9980:80"
         - "0.0.0.0:9922:22"
     when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+# apahce2 vhosts
+- name: apache2; add site templates
+  template:
+    src: templates/etc/apache2/sites-available/{{item}}.conf.j2
+    dest: /etc/apache2/sites-available/{{item}}.conf
+  with_items:
+    - drew.invadelabs.com
+    - invadelabs.com
+    - www.invadelabs.com
+  notify:
+    - apache2; a2ensite templates
+    - Restart apache2.service
+
+# XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
+- name: apache2; a2ensite templates
+  command: a2ensite {{item}}
+  args:
+    creates: /etc/apache2/sites-enabled/{{item}}.conf
+  with_items:
+    - drew.invadelabs.com
+    - invadelabs.com
+    - www.invadelabs.com
+  notify: Restart apache2.service
