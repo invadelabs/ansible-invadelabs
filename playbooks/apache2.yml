@@ -51,39 +51,11 @@
     - php7.2-fpm
   notify: Restart apache2.service
 
-# apahce2 env variables
-# - name: apache2; Set gitdir_env
-#   shell: grep {{item}} /root/apache_env | awk -F '"' '{print $2}'
-#   with_items:
-#     - gitdir_env
-#     - deploy_env
-#     - email_env
-#     - slack_env
-#   register: r
-# - debug: var=r
-#- name: apache2; load secrets for apache env vars
-#  include_vars:
-#    file: /root/apache_env
-#  #no_log: true
-- name: apache2; Set gitdir_env
-  shell: grep gitdir_env /root/apache_env | awk -F '"' '{print $2}'
-  register: gitdir_env
-  no_log: true
-
-- name: apache2; Set deploy_env
-  shell: grep deploy_env /root/apache_env | awk -F '"' '{print $2}'
-  register: deploy_env
-  no_log: true
-
-- name: apache2; Set email_env
-  shell: grep email_env /root/apache_env | awk -F '"' '{print $2}'
-  register: email_env
-  no_log: true
-
-- name: apache2; Set slack_env
-  shell: grep slack_env /root/apache_env | awk -F '"' '{print $2}'
-  register: slack_env
-  no_log: true
+- name: apache2; touch /var/log/apache-first-run.log
+  copy:
+    dest: /var/log/apache-first-run.log
+    content: ""
+  notify: apache2; set env variables
 
 # apahce2.conf
 - name: apache2.conf updates
@@ -120,26 +92,4 @@
   file:
     path: /etc/apache2/sites-enables/000-default.conf
     state: absent
-  notify: Restart apache2.service
-
-# apahce2 vhosts
-- name: apache2; add site templates
-  template:
-    src: templates/etc/apache2/sites-available/{{item}}.conf.j2
-    dest: /etc/apache2/sites-available/{{item}}.conf
-  with_items:
-    - drew.invadelabs.com
-    - invadelabs.com
-    - www.invadelabs.com
-  notify: Restart apache2.service
-
-# XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
-- name: apache2; a2ensite templates
-  command: a2ensite {{item}}
-  args:
-    creates: /etc/apache2/sites-enabled/{{item}}.conf
-  with_items:
-    - drew.invadelabs.com
-    - invadelabs.com
-    - www.invadelabs.com
   notify: Restart apache2.service

@@ -75,6 +75,8 @@
     - php-curl
     - php-apcu
 
+    - php-mbstring # for drewwiki
+
     - certbot
     - python-certbot-apache
   notify:

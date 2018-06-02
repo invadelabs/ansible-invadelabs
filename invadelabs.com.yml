@@ -7,6 +7,30 @@
   #   MAILTO: drew@invadelabs.com
 
   tasks:
+  - name: fail if hostname not set to invadelabs.com
+    fail:
+      msg: "Host name is not set to invadelabs.com! Run; hostnamectl set-hostname invadelabs.com"
+    when: ansible_fqdn != "invadelabs.com"
+
+  - name: stat required files in /root
+    stat:
+      path: "{{item}}"
+    with_items:
+      - /root/apache_env
+      - /root/github_token
+      - /root/postfix_passwd
+      - /root/slacktee.conf
+    register: item
+    failed_when: item.stat.exists == False
+
+  - name: check if drive initalized
+    shell: touch /var/log/drive-init.touch; drive quota >/dev/null
+    args:
+      chdir: /root
+      creates: /var/log/drive-init.touch
+    register: drive_stat
+    failed_when: drive_stat.rc != 0 # rc = proccess exit code
+
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
   - include: playbooks/sshd_config.yml # sshd_config
   - include: playbooks/pkgs_debian.yml # all software bits needed
@@ -17,9 +41,6 @@
   - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
   - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   - include: playbooks/cron.yml
-  - name: Notify message to place apache_env, github_token, postfix_password, and slacktee.conf
-    debug:
-      msg: "Create /root/{apache_env,github_token,postfix_password,slacktee.conf}"
 
   handlers:
   - name: Start apache2.service
@@ -37,6 +58,44 @@
     service: name=apache2 state=restarted
   - name: Restart postfix.service
     service: name=postfix state=restarted
+
+  - name: apache2; set env variables
+    shell: grep {{item}} /root/apache_env | awk -F '"' '{print $2}'
+    with_items:
+      - deploy_env
+      - email_env
+      - slack_env
+    register: apache_env_vars # XXX Fix this for invadelabs.com.conf.j2 temlate
+    no_log: true
+    notify: apache2; add site templates
+
+  #- debug:
+  #    msg: "{{ apache_env_vars.results[0].stdout }}"
+
+  # apahce2 vhosts
+  - name: apache2; add site templates
+    template:
+      src: templates/etc/apache2/sites-available/{{item}}.conf.j2
+      dest: /etc/apache2/sites-available/{{item}}.conf
+    with_items:
+      - drew.invadelabs.com
+      - invadelabs.com
+      - www.invadelabs.com
+    no_log: true
+    notify:
+      - apache2; a2ensite templates
+      - Restart apache2.service
+
+  # XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
+  - name: apache2; a2ensite templates
+    command: a2ensite {{item}}
+    args:
+      creates: /etc/apache2/sites-enabled/{{item}}.conf
+    with_items:
+      - drew.invadelabs.com
+      - invadelabs.com
+      - www.invadelabs.com
+    notify: Restart apache2.service
 
   roles:
   # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
