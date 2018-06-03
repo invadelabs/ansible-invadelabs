@@ -6,24 +6,6 @@
 #   args:
 #     creates: /etc/yum.repos.d/docker-ce.repo
 #
-# sudo firewall-cmd --add-service=http --permanent
-# sudo firewall-cmd --add-port=5666/tcp --permanent
-# sudo firewall-cmd --add-port=139/tcp --permanent
-# sudo firewall-cmd --add-port=445/tcp --permanent
-# sudo firewall-cmd --reload
-#
-# - name: firewalld enable https
-#   firewalld:
-#     service: https
-#     permanent: true
-#     state: enabled
-#
-# - name: firewalld enable nrpe 5666/tcp
-#   firewalld:
-#     port: 5666/tcp
-#     permanent: true
-#     state: enabled
-#
 # - name: Set /etc/default/grub GRUB_GFXMODE
 #   lineinfile:
 #     dest: /etc/default/grub
