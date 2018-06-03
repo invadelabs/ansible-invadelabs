@@ -33,6 +33,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+  - include: playbooks/firewall.yml
 
   - include: playbooks/pkgs_fedora.yml
     when: ansible_os_family == "Fedora"

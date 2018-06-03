@@ -1,0 +1,41 @@
+---
+- name: firewall; add firewalld rules
+  shell: |
+    firewall-cmd --zone=public --add-service=ssh --permanent
+    firewall-cmd --zone=public --add-service=smtp --permanent
+    firewall-cmd --zone=public --add-service=http --permanent
+    firewall-cmd --zone=public --add-service=https --permanent
+    firewall-cmd --zone=public --add-port=139/tcp --permanent
+    firewall-cmd --zone=public --add-port=445/tcp --permanent
+    firewall-cmd --zone=public --add-port=5666/tcp --permanent
+    firewall-cmd --reload
+    touch /var/log/firewall-first.touch
+  args:
+    creates: /var/log/firewall-first.touch
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+# XXX ansible 2.5.2 firewalld bug https://github.com/ansible/ansible/issues/38161
+# ansible 2.5.4 error below
+# failed: [192.168.1.125] (item=smtp) => {"changed": false, "item": "smtp", "msg": "unsupported version of firewalld, requires >= 0.2.11"}
+# - name: firewall; enable firewalld services
+#   firewalld:
+#     service: "{{item}}"
+#     permanent: true
+#     state: enabled
+#   with_items:
+#   - ssh
+#   - http
+#   - https
+#   - smtp
+#   when: ansible_fqdn == "drew-serv.invadelabs.com"
+#
+# - name: firewall; enable firewalld ports
+#   firewalld:
+#     port: "{{item}}"
+#     permanent: true
+#     state: enabled
+#   with_items:
+#   - 139/tcp
+#   - 445/tcp
+#   - 5666/tcp
+#   when: ansible_fqdn == "drew-serv.invadelabs.com"
