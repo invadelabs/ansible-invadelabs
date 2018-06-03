@@ -5,7 +5,6 @@
     regexp: "^{{item.key}}"
     line: "{{item.key}} = {{item.value}}"
     state: present
-    # validate: "postconf -n" # XXX requires %s present but -c uses directory
   with_dict: {
     "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
     "myhostname": "{{ansible_fqdn}}",

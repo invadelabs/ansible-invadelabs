@@ -5,7 +5,6 @@
     regexp: "^{{item.key}}"
     line: "{{item.key}}={{item.value}}"
     state: present
-    # validate: "/usr/sbin/apachectl -t -f %s" # XXX
   with_dict: {
     'SystemMaxUse': '20G',
     'ForwardToSyslog': 'yes'
