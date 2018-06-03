@@ -45,7 +45,7 @@
     group: www-data
   when: ansible_fqdn == 'invadelabs.com'
 
-- name: mv /home/drew/drew_wiki.sqlite /var/www/data
+- name: drive; mv /home/drew/drew_wiki.sqlite /var/www/data
   shell: |
     mv /home/drew/drew_wiki.sqlite /var/www/data
     chown www-data:www-data /var/www/data/drew_wiki.sqlite

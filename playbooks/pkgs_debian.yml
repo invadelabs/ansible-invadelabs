@@ -1,22 +1,25 @@
 ---
-- name: pkgs; mkdir /root/installers
+- name: pkgs_debian; mkdir /root/installers
   file:
     path: /root/installers
     state: directory
 
-- name: pkgs; debconf; postfix; option type 'Internet with smarthost'
+- name: pkgs_debian; debconf; postfix; option type 'Internet with smarthost'
   debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
 
-- name: pkgs; debconf; postfix; option type 'System mail name'
+- name: pkgs_debian; debconf; postfix; option type 'System mail name'
   debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
-- name: pkgs; install packages
-  apt: name={{item}} state=present # update_cache=yes
+- name: pkgs_debian; install packages
+  apt: name={{apt_base_item}} state=present # update_cache=yes
   with_items:
   - mailutils
   - postfix
   - libsasl2-modules # needed for postfix sendgrid
 
+  - docker.io
+
+  - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
   - nagios-nrpe-server
   - monitoring-plugins-basic
   - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
@@ -38,32 +41,29 @@
   - pxz # for invadelabs/cron-invadelabs/gdrive.sh
   - gawk # for lynis and ansi2html
   - dbus # for lynis and ansi2html
+  loop_control:
+    loop_var: apt_base_item
   notify:
   - Start postfix.service
 
   # pine 64 requirements
-- name: pkgs; pine64 extras needed for pip
-  apt: name={{item}} state=present
+- name: pkgs_debian; pine64 extras needed for pip
+  apt: name={{apt_pine64_item}} state=present
   with_items:
     - python-dev # needed to build ansible via pip on pine64 u16.04
     - libffi-dev # needed to build ansible via pip on pine64 u16.04
+  loop_control:
+    loop_var: apt_pine64_item
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
-- name: pkgs; install ansible via pip on arm
+- name: pkgs_debian; install ansible via pip on arm
   pip:
     name: ansible
   when: ( ansible_fqdn == "drew-pine64.invadelabs.com" ) or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
 
-- name: pkgs; debian servers
-  apt: name={{item}} state=present
-  with_items:
-    - docker.io
-    - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-
   # invadelabs.com requirements
-- name: pkgs; invadelabs.com
-  apt: name={{item}} state=present
+- name: pkgs_debian; invadelabs.com
+  apt: name={{invadelabs_item}} state=present
   with_items:
     - snapd # for invadelabs/cron-invadelabs/gdrive.sh
     - ansible
@@ -81,19 +81,21 @@
 
     - certbot
     - python-certbot-apache
+  loop_control:
+    loop_var: invadelabs_item
   notify:
   - Start apache2.service
   - Start php7.2-fpm.service
   when: ansible_fqdn == "invadelabs.com"
 
-- name: pkgs; etckeeper post-install
+- name: pkgs_debian; etckeeper post-install
   shell: |
     touch /var/log/firstpkg.run
     etckeeper post-install
   args:
     creates: /var/log/firstpkg.run
 
-- name: initial; update-alternatives editor to vim-basic
+- name: pkgs_debian; update-alternatives editor to vim-basic
   alternatives:
     name: editor
     path: /usr/bin/vim.basic

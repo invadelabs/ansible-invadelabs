@@ -47,10 +47,12 @@
   when: ansible_hostname == "drew-piv3"
 
 - name: initial; apt; install etckeeper and initial packages
-  apt: name={{item}} state=present # update_cache=yes
+  apt: name={{int_apt_item}} state=present # update_cache=yes
   with_items:
   - etckeeper
   - python-apt # for ansible
+  loop_control:
+    loop_var: int_apt_item
   when: ansible_os_family == 'Debian'
 
 - name: initial; dnf; install etckeeper
@@ -59,13 +61,15 @@
 
 - name: initial; gitconfig
   git_config:
-    name: "{{item.key}}"
+    name: "{{git_item.key}}"
     scope: global
-    value: "{{item.value}}"
+    value: "{{git_item.value}}"
   with_dict: {
     'user.email': 'drew@invadelabs.com',
     'user.name': 'Drew Holt'
     }
+  loop_control:
+    loop_var: git_item
 
 - name: initial; Initalize etckeeper
   shell: |
@@ -90,31 +94,37 @@
 
 - name: initial; add .forward
   copy:
-    dest: "{{item.value}}/.forward"
-    owner: "{{ item.key }}"
-    group: "{{ item.key }}"
+    dest: "{{forward_item.value}}/.forward"
+    owner: "{{forward_item.key}}"
+    group: "{{forward_item.key}}"
     content: "drewderivative@gmail.com"
   with_dict: {
     "drew": "/home/drew",
     "root": "/root"
     }
+  loop_control:
+    loop_var: forward_item
 
 - name: initial; remove logwatch daily
   file:
-    path: '{{item}}'
+    path: '{{logwatch_item}}'
     state: absent
   with_items:
     - /etc/cron.daily/00logwatch
     - /etc/cron.daily/0logwatch
+  loop_control:
+    loop_var: logwatch_item
 
 - name: initial; logwatch.conf
   lineinfile:
     path: /etc/logwatch/conf/logwatch.conf
     state: present
     create: yes
-    regexp: '^{{item.key}}'
-    line: '{{item.key}} = {{item.value}}'
+    regexp: '^{{logwatchconf_item.key}}'
+    line: '{{logwatchconf_item.key}} = {{logwatchconf_item.value}}'
   with_dict: {
     "Range": "between -7 days and -1 days",
     "Archives": "yes"
     }
+  loop_control:
+    loop_var: logwatchconf_item
