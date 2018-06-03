@@ -23,6 +23,8 @@
 
   #- ansible # will be installed via pip for arm devices
   - software-properties-common # for ansible
+  - python-paramiko # for ansible-pull
+  - python-jinja2 # for ansible-pull
 
   - vim
   - logwatch
