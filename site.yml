@@ -33,9 +33,10 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+  - include: playbooks/firewall.yml
 
   - include: playbooks/pkgs_fedora.yml
-    when: ansible_os_family == "Fedora"
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"
@@ -79,7 +80,6 @@
     - docker; create container nagios4
     - docker; create container gitlab
     - docker; create container bind
-
 
   handlers:
   - name: Start docker.service
@@ -163,7 +163,7 @@
         "NAGIOS_TIMEZONE": "America/Denver"
         }
       ports:
-        - "192.168.1.136:80:80/tcp"
+        - "0.0.0.0:8080:80/tcp"
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
     # https://docs.gitlab.com/runner/install/docker.html
@@ -179,9 +179,9 @@
         - /srv/gitlab/logs:/var/log/gitlab
         - /srv/gitlab/data:/var/opt/gitlab
       ports:
-        - "192.168.1.135:443:443/tcp"
-        - "192.168.1.135:80:80/tcp"
-        - "192.168.1.135:22:22/tcp"
+        - "0.0.0.0:9443:443/tcp"
+        - "0.0.0.0:9980:80/tcp"
+        - "0.0.0.0:9922:22/tcp"
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: docker; create container bind

@@ -1,6 +1,6 @@
 ---
-- name: Install Base Packages
-  dnf: name={{item}} state=present
+- name: pkgs_fedora; install base packages
+  dnf: name={{dnf_item}} state=present
   with_items:
   - docker # docker-ce when fedora 28 stable pkgs are available
   # base
@@ -50,6 +50,8 @@
   - virt-install
   - bridge-utils
   - libguestfs-tools
+  loop_control:
+    loop_var: dnf_item
   notify: # XXX break this into smaller groups for when new packages are needed
   - Start docker.service
   - Start chronyd.service
