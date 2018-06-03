@@ -78,6 +78,8 @@
     - Extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
     - docker; create container gitlab
+    - docker; create container bind
+
 
   handlers:
   - name: Start docker.service
@@ -110,6 +112,8 @@
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+  - name: Retart network.service
+    service: name=network state=restarted
   - name: Restart postfix.service
     service: name=postfix state=restarted
   - name: Restart systemd-journald.service
@@ -159,7 +163,7 @@
         "NAGIOS_TIMEZONE": "America/Denver"
         }
       ports:
-        - "0.0.0.0:8080:80"
+        - "192.168.1.136:80:80/tcp"
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
     # https://docs.gitlab.com/runner/install/docker.html
@@ -174,13 +178,23 @@
         - /srv/gitlab/config:/etc/gitlab
         - /srv/gitlab/logs:/var/log/gitlab
         - /srv/gitlab/data:/var/opt/gitlab
-      env: {
-        "MAIL_RELAY_HOST": "192.168.1.125",
-        "NAGIOS_FQDN": "nagios.invadelabs.com",
-        "NAGIOS_TIMEZONE": "America/Denver"
-        }
       ports:
-        - "0.0.0.0:9443:443"
-        - "0.0.0.0:9980:80"
-        - "0.0.0.0:9922:22"
+        - "192.168.1.135:443:443/tcp"
+        - "192.168.1.135:80:80/tcp"
+        - "192.168.1.135:22:22/tcp"
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+  - name: docker; create container bind
+    docker_container:
+      name: bind
+      image: sameersbn/bind:9.10.3-20180127
+      state: started
+      restart_policy: unless-stopped
+      hostname: ns.invadelabs.com
+      volumes:
+        - /srv/bind:/data
+      ports:
+        - "192.168.1.125:53:53/tcp"
+        - "192.168.1.125:53:53/udp"
+        - "192.168.1.125:10000:10000/tcp"
     when: ansible_fqdn == "drew-serv.invadelabs.com"

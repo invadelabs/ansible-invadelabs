@@ -1,4 +1,15 @@
 ---
+- name: hw; add ip aliases
+  template:
+    src: templates/etc/sysconfig/network-scripts/{{item}}.j2
+    dest: /etc/sysconfig/network-scripts/{{item}}
+  with_items:
+    - ifcfg-enp1s0:0
+    - ifcfg-enp1s0:1
+    - ifcfg-enp1s0:2
+  notify:
+    - Restart network.service
+
 - name: hw; set /etc/default/grub nomodeset
   lineinfile:
     dest: /etc/default/grub
