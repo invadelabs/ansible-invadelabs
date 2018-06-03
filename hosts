@@ -2,7 +2,8 @@
 
 [invadelabs.com]
 #192.168.56.105
-invadelabs.com ansible_host=invadelabs.com
+#invadelabs.com ansible_host=invadelabs.com
+35.226.171.139
 
 [drew-serv]
 192.168.1.125

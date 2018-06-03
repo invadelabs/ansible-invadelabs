@@ -36,7 +36,7 @@
   - include: playbooks/firewall.yml
 
   - include: playbooks/pkgs_fedora.yml
-    when: ansible_os_family == "Fedora"
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"

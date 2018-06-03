@@ -2,21 +2,25 @@
 - name: logging; /etc/systemd/journald.conf
   lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "^{{item.key}}"
-    line: "{{item.key}}={{item.value}}"
+    regexp: "^{{journald_item.key}}"
+    line: "{{journald_item.key}}={{journald_item.value}}"
     state: present
   with_dict: {
     'SystemMaxUse': '20G',
     'ForwardToSyslog': 'yes'
     }
+  loop_control:
+    loop_var: journald_item
   notify: Restart systemd-journald.service
 
 - name: logging; add /etc/rsyslog.d ignores
   template:
-    src: "templates/etc/rsyslog.d/{{item}}.j2"
-    dest: "/etc/rsyslog.d/{{item}}"
+    src: "templates/etc/rsyslog.d/{{rsyslog_item}}.j2"
+    dest: "/etc/rsyslog.d/{{rsyslog_item}}"
   with_items:
     - ignore-audit.conf
     - ignore-nagios.conf
     - ignore-systemd.conf
+  loop_control:
+    loop_var: rsyslog_item
   notify: Restart rsyslog.service

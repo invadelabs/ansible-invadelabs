@@ -1,9 +1,9 @@
 ---
-- name: postfix; /etc/postfix/main.cf
+- name: postfix_relay; /etc/postfix/main.cf
   lineinfile:
     dest: /etc/postfix/main.cf
-    regexp: "^{{item.key}}"
-    line: "{{item.key}} = {{item.value}}"
+    regexp: "^{{postfix_relay_item.key}}"
+    line: "{{postfix_relay_item.key}} = {{postfix_relay_item.value}}"
     state: present
   with_dict: {
     "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
@@ -19,4 +19,6 @@
     "header_size_limit": "4096000",
     "smtp_sasl_security_options": "noanonymous"
     }
+  loop_control:
+    loop_var: postfix_relay_item
   notify: Restart postfix.service

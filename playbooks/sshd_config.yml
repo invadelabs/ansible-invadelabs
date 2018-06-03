@@ -2,8 +2,8 @@
 - name: sshd_config; sshd_config params
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^{{item.key}}"
-    line: "{{item.key}} {{item.value}}"
+    regexp: "^{{sshd_item.key}}"
+    line: "{{sshd_item.key}} {{sshd_item.value}}"
     state: present
     validate: '/usr/sbin/sshd -t -f %s'
   with_dict: {
@@ -12,6 +12,8 @@
     "MACs": "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com",
     "PermitRootLogin": "no",
     "AllowUsers": "drew drewderivative" } # XXX
+  loop_control:
+    loop_var: sshd_item
   notify: Restart sshd.service
 
 - name: sshd_config; DebianBanner no
