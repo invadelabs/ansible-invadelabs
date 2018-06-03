@@ -45,6 +45,15 @@
     user: root
     job: /usr/sbin/logwatch --output mail
 
+- name: cron; cron check_letsencrypt.sh
+  cron:
+    name: check_letsencrypt.sh
+    minute: 15
+    hour: 23
+    user: root
+    job: /root/scripts/check_letsencrypt.sh
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+
 - name: cron; cron check_ddns.sh
   cron:
     name: check_ddns.sh
