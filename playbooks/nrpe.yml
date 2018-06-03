@@ -16,8 +16,7 @@
     src: templates/etc/nrpe.d/nrpe_local.cfg.j2
     dest: /etc/nrpe.d/nrpe_local.cfg
   notify: Restart nrpe.service
-  when: ansible_distribution == "Fedora"
-  # XXX better bounds checking, fedora / debian use diff nrpe default config location though
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
 
 # for check_memory.pl
 - name: nrpe; apt_key; add jessie-backports
