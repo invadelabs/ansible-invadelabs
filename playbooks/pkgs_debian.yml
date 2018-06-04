@@ -19,7 +19,8 @@
 
   - docker.io
 
-  - libnagios-plugin-perl # needed for nagios-plugins-contrib (deps broken?)
+  #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
+  - monitoring-plugins-standard
   - nagios-nrpe-server
   - monitoring-plugins-basic
   - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?

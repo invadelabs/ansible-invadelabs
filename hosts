@@ -3,7 +3,7 @@
 [invadelabs.com]
 #192.168.56.105
 #invadelabs.com ansible_host=invadelabs.com
-35.226.171.139
+35.226.171.139 check_memory="/usr/lib/nagios/plugins/check_memory -u M -w 10% -c 20" check_root="/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
 
 [drew-serv]
 192.168.1.125
