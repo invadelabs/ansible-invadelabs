@@ -11,34 +11,37 @@
   when: 'ansible_default_ipv4.network == "192.168.1.0"'
 
 # for drew-serv.invadelabs.com at the moment
-- name: nrpe; add /etc/nrpe.d/nrpe_local.cfg template
+- name: nrpe; drew-serv add /etc/nrpe.d/nrpe_local.cfg template
   template:
     src: templates/etc/nrpe.d/nrpe_local.cfg.j2
     dest: /etc/nrpe.d/nrpe_local.cfg
   notify: Restart nrpe.service
   when: ansible_fqdn == "drew-serv.invadelabs.com"
 
-# for check_memory.pl
-- name: nrpe; apt_key; add jessie-backports
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 7638D0442B90D010
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-
-- name: nrpe; apt_repository; add jessie-backports
-  apt_repository:
-    repo: deb http://ftp.debian.org/debian jessie-backports main
-    state: present
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-
-- name: nrpe; apt; install libmonitoring-plugin-perl
-  apt:
-    name: libmonitoring-plugin-perl
-    state: present
-    default_release: jessie-backports
-    install_recommends: no
-    #update_cache: yes
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+## XXX Fix this
+### for check_memory.pl XXX broken
+### - name: nrpe; apt_key; add jessie-backports
+###   apt_key:
+###     keyserver: keyserver.ubuntu.com
+###     id: 8B48AD6246925553
+###   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+##
+### for check_memory.pl
+##- name: nrpe; apt_repository; add jessie-backports
+##  apt_repository:
+##    repo: deb http://ftp.debian.org/debian jessie-backports main
+##    state: present
+##    validate_certs: no # XXX see above - issues with repo
+##  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+##
+##- name: nrpe; apt; install libmonitoring-plugin-perl
+##  apt:
+##    name: libmonitoring-plugin-perl
+##    state: present
+##    default_release: jessie-backports
+##    install_recommends: no
+##    #update_cache: yes
+##  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
 
 - name: nrpe; dl check_memory.pl
   get_url:
@@ -120,5 +123,5 @@
     regexp: "^command\\[check_fail2ban\\]"
     line: "command[check_fail2ban]=/usr/lib/nagios/plugins/check_fail2ban.sh -w 1 -c 2"
     state: present
-  notify: Restart Restart nagios-nrpe-server.service
+  notify: Restart nagios-nrpe-server.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"

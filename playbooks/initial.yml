@@ -23,7 +23,6 @@
 - name: initial; stat /etc/localtime
   stat: path=/etc/localtime
   register: tz_localtime
-
 # - debug:
 #     msg: "{{ tz_localtime.stat.lnk_target }}"
 
@@ -42,7 +41,7 @@
 #   when: ansible_fqdn == "invadelabs.com"
 #   notify: Restart sshguard.service
 
-- name: arm; drew-piv3; apt; install fail2ban
+- name: initial; drew-piv3; apt; install fail2ban
   apt: name=fail2ban state=present # update_cache=yes
   when: ansible_hostname == "drew-piv3"
 
@@ -71,26 +70,11 @@
   loop_control:
     loop_var: git_item
 
-- name: initial; Initalize etckeeper
-  shell: |
-    etckeeper init
-    etckeeper post-install
-  args:
-    chdir: /etc
-    creates: /etc/.git
-
 - name: initial; set SELinux to permissive
   selinux:
     policy: targeted
     state: permissive
   when: ansible_distribution == 'Fedora'
-
-- name: initial; ensure "compress" is in logrotate.conf
-  lineinfile:
-    path: /etc/logrotate.conf
-    state: present
-    regexp: '^compress'
-    line: 'compress'
 
 - name: initial; add .forward
   copy:
@@ -104,27 +88,3 @@
     }
   loop_control:
     loop_var: forward_item
-
-- name: initial; remove logwatch daily
-  file:
-    path: '{{logwatch_item}}'
-    state: absent
-  with_items:
-    - /etc/cron.daily/00logwatch
-    - /etc/cron.daily/0logwatch
-  loop_control:
-    loop_var: logwatch_item
-
-- name: initial; logwatch.conf
-  lineinfile:
-    path: /etc/logwatch/conf/logwatch.conf
-    state: present
-    create: yes
-    regexp: '^{{logwatchconf_item.key}}'
-    line: '{{logwatchconf_item.key}} = {{logwatchconf_item.value}}'
-  with_dict: {
-    "Range": "between -7 days and -1 days",
-    "Archives": "yes"
-    }
-  loop_control:
-    loop_var: logwatchconf_item
