@@ -22,16 +22,18 @@
 - name: apache2; a2dismod
   apache2_module:
     state: absent
-    name: "{{item}}"
+    name: "{{a2dismod_item}}"
   with_items:
     - mpm_prefork
     - php7.2
+  loop_control:
+    loop_var: a2dismod_item
   notify: Restart apache2.service
 
 - name: apache2; a2enmod
   apache2_module:
     state: present
-    name: "{{item}}"
+    name: "{{a2enmod_item}}"
   with_items:
     - ssl
     - rewrite
@@ -41,6 +43,8 @@
     - mpm_event
     - proxy_fcgi
     - setenvif
+  loop_control:
+    loop_var: a2enmod_item
   notify: Restart apache2.service
 
 - name: apache2; a2enconf
@@ -58,17 +62,19 @@
   notify: apache2; set env variables
 
 # apahce2.conf
-- name: apache2.conf updates
+- name: apache2; apache2.conf updates
   lineinfile:
     dest: /etc/apache2/apache2.conf
-    regexp: "^{{item.key}}"
-    line: "{{item.key}} {{item.value}}"
+    regexp: "^{{a2conf_item.key}}"
+    line: "{{a2conf_item.key}} {{a2conf_item.value}}"
     state: present
     validate: "/usr/sbin/apachectl -t -f %s"
   with_dict: {
     'ServerTokens': 'Prod',
     'ServerSignature': 'Off'
     }
+  loop_control:
+    loop_var: a2conf_item
   notify: Restart apache2.service
 
 - name: apache2; add SSLStapling Cache to ssl.conf
