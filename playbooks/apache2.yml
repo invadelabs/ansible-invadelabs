@@ -48,11 +48,13 @@
   notify: Restart apache2.service
 
 - name: apache2; a2enconf
-  command: a2enconf {{item}}
+  command: a2enconf {{a2enconf_item}}
   args:
-    creates: /etc/apache2/conf-enabled/{{item}}.conf
+    creates: /etc/apache2/conf-enabled/{{a2enconf_item}}.conf
   with_items:
     - php7.2-fpm
+  loop_control:
+    loop_var: a2enconf_item
   notify: Restart apache2.service
 
 - name: apache2; touch /var/log/apache-first-run.log
