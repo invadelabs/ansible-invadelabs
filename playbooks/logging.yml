@@ -6,14 +6,26 @@
     line: "{{journald_item.key}}={{journald_item.value}}"
     state: present
   with_dict: {
-    'SystemMaxUse': '20G',
     'ForwardToSyslog': 'yes'
     }
   loop_control:
     loop_var: journald_item
   notify: Restart systemd-journald.service
 
-- name: logging; add /etc/rsyslog.d ignores
+- name: logging; add /etc/rsyslog.d/logstash.conf
+  template:
+    src: "templates/etc/rsyslog.d/logstash.conf.j2"
+    dest: "/etc/rsyslog.d/logstash.conf"
+  notify: Restart rsyslog.service
+
+- name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv logstash
+  template:
+    src: "templates/etc/sysctl.d/vm.max_map_count.conf.j2"
+    dest: "/etc/sysctl.d/vm.max_map_count.conf"
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
+  notify: Restart rsyslog.service
+
+- name: logging; add /etc/rsyslog.d entries # XXX get this manageable
   template:
     src: "templates/etc/rsyslog.d/{{rsyslog_item}}.j2"
     dest: "/etc/rsyslog.d/{{rsyslog_item}}"
@@ -24,3 +36,28 @@
   loop_control:
     loop_var: rsyslog_item
   notify: Restart rsyslog.service
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+- name: logging; remove logwatch daily
+  file:
+    path: '{{logwatch_item}}'
+    state: absent
+  with_items:
+    - /etc/cron.daily/00logwatch
+    - /etc/cron.daily/0logwatch
+  loop_control:
+    loop_var: logwatch_item
+
+- name: logging; logwatch.conf
+  lineinfile:
+    path: /etc/logwatch/conf/logwatch.conf
+    state: present
+    create: yes
+    regexp: '^{{logwatchconf_item.key}}'
+    line: '{{logwatchconf_item.key}} = {{logwatchconf_item.value}}'
+  with_dict: {
+    "Range": "between -7 days and -1 days",
+    "Archives": "yes"
+    }
+  loop_control:
+    loop_var: logwatchconf_item

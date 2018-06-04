@@ -1,5 +1,5 @@
 ---
-- hosts: nm
+- hosts: nm01
   become: true
   become_method: sudo
   # gather_facts: no
@@ -9,8 +9,8 @@
   tasks:
   - name: fail if hostname not set
     fail:
-      msg: "Host name {{ansible_fqdn}} is not! Run; hostnamectl set-hostname invadelabs.com"
-    when: ansible_fqdn == "localhost"
+      msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"
+    when: ( ansible_fqdn == "localhost" ) or ( ansible_fqdn == "raspberrypi" ) or ( ansible_fqdn == "pine64" )
 
   - name: stat required files in /root
     stat:
@@ -24,7 +24,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: check if drive initalized
-    shell: touch /var/log/drive-init.touch; /var/lib/snapd/snap/bin/drive quota >/dev/null
+    shell: /var/lib/snapd/snap/bin/drive quota >/dev/null; touch /var/log/drive-init.touch;
     args:
       chdir: /root
       creates: /var/log/drive-init.touch
@@ -34,6 +34,7 @@
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
   - include: playbooks/firewall.yml
+  - include: playbooks/logging.yml
 
   - include: playbooks/pkgs_fedora.yml
     when: ansible_fqdn == "drew-serv.invadelabs.com"
@@ -42,8 +43,6 @@
     when: ansible_os_family == "Debian"
 
   - include: playbooks/hw_drew-serv.yml # hardware specifics
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
-  - include: playbooks/logging.yml
     when: ansible_fqdn == "drew-serv.invadelabs.com"
   - include: playbooks/drive.yml # Nagios NRPE config
     when: ansible_fqdn == "drew-serv.invadelabs.com"
@@ -120,8 +119,14 @@
     service: name=systemd-journald state=restarted
   - name: Restart smartd.service
     service: name=smartd state=restarted
+
   - name: Restart sshd.service
     service: name=sshd state=restarted
+    when: ansible_os_family == "Fedora"
+  - name: Restart ssh.service
+    service: name=ssh state=restarted
+    when: ansible_os_family == "Debian"
+
   - name: Restart nrpe.service
     service: name=nrpe state=restarted
   - name: Restart nagios-nrpe-server.service
@@ -149,6 +154,9 @@
       state: started
       restart_policy: unless-stopped
       hostname: nagios.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
       volumes:
         - /srv/nagios4/etc:/opt/nagios/etc
         - /srv/nagios4/var:/opt/nagios/var
@@ -174,6 +182,9 @@
       state: started
       restart_policy: unless-stopped
       hostname: gitlab.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
       volumes:
         - /srv/gitlab/config:/etc/gitlab
         - /srv/gitlab/logs:/var/log/gitlab
@@ -191,6 +202,9 @@
       state: started
       restart_policy: unless-stopped
       hostname: ns.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
       volumes:
         - /srv/bind:/data
       ports:
