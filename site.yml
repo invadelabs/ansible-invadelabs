@@ -123,7 +123,7 @@
 
   - name: Restart sshd.service
     service: name=sshd state=restarted
-    when: ansible_os_family == "Fedora"
+    when: ansible_os_family == "RedHat"
   - name: Restart ssh.service
     service: name=ssh state=restarted
     when: ansible_os_family == "Debian"
