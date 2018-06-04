@@ -3,8 +3,9 @@
   become: true
   become_method: sudo
   # gather_facts: no
-  # vars:
-  #   MAILTO: drew@invadelabs.com
+  vars:
+    rsyslog_host: localhost
+    rsyslog_port: 11514
 
   tasks:
   - name: fail if hostname not set to invadelabs.com
@@ -33,6 +34,8 @@
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
   - include: playbooks/sshd_config.yml # sshd_config
+  - include: playbooks/logging.yml # sshd_config
+  - include: playbooks/nrpe.yml # sshd_config
   - include: playbooks/pkgs_debian.yml # all software bits needed
   - include: playbooks/postfix.yml # sendgrid relay config
   - include: playbooks/drive.yml # initalize drive, configures letsencrypt
@@ -50,6 +53,12 @@
   - name: Start postfix.service
     service: name=postfix state=started enabled=yes
 
+  - name: Restart nagios-nrpe-server.service
+    service: name=nagios-nrpe-server state=restarted
+  - name: Restart rsyslog.service
+    service: name=rsyslog state=restarted
+  - name: Restart systemd-journald.service
+    service: name=systemd-journald state=restarted
   - name: Restart sshd.service
     service: name=sshd state=restarted
   - name: Restart sshguard.service

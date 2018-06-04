@@ -18,7 +18,7 @@
     dest: "/etc/rsyslog.d/logstash.conf"
   notify: Restart rsyslog.service
 
-- name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv logstash
+- name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv # for logstash container
   template:
     src: "templates/etc/sysctl.d/vm.max_map_count.conf.j2"
     dest: "/etc/sysctl.d/vm.max_map_count.conf"
