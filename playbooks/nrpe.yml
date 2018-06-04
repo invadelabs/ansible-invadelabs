@@ -48,20 +48,11 @@
     "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
     "check_uptime": "/usr/lib/nagios/plugins/check_uptime -f -c 10",
     "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
-    "check_memory": "{{ check_memory }}"
+    "check_memory": "{{ check_memory }}",
+    "check_root": "{{ check_root }}"
     }
   loop_control:
     loop_var: nrpe_item
-  notify: Restart nagios-nrpe-server.service
-  when: ansible_os_family == "Debian"
-
-# invadelabs.com uses /dev/root /
-- name: nrpe; nrpe_local.cfg; check_root
-  lineinfile:
-    dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_root\\]"
-    line: "command[check_root]={{ check_root }}"
-    state: present
   notify: Restart nagios-nrpe-server.service
   when: ansible_os_family == "Debian"
 
