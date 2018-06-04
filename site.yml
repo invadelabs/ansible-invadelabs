@@ -3,8 +3,9 @@
   become: true
   become_method: sudo
   # gather_facts: no
-  # vars:
-  #   MAILTO: drew@invadelabs.com
+  vars:
+    rsyslog_host: "192.168.1.125"
+    rsyslog_port: "10514"
 
   tasks:
   - name: fail if hostname not set

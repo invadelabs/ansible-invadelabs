@@ -18,37 +18,13 @@
   notify: Restart nrpe.service
   when: ansible_fqdn == "drew-serv.invadelabs.com"
 
-## XXX Fix this
-### for check_memory.pl XXX broken
-### - name: nrpe; apt_key; add jessie-backports
-###   apt_key:
-###     keyserver: keyserver.ubuntu.com
-###     id: 8B48AD6246925553
-###   when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-##
-### for check_memory.pl
-##- name: nrpe; apt_repository; add jessie-backports
-##  apt_repository:
-##    repo: deb http://ftp.debian.org/debian jessie-backports main
-##    state: present
-##    validate_certs: no # XXX see above - issues with repo
-##  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-##
-##- name: nrpe; apt; install libmonitoring-plugin-perl
-##  apt:
-##    name: libmonitoring-plugin-perl
-##    state: present
-##    default_release: jessie-backports
-##    install_recommends: no
-##    #update_cache: yes
-##  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
-
 - name: nrpe; dl check_memory.pl
   get_url:
     url: https://gist.githubusercontent.com/drew-holt/4da247a2874b7a0470bd3d55d5191312/raw/d24673b607dfee98f8a859acca21ef5dde26aa3d/check_memory.pl
     dest: /usr/local/bin/check_memory.pl
     mode: 0755
     force: no
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
 - name: nrpe; download check_temp.sh
   get_url:
@@ -72,32 +48,32 @@
     "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
     "check_uptime": "/usr/lib/nagios/plugins/check_uptime -f -c 10",
     "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
-    "check_memory": "/usr/local/bin/check_memory.pl -u M -w 10% -c 20%"
+    "check_memory": "{{ check_memory }}"
     }
   loop_control:
     loop_var: nrpe_item
   notify: Restart nagios-nrpe-server.service
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+  when: ansible_os_family == "Debian"
 
-# drew-piv3 uses /dev/root /dev/mmcblk0p2
-- name: nrpe; drew-piv3; nrpe_local.cfg; check_sda1
+# invadelabs.com uses /dev/root /
+- name: nrpe; nrpe_local.cfg; check_root
   lineinfile:
     dest: /etc/nagios/nrpe_local.cfg
     regexp: "^command\\[check_root\\]"
-    line: "command[check_root]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p2"
+    line: "command[check_root]={{ check_root }}"
     state: present
   notify: Restart nagios-nrpe-server.service
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+  when: ansible_os_family == "Debian"
 
 # drew-pine64 uses /dev/root /dev/mmcblk0p2
-- name: nrpe; drew-pine64; nrpe_local.cfg; check_sda1
+- name: nrpe; invadelabs.com; nrpe_local.cfg; check_tcp11514
   lineinfile:
     dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_root\\]"
-    line: "command[check_root]=/usr/lib/nagios/plugins/check_disk -c 10% -p /dev/mmcblk0p1"
+    regexp: "^command\\[check_tcp11514\\]"
+    line: "command[check_tcp11514]=/usr/lib/nagios/plugins/check_tcp -H localhost -p 11514"
     state: present
   notify: Restart nagios-nrpe-server.service
-  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+  when: ansible_fqdn == "invadelabs.com"
 
 # dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
 - name: nrpe; add fail2ban.sh

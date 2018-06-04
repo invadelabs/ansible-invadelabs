@@ -14,7 +14,7 @@ template(name="json-template"
 # This line sends all lines to defined IP address at port 10514,
 # using the "json-template" format template
 
-*.* action(type="omfwd" target="192.168.1.125" port="10514" protocol="tcp" template="json-template"
+*.* action(type="omfwd" target="{{rsyslog_host}}" port="{{rsyslog_port}}" protocol="tcp" template="json-template"
 queue.filename="fwdRule1"       # unique name prefix for spool files
 queue.maxdiskspace="1g"         # 1gb space limit (use as much as possible)
 queue.saveonshutdown="on"       # save messages to disk on shutdown
