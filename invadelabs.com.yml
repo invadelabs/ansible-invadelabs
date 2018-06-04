@@ -1,5 +1,5 @@
 ---
-- hosts: invadelabs.com
+- hosts: gce
   become: true
   become_method: sudo
   # gather_facts: no
