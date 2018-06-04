@@ -33,7 +33,7 @@
     hour: "*/2"
     user: root
     #job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) | systemd-cat
-    job: PATH=/usr/local/bin:$PATH ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) >> /var/log/ansible-pull.log
+    job: PATH=/usr/local/bin:$PATH ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l $(hostname -i) | systemd-cat -t ansible-pull
   when: ansible_fqdn != "invadelabs.com"
 
 - name: cron; logwatch weekly
@@ -62,15 +62,6 @@
     job: /root/scripts/check_ddns.sh nm.invadelabs.com
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-- name: cron; gdrive_backup.sh
-  cron:
-    name: gdrive_backup.sh
-    minute: "0"
-    hour: "23"
-    user: root
-    job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
-
 - name: cron; check_docker.sh
   cron:
     name: check_docker.sh
@@ -88,7 +79,16 @@
     job: /root/scripts/gen_sitemap.sh -s
   when: ansible_fqdn == 'invadelabs.com'
 
-- name: cron; Add cron gdrive_backup.sh
+- name: cron; gdrive_backup.sh drew-serv.invadelabs.com
+  cron:
+    name: gdrive_backup.sh
+    minute: "0"
+    hour: "23"
+    user: root
+    job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+
+- name: cron; gdrive_backup.sh invadelabs.com
   cron:
     name: gdrive_backup.sh
     minute: 0

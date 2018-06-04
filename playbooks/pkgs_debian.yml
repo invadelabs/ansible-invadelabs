@@ -23,6 +23,8 @@
   - nagios-nrpe-server
   - monitoring-plugins-basic
   - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
+  - debian-keyring # needed for nrpe debian package
+  - debian-archive-keyring # needed for nrpe debian package
 
   #- ansible # will be installed via pip for arm devices
   - software-properties-common # for ansible
@@ -88,7 +90,7 @@
   - Start php7.2-fpm.service
   when: ansible_fqdn == "invadelabs.com"
 
-- name: pkgs_debian; etckeeper post-install
+- name: pkgs_debian; etckeeper post-install # XXX use file module state=touch here
   shell: |
     touch /var/log/firstpkg.run
     etckeeper post-install

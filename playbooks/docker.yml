@@ -17,3 +17,7 @@
     name: drew
     groups: docker
     append: yes
+
+# /etc/sysconfig/docker XXX
+#+#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
+#+OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
