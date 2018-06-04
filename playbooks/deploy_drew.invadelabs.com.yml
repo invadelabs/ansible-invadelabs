@@ -12,16 +12,18 @@
 - name: drewwiki; add mediawiki extensions
   unarchive:
     remote_src: yes
-    src: "{{ item.value }}"
+    src: "{{ med_ext_item.value }}"
     dest: /var/www/drew.invadelabs.com/extensions
     owner: www-data
     group: www-data
-    creates: "/var/www/drew.invadelabs.com/extensions/{{ item.key }}"
+    creates: "/var/www/drew.invadelabs.com/extensions/{{ med_ext_item.key }}"
   with_dict: {
     "googleAnalytics": "https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_30-3693026.tar.gz",
     "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_30-c2042b0.tar.gz",
     "Description2": "https://extdist.wmflabs.org/dist/extensions/Description2-REL1_30-61dcee7.tar.gz"
     }
+  loop_control:
+    loop_var: med_ext_item
 
 - name: drewwiki; add logo
   copy:
