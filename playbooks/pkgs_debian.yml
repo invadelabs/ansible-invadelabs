@@ -53,11 +53,24 @@
 - name: pkgs_debian; pine64 extras needed for pip
   apt: name={{apt_pine64_item}} state=present
   with_items:
+    - libmonitoring-plugin-perl # for nrpe
     - python-dev # needed to build ansible via pip on pine64 u16.04
     - libffi-dev # needed to build ansible via pip on pine64 u16.04
+    - python-pkg-resources # needed to build ansible via pip on pine64 u16.04
   loop_control:
     loop_var: apt_pine64_item
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
+
+# XXX upgrade pip here on pine64
+
+- name: pkgs_debian; install pip modules for docker # needed for ubuntu16.04-armhf ansible & docker-py
+  pip:
+    name: "{{docker_pip_item}}"
+  with_items:
+  - setuptools
+  - docker-py
+  loop_control:
+    loop_var: docker_pip_item
 
 - name: pkgs_debian; install ansible via pip on arm
   pip:
