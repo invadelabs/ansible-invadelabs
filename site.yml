@@ -130,8 +130,11 @@
 
   - name: Restart nrpe.service
     service: name=nrpe state=restarted
+    when: ansible_os_family == "RedHat"
   - name: Restart nagios-nrpe-server.service
     service: name=nagios-nrpe-server state=restarted
+    when: ansible_os_family == "Debian"
+
   - name: Restart smb.service
     service: name=smb state=restarted
   - name: Restart rsyslog.service
