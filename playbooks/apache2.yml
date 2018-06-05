@@ -57,7 +57,7 @@
     loop_var: a2enconf_item
   notify: Restart apache2.service
 
-- name: apache2; touch /var/log/apache-first-run.log
+- name: apache2; touch /var/log/apache-first-run.log # XXX delete me to recreate templates
   copy:
     dest: /var/log/apache-first-run.log
     content: ""

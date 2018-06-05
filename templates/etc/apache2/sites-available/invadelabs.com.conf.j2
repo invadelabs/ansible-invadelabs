@@ -16,8 +16,8 @@
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
   RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
-RewriteCond %{SERVER_NAME} =invadelabs.com
-RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+  RewriteCond %{SERVER_NAME} =invadelabs.com
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 
 <IfModule mod_ssl.c>
