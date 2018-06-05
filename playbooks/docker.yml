@@ -1,11 +1,12 @@
 ---
-- name: docker; install setuptools pip module # needed for ubuntu16.04-armhf docker-py
+- name: docker; install pip modules for docker # needed for ubuntu16.04-armhf docker-py
   pip:
-    name: setuptools
-
-- name: docker; install docker-py pip module
-  pip:
-    name: docker-py
+    name: "{{docker_pip_item}}"
+  with_items:
+  - setuptools
+  - docker-py
+  loop_control:
+    loop_var: docker_pip_item
 
 - name: docker; ensure group "docker" exists
   group:
