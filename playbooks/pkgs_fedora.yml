@@ -6,6 +6,7 @@
   - docker-compose
   # base
   - ansible
+  - rsync
   - redhat-lsb-core
   - vim-enhanced
   - mcelog

@@ -4,6 +4,12 @@
   ServerAdmin drewwiki@invadelabs.com
   DocumentRoot /var/www/drew.invadelabs.com
 
+  <Directory /var/www/drew.invadelabs.com>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+
   ErrorLog ${APACHE_LOG_DIR}/drew.invadelabs.com.error.log
   CustomLog ${APACHE_LOG_DIR}/drew.invadelabs.com.access.log combined
 
@@ -11,8 +17,8 @@
   RewriteCond %{HTTPS} !=on
   RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 
-RewriteCond %{SERVER_NAME} =drew.invadelabs.com
-RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+  RewriteCond %{SERVER_NAME} =drew.invadelabs.com
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 
 <IfModule mod_ssl.c>
@@ -21,6 +27,12 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
   ServerName drew.invadelabs.com
   ServerAdmin drewwiki@invadelabs.com
   DocumentRoot /var/www/drew.invadelabs.com
+
+  <Directory /var/www/drew.invadelabs.com>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
 
   ErrorLog ${APACHE_LOG_DIR}/drew.invadelabs.com-secure.error.log
   CustomLog ${APACHE_LOG_DIR}/drew.invadelabs.com.access-secure.log combined
