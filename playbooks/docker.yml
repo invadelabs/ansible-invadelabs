@@ -13,3 +13,21 @@
 # /etc/sysconfig/docker XXX
 #+#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
 #+OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
+
+- name: docker; git clone drew-holt/docker-elk
+  git:
+    repo: https://github.com/drew-holt/docker-elk.git
+    dest: /srv/docker-elk
+    update: no # note; setting this here for first time ansible run
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+- debug:
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
+
+# XXX do stuff here to restore /srv/docker-elk/data
+- name: docker; ensure /srv/docker-elk/data exists
+  stat:
+    path: /srv/docker-elk/data
+  register: elk_data
+  failed_when: elk_data.stat.exists == False
+  when: ansible_fqdn == "drew-serv.invadelabs.com"
