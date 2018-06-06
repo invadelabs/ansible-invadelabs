@@ -46,6 +46,8 @@
   - include: playbooks/cron.yml
 
   handlers:
+  - name: Start filebeat.service
+    service: name=filebeat state=started enabled=yes
   - name: Start apache2.service
     service: name=apache2 state=started enabled=yes
   - name: Start php7.2-fpm.service
@@ -53,6 +55,8 @@
   - name: Start postfix.service
     service: name=postfix state=started enabled=yes
 
+  - name: Restart filebeat.service
+    service: name=filebeat state=restarted
   - name: Restart nagios-nrpe-server.service
     service: name=nagios-nrpe-server state=restarted
   - name: Restart rsyslog.service
