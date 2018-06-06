@@ -1,4 +1,24 @@
 ---
+- name: logging; download filebeat
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
+    dest: /root/installers/filebeat-6.2.4-amd64.deb
+    force: no
+  when: ansible_fqdn == "invadelabs.com"
+
+- name: logging; install filebeat
+  apt:
+    deb: /root/installers/filebeat-6.2.4-amd64.deb
+  when: ansible_fqdn == "invadelabs.com"
+  notify: Restart filebeat.service
+
+- name: logging; add /etc/filebeat/filebeat.yml
+  template:
+    src: templates/etc/filebeat/filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+  when: ansible_fqdn == "invadelabs.com"
+  notify: Restart filebeat.service
+
 - name: logging; /etc/systemd/journald.conf
   lineinfile:
     dest: /etc/systemd/journald.conf

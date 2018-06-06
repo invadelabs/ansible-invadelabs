@@ -1,0 +1,19 @@
+filebeat.prospectors:
+- paths:
+  - /var/log/apache2/*access*.log
+  tags: [apache_access]
+- paths:
+  - /var/log/apache2/*error*.log
+  tags: [apache_error]
+
+  recursive_glob.enabled: true
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+
+setup.template.settings:
+  index.number_of_shards: 3
+
+output.logstash:
+  # The Logstash hosts
+  hosts: ["localhost:5001"]
