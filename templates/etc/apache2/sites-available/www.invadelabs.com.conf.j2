@@ -5,7 +5,7 @@
   #DocumentRoot /var/www/www.invadelabs.com
 
   ErrorLog ${APACHE_LOG_DIR}/www.invadelabs.com.error.log
-  CustomLog ${APACHE_LOG_DIR}/www.invadelabs.com.access.log combined
+  CustomLog ${APACHE_LOG_DIR}/www.invadelabs.com.access.log vhost_combined
 
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
@@ -23,7 +23,7 @@
   #DocumentRoot /var/www/www.invadelabs.com
 
   ErrorLog ${APACHE_LOG_DIR}/www.invadelabs.com-secure.error.log
-  CustomLog ${APACHE_LOG_DIR}/www.invadelabs.com.access-secure.log combined
+  CustomLog ${APACHE_LOG_DIR}/www.invadelabs.com.access-secure.log vhost_combined
 
   Include /etc/letsencrypt/options-ssl-apache.conf
 
