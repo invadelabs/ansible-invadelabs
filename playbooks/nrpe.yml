@@ -1,14 +1,14 @@
 ---
-- name: nrpe; nrpe.cfg allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1
+- name: nrpe; nrpe.cfg allowed_hosts
   lineinfile:
     dest: /etc/nagios/nrpe.cfg
     regexp: "^allowed_hosts="
-    line: "allowed_hosts=192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
+    line: "allowed_hosts={{nrpe_allowed_hosts}}"
     state: present
   notify:
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
-  when: 'ansible_default_ipv4.network == "192.168.1.0"'
+  # when: 'ansible_default_ipv4.network == "192.168.1.0"'
 
 # for drew-serv.invadelabs.com at the moment
 - name: nrpe; drew-serv add /etc/nrpe.d/nrpe_local.cfg template
