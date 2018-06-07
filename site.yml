@@ -25,7 +25,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: check if drive initalized
-    shell: /var/lib/snapd/snap/bin/drive quota >/dev/null; touch /var/log/drive-init.touch;
+    shell: /var/lib/snapd/snap/bin/drive quota >/dev/null && touch /var/log/drive-init.touch;
     args:
       chdir: /root
       creates: /var/log/drive-init.touch
