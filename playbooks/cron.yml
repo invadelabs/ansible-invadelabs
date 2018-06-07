@@ -101,3 +101,19 @@
     user: root
     job: autossh -M 0 -f -N -R 11514:192.168.1.125:10514 -R 5001:192.168.1.125:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/id_rsa drew@invadelabs.com
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
+
+- name: cron; `hostname invadelabs.com`
+  cron:
+    name: hostname invadelabs.com
+    minute: 0
+    user: root
+    job: hostname invadelabs.com
+  when: ansible_fqdn == 'invadelabs.com'
+
+- name: cron; snapshot elasticsearch
+  cron:
+    name: snapshot elasticsearch
+    minute: 45
+    user: root
+    job: /usr/bin/curl -sS -XPUT 192.168.1.125:9200/_snapshot/my_backup/snapshot_$(date "+\%Y.\%m.\%d-\%H:\%M:\%S\%z")?wait_for_completion=true | systemd-cat -t "elasticsearch-snapshot"
+  when: ansible_fqdn == 'drew-serv.invadelabs.com'
