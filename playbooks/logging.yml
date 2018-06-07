@@ -1,22 +1,37 @@
 ---
-- name: logging; download filebeat
+- name: logging; download filebeat deb
   get_url:
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
     dest: /root/installers/filebeat-6.2.4-amd64.deb
     force: no
+    checksum: "sha256:003c3a49450c30f3c92543226108a99dfaf70f8eca5869b30d0f31859a23e010"
   when: ansible_fqdn == "invadelabs.com"
 
-- name: logging; install filebeat
+- name: logging; install filebeat deb
   apt:
     deb: /root/installers/filebeat-6.2.4-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
   notify: Restart filebeat.service
 
+- name: logging; download filebeat rpm
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-x86_64.rpm
+    dest: /root/installers/filebeat-6.2.4-x86_64.rpm
+    force: no
+    checksum: "sha256:479a25895ac022afaa44f6e15ae6eb396fa7db03f7e4c05b14c5d6fb21b6815d"
+  when: ansible_os_family == "RedHat"
+
+- name: logging; install filebeat rpm
+  dnf:
+    name: /root/installers/filebeat-6.2.4-x86_64.rpm
+  when: ansible_os_family == "RedHat"
+  notify: Start filebeat.service
+
 - name: logging; add /etc/filebeat/filebeat.yml
   template:
-    src: templates/etc/filebeat/filebeat.yml.j2
+    src: templates/etc/filebeat/filebeat-{{ansible_fqdn}}.yml.j2
     dest: /etc/filebeat/filebeat.yml
-  when: ansible_fqdn == "invadelabs.com"
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.invadelabs.com" )
   notify: Restart filebeat.service
 
 - name: logging; /etc/systemd/journald.conf

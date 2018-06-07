@@ -82,6 +82,8 @@
     - docker; create container bind
 
   handlers:
+  - name: Start filebeat.service
+    service: name=filebeat state=started enabled=yes
   - name: Start docker.service
     service: name=docker state=started enabled=yes
   # base
@@ -112,6 +114,8 @@
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+  - name: Restart filebeat.service
+    service: name=filebeat state=restarted
   - name: Retart network.service
     service: name=network state=restarted
   - name: Restart postfix.service
