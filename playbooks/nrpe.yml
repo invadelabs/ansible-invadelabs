@@ -24,14 +24,15 @@
     dest: /usr/local/bin/check_memory.pl
     mode: 0755
     force: no
+    checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
 - name: nrpe; download check_temp.sh
-  get_url:
-    url: https://raw.githubusercontent.com/invadelabs/cron-invadelabs/master/check_temp.sh
+  copy:
+    src: /root/scripts/check_temp.sh
     dest: /usr/local/bin/check_temp.sh
     mode: 0755
-    force: no
+    remote_src: yes
 
 - name: nrpe; /etc/nagios/nrpe_local.cfg
   lineinfile:
@@ -73,6 +74,7 @@
     dest: /usr/lib/nagios/plugins/check_fail2ban.sh
     mode: 0755
     force: no
+    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
 
 - name: nrpe; /var/run/fail2ban/fail2ban.sock perms

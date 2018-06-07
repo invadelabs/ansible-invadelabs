@@ -25,7 +25,7 @@
     failed_when: item.stat.exists == False
 
   - name: check if drive initalized
-    shell: touch /var/log/drive-init.touch; drive quota >/dev/null
+    shell: drive quota >/dev/null && touch /var/log/drive-init.touch
     args:
       chdir: /root
       creates: /var/log/drive-init.touch

@@ -15,6 +15,11 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
+- name: pkgs_debian; mkdir /root/installers
+  file:
+    path: /root/installers
+    state: directory
+
 - name: initial; add /etc/motd
   template:
     src: templates/etc/motd.j2

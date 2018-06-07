@@ -1,9 +1,4 @@
 ---
-- name: pkgs_debian; mkdir /root/installers
-  file:
-    path: /root/installers
-    state: directory
-
 - name: pkgs_debian; debconf; postfix; option type 'Internet with smarthost'
   debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
 
