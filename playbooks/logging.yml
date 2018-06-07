@@ -11,7 +11,7 @@
   apt:
     deb: /root/installers/filebeat-6.2.4-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
-  notify: Restart filebeat.service
+  notify: Start filebeat.service
 
 - name: logging; download filebeat rpm
   get_url:

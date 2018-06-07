@@ -6,6 +6,7 @@
   vars:
     rsyslog_host: localhost
     rsyslog_port: 11514
+    nrpe_allowed_hosts: "nm.invadelabs.com,127.0.0.1,::1"
 
   tasks:
   - name: fail if hostname not set to invadelabs.com
@@ -35,7 +36,6 @@
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
   - include: playbooks/sshd_config.yml # sshd_config
   - include: playbooks/logging.yml # sshd_config
-  - include: playbooks/nrpe.yml # sshd_config
   - include: playbooks/pkgs_debian.yml # all software bits needed
   - include: playbooks/postfix.yml # sendgrid relay config
   - include: playbooks/drive.yml # initalize drive, configures letsencrypt
@@ -44,6 +44,7 @@
   - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
   - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   - include: playbooks/cron.yml
+  - include: playbooks/nrpe.yml # sshd_config
 
   handlers:
   - name: Start filebeat.service
@@ -65,6 +66,8 @@
     service: name=systemd-journald state=restarted
   - name: Restart sshd.service
     service: name=sshd state=restarted
+  - name: Restart ssh.service
+    service: name=ssh state=restarted
   - name: Restart sshguard.service
     service: name=sshguard state=restarted
   - name: Restart apache2.service

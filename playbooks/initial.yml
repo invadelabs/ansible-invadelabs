@@ -15,7 +15,7 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
-- name: pkgs_debian; mkdir /root/installers
+- name: initial; mkdir /root/installers
   file:
     path: /root/installers
     state: directory
@@ -33,7 +33,7 @@
 
 - name: initial; set timezone
   command: timedatectl set-timezone America/Denver
-  when: ( tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver" ) and ( ansible_fqdn != "invadelabs.com" )
+  when: tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver"
 
 # will be handled by gce firewall list
 - name: disable sshguard
