@@ -26,8 +26,8 @@
     loop_var: med_ext_item
 
 - name: drewwiki; add logo
-  copy:
-    src: templates/omgz_square.gif
+  get_url:
+    url: https://media.giphy.com/media/4SZJKul9erj2mYTCAF/giphy.gif
     dest: /var/www/drew.invadelabs.com/omgz_square.gif
     owner: www-data
     group: www-data

@@ -56,7 +56,11 @@
     loop_var: apt_pine64_item
   when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
-# XXX upgrade pip here on pine64
+- name: pkgs_debian; pip upgrade to 10.0.1
+  pip:
+    name: pip
+    version: 10.0.1
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
 
 - name: pkgs_debian; install pip modules for docker # needed for ubuntu16.04-armhf ansible & docker-py
   pip:
@@ -99,15 +103,42 @@
   - Start php7.2-fpm.service
   when: ansible_fqdn == "invadelabs.com"
 
-- name: pkgs_debian; etckeeper post-install # XXX use file module state=touch here
-  shell: |
-    touch /var/log/firstpkg.run
-    etckeeper post-install
-  args:
-    creates: /var/log/firstpkg.run
+- name: pkgs_debian; download mod_pagespeed
+  get_url:
+    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+    dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
+    force: no
+    checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
+  when: ansible_fqdn == "invadelabs.com"
 
-- name: pkgs_debian; update-alternatives editor to vim-basic
-  alternatives:
-    name: editor
-    path: /usr/bin/vim.basic
-  when: ansible_os_family == 'Debian'
+- name: pkgs_debian; install mod_pagespeed
+  apt:
+    deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
+  when: ansible_fqdn == "invadelabs.com"
+
+- name: pkgs_debian; download lynis
+  get_url:
+    url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
+    dest: /root/installers/lynis_2.6.2-1_all.deb
+    force: no
+    checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+- name: pkgs_debian; install lynis
+  apt:
+    deb: /root/installers/lynis_2.6.2-1_all.deb
+  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+
+- name: pkgs_debian; download filebeat deb
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
+    dest: /root/installers/filebeat-6.2.4-amd64.deb
+    force: no
+    checksum: "sha256:003c3a49450c30f3c92543226108a99dfaf70f8eca5869b30d0f31859a23e010"
+  when: ansible_fqdn == "invadelabs.com"
+
+- name: pkgs_debian; install filebeat deb
+  apt:
+    deb: /root/installers/filebeat-6.2.4-amd64.deb
+  when: ansible_fqdn == "invadelabs.com"
+  notify: Start filebeat.service
