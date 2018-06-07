@@ -6,6 +6,7 @@
   vars:
     rsyslog_host: "192.168.1.125"
     rsyslog_port: "10514"
+    nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
 
   tasks:
   - name: fail if hostname not set
