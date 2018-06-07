@@ -1,9 +1,10 @@
 ---
 - name: apache2; download mod_pagespeed
   get_url:
-    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb 1.13.35.2-r0
     dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
     force: no
+    checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
 
 - name: apache2; install mod_pagespeed
   apt:
