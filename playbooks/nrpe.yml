@@ -1,22 +1,19 @@
 ---
-- name: nrpe; nrpe.cfg allowed_hosts
+- name: nrpe; nrpe.cfg
   lineinfile:
     dest: /etc/nagios/nrpe.cfg
-    regexp: "^allowed_hosts="
-    line: "allowed_hosts={{nrpe_allowed_hosts}}"
+    regexp: "^{{nrpecfg_item.key}}="
+    line: "{{nrpecfg_item.key}}={{nrpecfg_item.value}}"
     state: present
+  with_dict: {
+    "allowed_hosts": "{{nrpe_allowed_hosts}}",
+    "include": "/etc/nagios/nrpe_local.cfg"
+    }
+  loop_control:
+    loop_var: nrpecfg_item
   notify:
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
-  # when: 'ansible_default_ipv4.network == "192.168.1.0"'
-
-# for drew-serv.invadelabs.com at the moment
-- name: nrpe; drew-serv add /etc/nrpe.d/nrpe_local.cfg template
-  template:
-    src: templates/etc/nrpe.d/nrpe_local.cfg.j2
-    dest: /etc/nrpe.d/nrpe_local.cfg
-  notify: Restart nrpe.service
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
 
 - name: nrpe; dl check_memory.pl
   get_url:
@@ -34,41 +31,8 @@
     mode: 0755
     remote_src: yes
 
-- name: nrpe; /etc/nagios/nrpe_local.cfg
-  lineinfile:
-    dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[{{nrpe_item.key}}\\]"
-    line: "command[{{nrpe_item.key}}]={{nrpe_item.value}}"
-    state: present
-  with_dict: {
-    "check_users": "/usr/lib/nagios/plugins/check_users -w 5 -c 10",
-    "check_load": "/usr/lib/nagios/plugins/check_load -r -w 4,2,1 -c 6,4,2",
-    "check_zombie_procs": "/usr/lib/nagios/plugins/check_procs -w 5 -c 10 -s Z",
-    "check_total_procs": "/usr/lib/nagios/plugins/check_procs -w 200 -c 250",
-    "check_apt": "/usr/lib/nagios/plugins/check_apt -t 60",
-    "check_mailq": "/usr/lib/nagios/plugins/check_mailq -w 1 -c 2",
-    "check_uptime": "/usr/lib/nagios/plugins/check_uptime -f -c 10",
-    "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
-    "check_memory": "{{ check_memory }}",
-    "check_root": "{{ check_root }}"
-    }
-  loop_control:
-    loop_var: nrpe_item
-  notify: Restart nagios-nrpe-server.service
-  when: ansible_os_family == "Debian"
-
-# drew-pine64 uses /dev/root /dev/mmcblk0p2
-- name: nrpe; invadelabs.com; nrpe_local.cfg; check_tcp11514
-  lineinfile:
-    dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_tcp11514\\]"
-    line: "command[check_tcp11514]=/usr/lib/nagios/plugins/check_tcp -H localhost -p 11514"
-    state: present
-  notify: Restart nagios-nrpe-server.service
-  when: ansible_fqdn == "invadelabs.com"
-
 # dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
-- name: nrpe; add fail2ban.sh
+- name: nrpe; dl fail2ban.sh
   get_url:
     url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
     dest: /usr/lib/nagios/plugins/check_fail2ban.sh
@@ -85,12 +49,34 @@
     mode: 0770
   when: ansible_fqdn == "drew-piv3.invadelabs.com"
 
-# drew-piv3 add fail2ban check
-- name: nrpe; drew-piv3; nrpe_local.cfg; check_fail2ban
+- name: nrpe; nrpe_local.cfg generic
   lineinfile:
-    dest: /etc/nagios/nrpe_local.cfg
-    regexp: "^command\\[check_fail2ban\\]"
-    line: "command[check_fail2ban]=/usr/lib/nagios/plugins/check_fail2ban.sh -w 1 -c 2"
+    dest: "/etc/nagios/nrpe_local.cfg"
+    regexp: "^command\\[{{nrpe_gen_item.key}}\\]"
+    line: "command[{{nrpe_gen_item.key}}]={{nrpe_gen_item.value}}"
+    create: yes
     state: present
-  notify: Restart nagios-nrpe-server.service
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+  with_dict: {
+    "check_users": "{{nrpe_lib}}/nagios/plugins/check_users -w 5 -c 10",
+    "check_zombie_procs": "{{nrpe_lib}}/nagios/plugins/check_procs -w 5 -c 10 -s Z",
+    "check_mailq": "{{nrpe_lib}}/nagios/plugins/check_mailq -w 1 -c 2",
+    "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
+    }
+  loop_control:
+    loop_var: nrpe_gen_item
+  notify:
+    - Restart nrpe.service
+    - Restart nagios-nrpe-server.service
+
+- name: nrpe; nrpe_local.cfg specific
+  lineinfile:
+    dest: "/etc/nagios/nrpe_local.cfg"
+    regexp: "^command\\[{{nrpe_spec_item.key}}\\]"
+    line: "command[{{nrpe_spec_item.key}}]={{nrpe_spec_item.value}}"
+    state: present
+  with_dict: "{{ nrpe_specific }}"
+  loop_control:
+    loop_var: nrpe_spec_item
+  notify:
+    - Restart nrpe.service
+    - Restart nagios-nrpe-server.service
