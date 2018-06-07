@@ -36,32 +36,26 @@
   when: tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver"
 
 # will be handled by gce firewall list
-- name: disable sshguard
+- name: initial; disable sshguard invadelabs.com
   service: name=sshguard state=stopped enabled=no
   when: ansible_fqdn == "invadelabs.com"
-# - name: initial; add /etc/sshguard/whitelist
-#   template:
-#     src: templates/etc/sshguard/whitelist.j2
-#     dest: /etc/sshguard/whitelist
-#   when: ansible_fqdn == "invadelabs.com"
-#   notify: Restart sshguard.service
 
 - name: initial; drew-piv3; apt; install fail2ban
-  apt: name=fail2ban state=present # update_cache=yes
+  apt: name=fail2ban state=present
   when: ansible_hostname == "drew-piv3"
 
 - name: initial; apt; install etckeeper and initial packages
-  apt: name={{int_apt_item}} state=present # update_cache=yes
+  apt: name={{int_apt_item}} state=present
   with_items:
   - etckeeper
   - python-apt # for ansible
   loop_control:
     loop_var: int_apt_item
-  when: ansible_os_family == 'Debian'
+  when: ansible_os_family == "Debian"
 
 - name: initial; dnf; install etckeeper
   dnf: name=etckeeper state=present
-  when: ansible_distribution == 'Fedora'
+  when: ansible_distribution == "Fedora"
 
 - name: initial; gitconfig
   git_config:
@@ -69,8 +63,8 @@
     scope: global
     value: "{{git_item.value}}"
   with_dict: {
-    'user.email': 'drew@invadelabs.com',
-    'user.name': 'Drew Holt'
+    "user.email": "drew@invadelabs.com",
+    "user.name": "Drew Holt"
     }
   loop_control:
     loop_var: git_item
@@ -93,3 +87,49 @@
     }
   loop_control:
     loop_var: forward_item
+
+- name: initial; update-alternatives editor to vim-basic
+  alternatives:
+    name: editor
+    path: /usr/bin/vim.basic
+  when: ansible_os_family == "Debian"
+
+- name: initial; git clone --depth 1 invadelabs.com/cron-invadelabs
+  git:
+    repo: https://github.com/invadelabs/cron-invadelabs.git
+    dest: /root/scripts
+    depth: 1
+
+- name: nrpe; dl check_memory.pl
+  get_url:
+    url: https://gist.githubusercontent.com/drew-holt/4da247a2874b7a0470bd3d55d5191312/raw/d24673b607dfee98f8a859acca21ef5dde26aa3d/check_memory.pl
+    dest: /usr/local/bin/check_memory.pl
+    mode: 0755
+    force: no
+    checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
+  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+
+# dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
+- name: nrpe; dl fail2ban.sh
+  get_url:
+    url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
+    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
+    mode: 0755
+    force: no
+    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+
+- name: nrpe; download check_temp.sh
+  copy:
+    src: /root/scripts/check_temp.sh
+    dest: /usr/local/bin/check_temp.sh
+    mode: 0755
+    remote_src: yes
+
+- name: nrpe; /var/run/fail2ban/fail2ban.sock perms
+  file:
+    dest: /var/run/fail2ban/fail2ban.sock
+    owner: root
+    group: nagios
+    mode: 0770
+  when: ansible_fqdn == "drew-piv3.invadelabs.com"

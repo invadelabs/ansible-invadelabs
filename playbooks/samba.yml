@@ -1,5 +1,5 @@
 ---
-- name: samba; Restart smb.service
+- name: samba; smb.conf
   copy:
     src: templates/etc/samba/smb.conf
     dest: /etc/samba/smb.conf

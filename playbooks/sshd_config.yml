@@ -15,7 +15,7 @@
   loop_control:
     loop_var: sshd_item
   notify:
-    - Restart sshd.service # XXX better way to do this
+    - Restart sshd.service
     - Restart ssh.service
 
 - name: sshd_config; DebianBanner no
@@ -26,7 +26,7 @@
     state: present
     validate: '/usr/sbin/sshd -t -f %s'
   notify:
-    - Restart sshd.service # XXX better way to do this
+    - Restart sshd.service
     - Restart ssh.service
   when: ansible_os_family == "Debian"
 
@@ -38,6 +38,6 @@
     state: present
     validate: '/usr/sbin/sshd -t -f %s'
   notify:
-    - Restart sshd.service # XXX better way to do this
+    - Restart sshd.service
     - Restart ssh.service
   when: ansible_fqdn == "drew-piv3.invadelabs.com"

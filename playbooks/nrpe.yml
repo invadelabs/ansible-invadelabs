@@ -15,40 +15,6 @@
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
 
-- name: nrpe; dl check_memory.pl
-  get_url:
-    url: https://gist.githubusercontent.com/drew-holt/4da247a2874b7a0470bd3d55d5191312/raw/d24673b607dfee98f8a859acca21ef5dde26aa3d/check_memory.pl
-    dest: /usr/local/bin/check_memory.pl
-    mode: 0755
-    force: no
-    checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
-  when: ansible_fqdn == "drew-pine64.invadelabs.com"
-
-- name: nrpe; download check_temp.sh
-  copy:
-    src: /root/scripts/check_temp.sh
-    dest: /usr/local/bin/check_temp.sh
-    mode: 0755
-    remote_src: yes
-
-# dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
-- name: nrpe; dl fail2ban.sh
-  get_url:
-    url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
-    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
-    mode: 0755
-    force: no
-    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
-
-- name: nrpe; /var/run/fail2ban/fail2ban.sock perms
-  file:
-    dest: /var/run/fail2ban/fail2ban.sock
-    owner: root
-    group: nagios
-    mode: 0770
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
-
 - name: nrpe; nrpe_local.cfg generic
   lineinfile:
     dest: "/etc/nagios/nrpe_local.cfg"
@@ -57,9 +23,9 @@
     create: yes
     state: present
   with_dict: {
-    "check_users": "{{nrpe_lib}}/nagios/plugins/check_users -w 5 -c 10",
-    "check_zombie_procs": "{{nrpe_lib}}/nagios/plugins/check_procs -w 5 -c 10 -s Z",
-    "check_mailq": "{{nrpe_lib}}/nagios/plugins/check_mailq -w 1 -c 2",
+    "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10",
+    "check_zombie_procs": "{{nrpe_plugins_dir}}/check_procs -w 5 -c 10 -s Z",
+    "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2",
     "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
     }
   loop_control:
@@ -68,7 +34,7 @@
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
 
-- name: nrpe; nrpe_local.cfg specific
+- name: nrpe; nrpe_local.cfg host specific
   lineinfile:
     dest: "/etc/nagios/nrpe_local.cfg"
     regexp: "^command\\[{{nrpe_spec_item.key}}\\]"
