@@ -6,7 +6,7 @@
     owner: root
     group: root
     state: link
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_os_family == "RedHat"
 
 - name: drive; install drive via snap
   command: snap install drive --classic
@@ -15,16 +15,16 @@
 
 - name: drive; Get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
-    /snap/bin/drive pull -piped $(/snap/bin/drive ls Backup/Web | grep invadelabs.com | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /home/drew/invadelabs.com-bkup-latest.tar.xz
+    /snap/bin/drive pull -piped $(/snap/bin/drive ls Backup/Web | grep invadelabs.com | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
-    creates: /home/drew/invadelabs.com-bkup-latest.tar.xz
+    creates: /srv/invadelabs.com-bkup-latest.tar.xz
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: drive; Extract invadelabs.com-bkup-latest.tar.xz
   unarchive:
-    src: /home/drew/invadelabs.com-bkup-latest.tar.xz
-    dest: /home/drew
+    src: /srv/invadelabs.com-bkup-latest.tar.xz
+    dest: /srv
     remote_src: yes
     creates: /var/www/data/drew_wiki.sqlite
   when: ansible_fqdn == 'invadelabs.com'
@@ -32,7 +32,7 @@
 - name: drive; copy /home/drew/letsencrypt /etc/letsencrypt
   shell: |
     rm -rf /etc/letsencrypt
-    mv /home/drew/letsencrypt /etc
+    mv /srv/letsencrypt /etc
   args:
     creates: /etc/letsencrypt/live
   when: ansible_fqdn == 'invadelabs.com'
@@ -47,7 +47,7 @@
 
 - name: drive; mv /home/drew/drew_wiki.sqlite /var/www/data
   shell: |
-    mv /home/drew/drew_wiki.sqlite /var/www/data
+    mv /srv/drew_wiki.sqlite /var/www/data
     chown www-data:www-data /var/www/data/drew_wiki.sqlite
   args:
     creates: /var/www/data/drew_wiki.sqlite
@@ -63,7 +63,7 @@
 
 - name: drive; mkdir -p /var/www/drew.invadelabs.com; mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
   shell: |
-    mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
+    mv /srv/LocalSettings.php /var/www/drew.invadelabs.com
     chown www-data:www-data /var/www/drew.invadelabs.com/LocalSettings.php
   args:
     creates: /var/www/drew.invadelabs.com/LocalSettings.php

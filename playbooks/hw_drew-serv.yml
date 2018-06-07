@@ -13,13 +13,14 @@
   notify:
     - Restart network.service
 
-- name: hw; set /etc/default/grub nomodeset
-  lineinfile:
-    dest: /etc/default/grub
-    regexp: "^GRUB_CMDLINE_LINUX="
-    line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root nomodeset"' # XXX make this dynamic fedora/root or dragons ahead
-    state: present
-  notify: grub2-mkconfig -o /boot/grub2/grub.cfg
+# XXX if enabled rd.lvm.lv= needs to be set correctly!
+# - name: hw; set /etc/default/grub nomodeset
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_CMDLINE_LINUX="
+#     line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root nomodeset"' # XXX make this dynamic fedora/root or dragons ahead
+#     state: present
+#   notify: grub2-mkconfig -o /boot/grub2/grub.cfg
 
 - name: hw; smartd mail root
   lineinfile:

@@ -67,3 +67,17 @@
   - Start nrpe.service
   - Start libvirtd.service
   - Setup lm_sensors
+
+- name: pkgs_fedora; download filebeat rpm
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-x86_64.rpm
+    dest: /root/installers/filebeat-6.2.4-x86_64.rpm
+    force: no
+    checksum: "sha256:479a25895ac022afaa44f6e15ae6eb396fa7db03f7e4c05b14c5d6fb21b6815d"
+  when: ansible_os_family == "RedHat"
+
+- name: pkgs_fedora; install filebeat rpm
+  dnf:
+    name: /root/installers/filebeat-6.2.4-x86_64.rpm
+  when: ansible_os_family == "RedHat"
+  notify: Start filebeat.service
