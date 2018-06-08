@@ -34,9 +34,10 @@
     failed_when: drive_stat.rc != 0 # rc = proccess exit code
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+  - include: playbooks/pip.yml # XXX move pip items here
+  - include: playbooks/pkgs_debian.yml # all software bits needed
   - include: playbooks/sshd_config.yml # sshd_config
   - include: playbooks/logging.yml # sshd_config
-  - include: playbooks/pkgs_debian.yml # all software bits needed
   - include: playbooks/postfix.yml # sendgrid relay config
   - include: playbooks/drive.yml # initalize drive, configures letsencrypt
   - include: playbooks/letsencrypt.yml # setup certbot

@@ -6,6 +6,7 @@
   - docker-compose
   # base
   - ansible
+  - autossh
   - rsync
   - redhat-lsb-core
   - vim-enhanced
@@ -37,6 +38,7 @@
   - libselinux-python # for ansible
   # nagios
   - nrpe
+  - nagios-plugins-nrpe
   - nagios-plugins-users
   - nagios-plugins-load
   - nagios-plugins-disk
@@ -58,7 +60,6 @@
   - Start docker.service
   - Start chronyd.service
   - Start mcelog.service
-  - Start lldpd.service
   - Start smb.service
   - Start nmb.service
   - Start httpd.service
