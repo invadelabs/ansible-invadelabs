@@ -8,6 +8,7 @@
   - ansible
   - autossh
   - rsync
+  - jq
   - redhat-lsb-core
   - vim-enhanced
   - mcelog
