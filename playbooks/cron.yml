@@ -1,5 +1,5 @@
 ---
-- name: cron; Add cron check_lynis.sh
+- name: cron; check_lynis.sh
   cron:
     name: check_lynis.sh
     minute: 57
@@ -35,7 +35,7 @@
     job: /root/scripts/check_letsencrypt.sh
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-- name: cron; cron check_ddns.sh
+- name: cron; check_ddns.sh
   cron:
     name: check_ddns.sh
     minute: "*/5"
@@ -51,7 +51,7 @@
     job: /root/scripts/check_docker.sh
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
 
-- name: cron; Add cron gen_sitemap.sh
+- name: cron; gen_sitemap.sh
   cron:
     name: gen_sitemap.sh
     minute: 0
@@ -101,14 +101,6 @@
     user: root
     job: autossh -M 0 -f -N -R 11514:192.168.1.125:10514 -R 5001:192.168.1.125:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/id_rsa drew@invadelabs.com
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
-
-- name: cron; `hostname invadelabs.com`
-  cron:
-    name: hostname invadelabs.com
-    minute: 0
-    user: root
-    job: hostname invadelabs.com
-  when: ansible_fqdn == 'invadelabs.com'
 
 - name: cron; snapshot elasticsearch
   cron:

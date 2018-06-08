@@ -42,6 +42,15 @@
     failed_when: drive_stat.rc != 0 # rc = proccess exit code
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
+  - name: check if rclone initalized
+    shell: rclone listremotes | grep "googledrive:"
+    args:
+      chdir: /root
+      creates: /var/log/rclone-init.touch
+    register: rclone_stat
+    failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
   - include: playbooks/pkgs_fedora.yml

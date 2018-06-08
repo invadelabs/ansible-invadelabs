@@ -1,5 +1,5 @@
 ---
-- name: drewwiki; Extract mediawiki for drew.invadelabs.com
+- name: drewwiki; extract mediawiki for drew.invadelabs.com
   unarchive:
     remote_src: yes
     src: https://releases.wikimedia.org/mediawiki/1.30/mediawiki-1.30.0.tar.gz
