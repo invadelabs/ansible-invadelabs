@@ -43,14 +43,16 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
-  - include: playbooks/firewall.yml
-  - include: playbooks/logging.yml
 
   - include: playbooks/pkgs_fedora.yml
     when: ansible_fqdn == "drew-serv.invadelabs.com"
-
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"
+
+  - include: playbooks/pip.yml # XXX move pip items here
+
+  - include: playbooks/firewall.yml
+  - include: playbooks/logging.yml
 
   - include: playbooks/hw_drew-serv.yml # hardware specifics
     when: ansible_fqdn == "drew-serv.invadelabs.com"
@@ -85,7 +87,7 @@
       creates: /srv/first-run
     when: ansible_fqdn == "drew-serv.invadelabs.com"
     notify:
-    - Extract drew-serv-bkup-latest.tar.xz
+    - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
     - docker; create container gitlab
     - docker; create container bind
@@ -125,7 +127,7 @@
 
   - name: Restart filebeat.service
     service: name=filebeat state=restarted
-  - name: Retart network.service
+  - name: Restart network.service
     service: name=network state=restarted
   - name: Restart postfix.service
     service: name=postfix state=restarted
