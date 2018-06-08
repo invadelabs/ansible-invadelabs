@@ -81,3 +81,16 @@
     name: /root/installers/filebeat-6.2.4-x86_64.rpm
   when: ansible_os_family == "RedHat"
   notify: Start filebeat.service
+
+- name: pkgs_fedora; download rclone rpm
+  get_url:
+    url: https://downloads.rclone.org/v1.41/rclone-v1.41-linux-amd64.rpm
+    dest: /root/installers/rclone-v1.41-linux-amd64.rpm
+    force: no
+    checksum: "sha256:8f43108e81ee2652c2f66fc3a260e111b018daba9162898e2d6c38220cc8b72a"
+  when: ansible_os_family == "RedHat"
+
+- name: pkgs_fedora; install rclone rpm
+  dnf:
+    name: /root/installers/rclone-v1.41-linux-amd64.rpm
+  when: ansible_os_family == "RedHat"
