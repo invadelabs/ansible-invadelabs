@@ -26,7 +26,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: /etc/hosts has IP, hostname, and fqdn
-    shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}}; touch /var/log/hosts-init.touch
+    shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
     args:
       chdir: /root
       creates: /var/log/hosts-init.touch
@@ -43,7 +43,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: check if rclone initalized
-    shell: rclone listremotes | grep "googledrive:"
+    shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
     args:
       chdir: /root
       creates: /var/log/rclone-init.touch
