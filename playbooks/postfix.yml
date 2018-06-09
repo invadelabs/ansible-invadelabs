@@ -8,6 +8,7 @@
   with_dict: {
     "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
     "myhostname": "{{ansible_fqdn}}",
+    "mynetworks ": "{{postfix_mynetworks}}",
     "alias_maps": "hash:/etc/aliases",
     "alias_database": "hash:/etc/aliases",
     "mydestination": "$myhostname, localhost",
@@ -25,14 +26,6 @@
   loop_control:
     loop_var: postfix_item
   notify: Restart postfix.service
-
-- name: postfix; /etc/postfix/main.cf permit mynetworks
-  lineinfile:
-    dest: /etc/postfix/main.cf
-    regexp: "^mynetworks"
-    line: "mynetworks = {{postfix_mynetworks}}"
-  notify: Restart postfix.service
-  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew.invadelabs.com" )
 
 - name: postfix; check if /etc/postfix/sasl_passwd.db exists
   stat:
