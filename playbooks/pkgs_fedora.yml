@@ -4,7 +4,7 @@
   with_items:
   - docker # docker-ce when fedora 28 stable pkgs are available
   - docker-compose
-  # base
+  # base bits
   - ansible
   - autossh
   - rsync
@@ -32,12 +32,12 @@
   - smartmontools
   - lm_sensors
   - lynis
-  # python
+  # python bits
   - python-dnf # for ansible
   - python2-pip # for ansible docker module
   - python2-virtualenv # for ansible docker module
   - libselinux-python # for ansible
-  # nagios
+  # nagios / nrpe bits
   - nrpe
   - nagios-plugins-nrpe
   - nagios-plugins-users
@@ -49,7 +49,7 @@
   - nagios-plugins-uptime
   - perl-Nagios-Plugin
   - perl-Monitoring-Plugin
-  # qemu-kvm
+  # hypervisor
   - qemu-kvm
   - libvirt
   - virt-install

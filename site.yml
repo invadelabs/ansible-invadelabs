@@ -26,7 +26,7 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: /etc/hosts has IP, hostname, and fqdn
-    shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}}; touch /var/log/hosts-init.touch
+    shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
     args:
       chdir: /root
       creates: /var/log/hosts-init.touch
@@ -43,13 +43,21 @@
     when: ansible_fqdn == "drew-serv.invadelabs.com"
 
   - name: check if rclone initalized
-    shell: rclone listremotes | grep "googledrive:"
+    shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
     args:
       chdir: /root
       creates: /var/log/rclone-init.touch
     register: rclone_stat
     failed_when: rclone_stat.rc != 0 # rc = proccess exit code
     when: ansible_fqdn == "drew-serv.invadelabs.com"
+
+  - name: docker; ensure /srv/docker-elk/data exists
+    stat:
+      path: /srv/docker-elk/data
+    register: elk_data
+    failed_when: elk_data.stat.exists == False
+    when: ansible_fqdn == "drew-serv.invadelabs.com"
+
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
@@ -207,7 +215,7 @@
     docker_container:
       name: gitlab
       image: gitlab/gitlab-ce:latest # 10.8.2 / 10.8.2-ce.0
-      state: started
+      state: stopped # XXX
       restart_policy: unless-stopped
       hostname: gitlab.invadelabs.com
       log_driver: json-file
@@ -228,7 +236,8 @@
       name: bind
       image: sameersbn/bind:9.10.3-20180127
       state: started
-      restart_policy: unless-stopped
+      restart_policy: on-failure
+      restart_retries: 5 # XXX what is this interval? orig issue cannot bind to interface on startup
       hostname: ns.invadelabs.com
       log_driver: json-file
       log_options:
@@ -238,5 +247,5 @@
       ports:
         - "192.168.1.125:53:53/tcp"
         - "192.168.1.125:53:53/udp"
-        - "192.168.1.125:10000:10000/tcp"
+        - "0.0.0.0:10000:10000/tcp"
     when: ansible_fqdn == "drew-serv.invadelabs.com"

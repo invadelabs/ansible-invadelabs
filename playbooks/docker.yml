@@ -22,12 +22,4 @@
   when: ansible_fqdn == "drew-serv.invadelabs.com"
 
 - debug:
-    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
-
-# XXX do stuff here to restore /srv/docker-elk/data
-- name: docker; ensure /srv/docker-elk/data exists
-  stat:
-    path: /srv/docker-elk/data
-  register: elk_data
-  failed_when: elk_data.stat.exists == False
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here." # XXX
