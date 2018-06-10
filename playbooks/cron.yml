@@ -123,5 +123,5 @@
     name: backup elasticsearch snapshot
     minute: 50
     user: root
-    job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I pxz --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy . --include=docker-elk.* googledrive:/Backup/elasticsearch
+    job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I pxz --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy --bwlimit 400k . --include=docker-elk.* googledrive:/Backup/elasticsearch
   when: ansible_fqdn == 'drew-serv.invadelabs.com'
