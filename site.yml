@@ -236,8 +236,7 @@
       name: bind
       image: sameersbn/bind:9.10.3-20180127
       state: started
-      restart_policy: on-failure
-      restart_retries: 5 # XXX what is this interval? orig issue cannot bind to interface on startup
+      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron
       hostname: ns.invadelabs.com
       log_driver: json-file
       log_options:

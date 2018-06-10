@@ -1,9 +1,10 @@
 filebeat.prospectors:
-- paths:
-  - /var/lib/docker/containers/*/*.log
-  tags: [docker]
-
-  recursive_glob.enabled: true
+- type: docker
+  tags: docker
+  containers.ids:
+    - '*'
+  processors:
+  - add_docker_metadata: ~
 
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
