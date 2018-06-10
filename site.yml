@@ -225,6 +225,7 @@
         - /srv/gitlab/config:/etc/gitlab
         - /srv/gitlab/logs:/var/log/gitlab
         - /srv/gitlab/data:/var/opt/gitlab
+        - /etc/letsencrypt:/etc/letsencrypt:ro
       ports:
         - "0.0.0.0:9443:443/tcp"
         - "0.0.0.0:9980:80/tcp"

@@ -18,7 +18,7 @@
   git:
     repo: https://github.com/drew-holt/docker-elk.git
     dest: /srv/docker-elk
-    update: no # note; setting this here for first time ansible run
+    update: no # note; setting this for initial ansible run
   when: ansible_fqdn == "drew-serv.invadelabs.com"
 
 - debug:
