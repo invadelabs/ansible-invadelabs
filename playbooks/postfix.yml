@@ -17,12 +17,11 @@
     "recipient_delimiter": "+",
     "inet_interfaces": "all",
     "inet_protocols": "all",
-    "mtp_tls_security_level": "encrypt",
     "smtp_sasl_auth_enable": "yes",
     "smtp_sasl_password_maps": "hash:/etc/postfix/sasl_passwd",
     "header_size_limit": "4096000",
     "smtp_sasl_security_options": "noanonymous"
-    } # "myorigin": "/etc/mailname", # XXX removed for Fedora
+    } # "myorigin": "/etc/mailname", # XXX removed for Fedora # "mtp_tls_security_level": "encrypt", # removed as not needed
   loop_control:
     loop_var: postfix_item
   notify: Restart postfix.service
