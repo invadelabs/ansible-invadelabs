@@ -24,6 +24,7 @@
   - chrony
   - samba
   - httpd
+  - mod_ssl
   - postfix
   - cyrus-sasl-plain # needed for sendmail + postfix
   - rsyslog # for elasticsearch

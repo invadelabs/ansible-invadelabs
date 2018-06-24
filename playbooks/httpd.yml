@@ -1,0 +1,16 @@
+---
+# fedora vhosts
+- name: httpd; add site templates
+  template:
+    src: templates/etc/httpd/conf.d/drew-serv.nm1.invadelabs.com.conf.j2
+    dest: /etc/httpd/conf.d/drew-serv.nm1.invadelabs.com.conf
+  no_log: true
+  notify: Restart httpd.service
+
+- name: apache2; add SSLStapling Cache to ssl.conf
+  blockinfile:
+    path: /etc/httpd/conf.d/ssl.conf
+    marker: "        # {mark} ANSIBLE MANAGED BLOCK -->"
+    insertbefore: "</IfModule>"
+    content: "        SSLStaplingCache        shmcb:/var/run/ocsp(128000)"
+  notify: Restart httpd.service
