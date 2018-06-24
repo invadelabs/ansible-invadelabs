@@ -33,7 +33,7 @@
     hour: 23
     user: root
     job: /root/scripts/check_letsencrypt.sh
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; check_ddns.sh
   cron:
@@ -41,7 +41,7 @@
     minute: "*/5"
     user: root
     job: /root/scripts/check_ddns.sh nm.invadelabs.com
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; check_docker.sh
   cron:
@@ -49,7 +49,7 @@
     minute: "*/1"
     user: root
     job: /root/scripts/check_docker.sh
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; gen_sitemap.sh
   cron:
@@ -67,7 +67,7 @@
     hour: "23"
     user: root
     job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; gdrive_backup.sh invadelabs.com
   cron:
@@ -100,7 +100,7 @@
     special_time: reboot
     user: root
     job: autossh -M 0 -f -N -R 11514:192.168.1.125:10514 -R 5001:192.168.1.125:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/id_rsa drew@invadelabs.com
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; docker start bind
   cron:
@@ -108,7 +108,7 @@
     special_time: reboot
     user: root
     job: sleep 30; docker start bind >/dev/null
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; snapshot elasticsearch
   cron:
@@ -117,7 +117,7 @@
     hour: "*/6"
     user: root
     job: /usr/bin/curl -sS -XPUT 192.168.1.125:9200/_snapshot/my_backup/snapshot_$(date "+\%Y.\%m.\%d-\%H:\%M:\%S\%z")?wait_for_completion=true | systemd-cat -t "elasticsearch-snapshot"
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"
 
 - name: cron; backup elasticsearch snapshot
   cron:
@@ -126,4 +126,4 @@
     hour: "*/6"
     user: root
     job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I "pxz -T 2" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy --bwlimit 400k . --include=docker-elk.* googledrive:/Backup/elasticsearch
-  when: ansible_fqdn == 'drew-serv.invadelabs.com'
+  when: ansible_host == "drew-serv"

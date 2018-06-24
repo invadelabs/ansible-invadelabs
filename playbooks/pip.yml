@@ -3,7 +3,7 @@
   pip:
     name: pip
     version: 10.0.1
-  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+  when: ansible_host == "drew-pine64"
 
 - name: pkgs_debian; install pip modules for docker # needed for ubuntu16.04-armhf ansible & docker-py
   pip:
