@@ -1,0 +1,76 @@
+<VirtualHost *:80>
+  ServerName drew-serv.nm01.invadelabs.com
+  ServerAdmin drew@invadelabs.com
+
+  ErrorLog logs/drew-serv.nm1.invadelabs.com.error.log
+  CustomLog logs/drew-serv.nm1.invadelabs.com.access.log vhost_combined
+
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  RewriteCond %{SERVER_NAME} =invadelabs.com
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+
+<VirtualHost *:443>
+  ServerName drew-serv.nm01.invadelabs.com
+  ServerAdmin drew@invadelabs.com
+  DocumentRoot /var/www/html
+
+  ErrorLog logs/drew-serv.nm1.invadelabs.com.secure.error.log
+  CustomLog logs/drew-serv.nm1.invadelabs.com.secure.access.log vhost_combined
+
+  ProxyPass /nagios http://127.0.0.1:8080/nagios
+  ProxyPassReverse /nagios http://127.0.0.1:8080/nagios
+
+  ProxyPass /app/kibana http://localhost:5601/app/kibana
+	ProxyPassReverse /app/kibana http://localhost:5601/app/kibana
+
+	ProxyPass /app/timelion http://localhost:5601/app/timelion
+	ProxyPassReverse /app/timelion http://localhost:5601/app/timelion
+
+	ProxyPass /bundles http://localhost:5601/bundles
+	ProxyPassReverse /bundles http://localhost:5601/bundles
+
+	ProxyPass /elasticsearch/ http://localhost:9200
+	ProxyPassReverse /elasticsearch/ http://localhost:9200
+
+	ProxyPass /status http://localhost:5601/status
+	ProxyPassReverse /status http://localhost:/status
+
+	ProxyPass /api/status http://localhost:5601/api/status
+	ProxyPassReverse /api/status http://localhost:5601/api/status
+
+	ProxyPass /api/console http://localhost:5601/api/console
+	ProxyPassReverse /api/console http://localhost:5601/api/console
+
+	ProxyPass /api/timelion/run http://localhost:5601/api/timelion/run
+	ProxyPassReverse /api/timelion/run http://localhost:5601/api/timelion/run
+
+	ProxyPass /api/timelion/functions http://localhost:5601/api/timelion/functions
+	ProxyPassReverse /api/timelion/functions http://localhost:5601/api/timelion/functions
+
+	ProxyPass /plugins/kibana/ http://localhost:5601/plugins/kibana/
+	ProxyPassReverse /plugins/kibana/ http://localhost:5601/plugins/kibana/
+
+	ProxyPass /plugins/timelion/ http://localhost:5601/plugins/timelion/
+	ProxyPassReverse /plugins/timelion/ http://localhost:5601/plugins/timelion/
+
+	ProxyPass /app/sense http://localhost:5601/app/sense
+	ProxyPassReverse /app/sense http://localhost:5601/app/sense
+
+	ProxyPass /ui/fonts/open_sans/ http://localhost:5601/ui/fonts/open_sans/
+	ProxyPassReverse /ui/fonts/open_sans/ http://localhost:5601/ui/fonts/open_sans/
+
+	ProxyPass /es_admin/ http://localhost:5601/es_admin/
+	ProxyPassReverse /es_admin/ http://localhost:5601/es_admin/
+
+  Include /etc/letsencrypt/options-ssl-apache.conf
+
+  SSLCertificateFile /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/invadelabs.com-0001/privkey.pem
+</VirtualHost>
+
+</IfModule>
