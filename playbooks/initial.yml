@@ -108,7 +108,7 @@
     mode: 0755
     force: no
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
-  when: ( ansible_fqdn == "drew-serv.invadelabs.com" ) or ( ansible_fqdn == "drew-pine64.invadelabs.com" )
+  when: ( ansible_host == "drew-serv" ) or ( ansible_host == "drew-pine64" )
 
 # dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
 - name: initial; nrpe; dl fail2ban.sh
@@ -118,7 +118,7 @@
     mode: 0755
     force: no
     checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+  when: ansible_host == "drew-piv3"
 
 - name: initial; nrpe; download check_temp.sh
   copy:
@@ -133,4 +133,4 @@
     owner: root
     group: nagios
     mode: 0770
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+  when: ansible_host == "drew-piv3"

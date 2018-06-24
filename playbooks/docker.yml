@@ -19,7 +19,7 @@
     repo: https://github.com/drew-holt/docker-elk.git
     dest: /srv/docker-elk
     update: no # note; setting this for initial ansible run
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
+  when: ansible_host == "drew-serv"
 
 - debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here." # XXX

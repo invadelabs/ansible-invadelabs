@@ -40,4 +40,4 @@
   notify:
     - Restart sshd.service
     - Restart ssh.service
-  when: ansible_fqdn == "drew-piv3.invadelabs.com"
+  when: ansible_host == "drew-piv3"

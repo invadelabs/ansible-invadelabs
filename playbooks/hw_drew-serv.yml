@@ -11,7 +11,7 @@
   loop_control:
     loop_var: ifcfg_item
   notify:
-    - Restart network.service
+    - Restart NetworkManager.service
 
 # XXX if enabled rd.lvm.lv= needs to be set correctly!
 # - name: hw; set /etc/default/grub nomodeset
