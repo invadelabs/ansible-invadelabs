@@ -60,7 +60,6 @@
     failed_when: elk_data.stat.exists == False
     when: ansible_host == "drew-serv"
 
-
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
   - include: playbooks/pkgs_fedora.yml
@@ -80,6 +79,8 @@
   - include: playbooks/mount.yml
     when: ansible_host == "drew-serv"
   - include: playbooks/samba.yml
+    when: ansible_host == "drew-serv"
+  - include: playbooks/httpd.yml
     when: ansible_host == "drew-serv"
 
   - include: playbooks/postfix.yml
@@ -144,6 +145,8 @@
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+  - name: Restart httpd.service
+    service: name=httpd state=restarted
   - name: Restart filebeat.service
     service: name=filebeat state=restarted
   - name: Restart NetworkManager.service
