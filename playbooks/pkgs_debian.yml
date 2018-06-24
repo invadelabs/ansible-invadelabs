@@ -54,12 +54,12 @@
     - python-pkg-resources # needed to build ansible via pip on pine64 u16.04
   loop_control:
     loop_var: apt_pine64_item
-  when: ansible_fqdn == "drew-pine64.invadelabs.com"
+  when: ansible_host == "drew-pine64"
 
 - name: pkgs_debian; install ansible via pip on arm
   pip:
     name: ansible
-  when: ( ansible_fqdn == "drew-pine64.invadelabs.com" ) or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
+  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" )
 
   # invadelabs.com requirements
 - name: pkgs_debian; invadelabs.com
@@ -107,12 +107,12 @@
     dest: /root/installers/lynis_2.6.2-1_all.deb
     force: no
     checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64")
 
 - name: pkgs_debian; install lynis
   apt:
     deb: /root/installers/lynis_2.6.2-1_all.deb
-  when: (ansible_fqdn == "drew-piv3.invadelabs.com") or (ansible_fqdn == "drew-pine64.invadelabs.com")
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64")
 
 - name: pkgs_debian; download filebeat deb
   get_url:

@@ -3,7 +3,7 @@
   template:
     src: templates/etc/filebeat/filebeat-{{ansible_fqdn}}.yml.j2
     dest: /etc/filebeat/filebeat.yml
-  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.invadelabs.com" )
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.nm1.invadelabs.com" )
   notify: Restart filebeat.service
 
 - name: logging; /etc/systemd/journald.conf
@@ -29,7 +29,7 @@
   copy:
     dest: "/etc/sysctl.d/vm.max_map_count.conf"
     content: "vm.max_map_count = 262144"
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
+  when: ansible_host == "drew-serv"
   notify: Restart rsyslog.service
 
 - name: logging; add /etc/rsyslog.d entries # XXX get this manageable
@@ -42,7 +42,7 @@
   loop_control:
     loop_var: rsyslog_item
   notify: Restart rsyslog.service
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
+  when: ansible_host == "drew-serv"
 
 - name: logging; remove logwatch daily
   file:

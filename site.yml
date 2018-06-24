@@ -9,6 +9,8 @@
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
 
   tasks:
+  - debug:
+      msg: "{{ ansible_host }}"
   - name: fail if hostname not set
     fail:
       msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"
@@ -23,7 +25,7 @@
       - /root/slacktee.conf
     register: item
     failed_when: item.stat.exists == False
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - name: /etc/hosts has IP, hostname, and fqdn
     shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
@@ -40,7 +42,7 @@
       creates: /var/log/drive-init.touch
     register: drive_stat
     failed_when: drive_stat.rc != 0 # rc = proccess exit code
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - name: check if rclone initalized
     shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
@@ -49,20 +51,20 @@
       creates: /var/log/rclone-init.touch
     register: rclone_stat
     failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - name: docker; ensure /srv/docker-elk/data exists
     stat:
       path: /srv/docker-elk/data
     register: elk_data
     failed_when: elk_data.stat.exists == False
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
   - include: playbooks/pkgs_fedora.yml
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_os_family == "RedHat"
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"
 
@@ -72,18 +74,18 @@
   - include: playbooks/logging.yml
 
   - include: playbooks/hw_drew-serv.yml # hardware specifics
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
   - include: playbooks/drive.yml # Nagios NRPE config
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
   - include: playbooks/mount.yml
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
   - include: playbooks/samba.yml
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - include: playbooks/postfix.yml
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
   - include: playbooks/postfix_relay.yml
-    when: (ansible_fqdn == "drew-pine64.invadelabs.com") or ( ansible_fqdn == "drew-piv3.invadelabs.com" )
+    when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" )
 
   - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
@@ -102,7 +104,7 @@
     args:
       chdir: /root
       creates: /srv/first-run
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
@@ -144,7 +146,7 @@
 
   - name: Restart filebeat.service
     service: name=filebeat state=restarted
-  - name: Restart network.service
+  - name: Restart NetworkManager.service
     service: name=network state=restarted
   - name: Restart postfix.service
     service: name=postfix state=restarted
@@ -181,7 +183,7 @@
       setype: container_file_t
       serole: object_r
       seuser: system_u
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - name: docker; create container nagios4
     docker_container:
@@ -208,7 +210,7 @@
         }
       ports:
         - "0.0.0.0:8080:80/tcp"
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
     # https://docs.gitlab.com/runner/install/docker.html
   - name: docker; create container gitlab
@@ -230,7 +232,7 @@
         - "0.0.0.0:9443:443/tcp"
         - "0.0.0.0:9980:80/tcp"
         - "0.0.0.0:9922:22/tcp"
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"
 
   - name: docker; create container bind
     docker_container:
@@ -248,4 +250,4 @@
         - "192.168.1.125:53:53/tcp"
         - "192.168.1.125:53:53/udp"
         - "0.0.0.0:10000:10000/tcp"
-    when: ansible_fqdn == "drew-serv.invadelabs.com"
+    when: ansible_host == "drew-serv"

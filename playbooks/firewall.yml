@@ -12,7 +12,7 @@
     touch /var/log/firewall-first.touch
   args:
     creates: /var/log/firewall-first.touch
-  when: ansible_fqdn == "drew-serv.invadelabs.com"
+  when: ansible_host == "drew-serv"
 
 # XXX ansible 2.5.2 firewalld bug https://github.com/ansible/ansible/issues/38161
 # ansible 2.5.4 error below
@@ -27,7 +27,7 @@
 #   - http
 #   - https
 #   - smtp
-#   when: ansible_fqdn == "drew-serv.invadelabs.com"
+#   when: ansible_host == "drew-serv"
 #
 # - name: firewall; enable firewalld ports
 #   firewalld:
@@ -38,4 +38,4 @@
 #   - 139/tcp
 #   - 445/tcp
 #   - 5666/tcp
-#   when: ansible_fqdn == "drew-serv.invadelabs.com"
+#  when: ansible_host == "drew-serv"
