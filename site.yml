@@ -1,5 +1,5 @@
 ---
-- hosts: nm01
+- hosts: nm1
   become: true
   become_method: sudo
   # gather_facts: no
@@ -9,8 +9,6 @@
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
 
   tasks:
-  - debug:
-      msg: "{{ ansible_host }}"
   - name: fail if hostname not set
     fail:
       msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"

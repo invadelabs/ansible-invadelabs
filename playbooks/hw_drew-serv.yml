@@ -37,6 +37,27 @@
 #     line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root rhgb nomodeset"' # XXX make this dynamic fedora/root or dragons ahead
 #     state: present
 #   notify: grub2-mkconfig -o /boot/grub2/grub.cfg
+# - name: Set /etc/default/grub GRUB_GFXMODE
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXMODE="
+#     line: 'GRUB_GFXMODE="1024x768x32"'
+#     state: present
+#
+# - name: Set /etc/default/grub GRUB_GFXPAYLOAD
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXPAYLOAD="
+#     line: 'GRUB_GFXPAYLOAD="1024x768x32"'
+#     state: present
+#
+#  # only entry that adds gfxmode into grub.cfg
+# - name: Set /etc/default/grub GRUB_GFXPAYLOAD_LINUX
+#   lineinfile:
+#     dest: /etc/default/grub
+#     regexp: "^GRUB_GFXPAYLOAD_LINUX="
+#     line: 'GRUB_GFXPAYLOAD_LINUX="1024x768x32"'
+#     state: present
 
 - name: hw; smartd mail root
   lineinfile:
