@@ -1,9 +1,9 @@
 invadelabs.com key1=var1
 
 [nm1]
-drew-serv
-drew-piv3
-drew-pine64
+drew-serv piv3_cluster=0
+drew-piv3 piv3_cluster=0
+drew-pine64 piv3_cluster=0
 drew-piv3-01 piv3_cluster=1
 drew-piv3-02 piv3_cluster=1
 drew-piv3-03 piv3_cluster=1
