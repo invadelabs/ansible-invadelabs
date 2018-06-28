@@ -89,12 +89,6 @@
   loop_control:
     loop_var: forward_item
 
-- name: initial; update-alternatives editor to vim-basic
-  alternatives:
-    name: editor
-    path: /usr/bin/vim.basic
-  when: ansible_os_family == "Debian"
-
 - name: initial; git clone --depth 1 invadelabs.com/cron-invadelabs
   git:
     repo: https://github.com/invadelabs/cron-invadelabs.git

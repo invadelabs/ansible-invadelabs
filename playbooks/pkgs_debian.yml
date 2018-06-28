@@ -59,7 +59,7 @@
 - name: pkgs_debian; install ansible via pip on arm
   pip:
     name: ansible
-  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" )
+  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( piv3_cluster == "1" )
 
   # invadelabs.com requirements
 - name: pkgs_debian; invadelabs.com
@@ -107,12 +107,12 @@
     dest: /root/installers/lynis_2.6.2-1_all.deb
     force: no
     checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64")
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( piv3_cluster == "1" )
 
 - name: pkgs_debian; install lynis
   apt:
     deb: /root/installers/lynis_2.6.2-1_all.deb
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64")
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( piv3_cluster == "1" )
 
 - name: pkgs_debian; download filebeat deb
   get_url:
@@ -127,3 +127,9 @@
     deb: /root/installers/filebeat-6.2.4-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
   notify: Start filebeat.service
+
+- name: initial; update-alternatives editor to vim-basic
+  alternatives:
+    name: editor
+    path: /usr/bin/vim.basic
+  when: ansible_os_family == "Debian"
