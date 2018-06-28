@@ -40,4 +40,4 @@
   notify:
     - Restart sshd.service
     - Restart ssh.service
-  when: ( ansible_host == "drew-piv3" ) or ( piv3_cluster == "1" )
+  when: ( ansible_host == "drew-piv3" ) or ( piv3_cluster == 1 )
