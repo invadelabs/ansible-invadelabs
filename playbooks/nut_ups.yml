@@ -1,0 +1,20 @@
+---
+- name: nut_ups; configs
+  template:
+    src: templates/etc/nut/{{nut_item}}.j2
+    dest: /etc/nut/{{nut_item}}.conf
+    owner: root
+    group: nut
+  with_items:
+    - hosts.conf
+    - notifycmd.sh
+    - nut.conf
+    - ups.conf
+    - upsd.users
+    - upsmon.conf
+  loop_control:
+    loop_var: nut_item
+  notify:
+    - Start nut-driver.service
+    - Start nut-server.service
+    - Start nut-monitor.service
