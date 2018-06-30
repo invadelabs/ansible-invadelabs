@@ -44,6 +44,17 @@
   notify:
   - Start postfix.service
 
+  # packages for NUT / UPS
+- name: pkgs_debian; drew-piv3 NUT for UPS
+  apt: name={{apt_piv3_item}} state=present
+  with_items:
+    - nut
+    - nut-client
+    - nut-server
+  loop_control:
+    loop_var: apt_piv3_item
+  when: ansible_host == "drew-piv3"
+
   # pine 64 requirements
 - name: pkgs_debian; pine64 extras needed for pip
   apt: name={{apt_pine64_item}} state=present
