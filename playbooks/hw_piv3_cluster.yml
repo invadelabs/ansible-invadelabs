@@ -1,0 +1,15 @@
+---
+# - name: hw; add static ifcfg-*
+#   template:
+#     src: templates/etc/sysconfig/network-scripts/{{ifcfg_item}}.j2
+#     dest: /etc/sysconfig/network-scripts/{{ifcfg_item}}
+#   with_items:
+#     - ifcfg-enp1s0
+#     - ifcfg-enp1s0:0
+#     - ifcfg-enp1s0:1
+#     - ifcfg-enp1s0:2
+#     - ifcfg-enp0s26u1u1c4i2
+#   loop_control:
+#     loop_var: ifcfg_item
+#   notify:
+#     - Restart NetworkManager.service
