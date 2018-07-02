@@ -8,3 +8,4 @@
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_apt: "{{nrpe_plugins_dir}}/check_apt -t 60"
     - check_fail2ban: "{{nrpe_plugins_dir}}/check_fail2ban.sh -w 1 -c 2"
+    - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
