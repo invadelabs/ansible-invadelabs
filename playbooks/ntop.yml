@@ -1,0 +1,14 @@
+---
+- name: ntop; ntopng config
+  lineinfile:
+    dest: /etc/ntopng/ntopng.conf
+    regexp: "^{{ntop_item.key}}"
+    line: "{{ntop_item.key}}"
+    state: present
+  with_dict: {
+    '-G=/var/run/ntopng.pid': '',
+    '-F "es;flows;ntopng-%Y.%m.%d;http://192.168.1.125:9200/_bulk;"': ''}
+  loop_control:
+    loop_var: ntop_item
+  notify:
+    - Restart ntopng.service
