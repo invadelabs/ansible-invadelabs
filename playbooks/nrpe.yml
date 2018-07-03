@@ -26,7 +26,6 @@
     "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10",
     "check_zombie_procs": "{{nrpe_plugins_dir}}/check_procs -w 5 -c 10 -s Z",
     "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2",
-    "check_temp": "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65",
     }
   loop_control:
     loop_var: nrpe_gen_item
