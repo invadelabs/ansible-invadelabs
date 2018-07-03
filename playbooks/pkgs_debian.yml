@@ -44,16 +44,40 @@
   notify:
   - Start postfix.service
 
-  # packages for NUT / UPS
+- name: pkgs_debian; add ntop apt key
+  apt_key:
+    url: http://packages.ntop.org/apt/ntop.key
+    state: present
+  when: ansible_host == "drew-piv3"
+
+- name: pkgs_debian; apt repo ntop armhf
+  apt_repository:
+    repo: deb http://apt.ntop.org/stretch_pi armhf/
+    state: present
+  when: ansible_host == "drew-piv3"
+
+- name: pkgs_debian; apt repo ntop all
+  apt_repository:
+    repo: deb http://apt.ntop.org/stretch_pi all/
+    state: present
+  when: ansible_host == "drew-piv3"
+
+  # packages for ntopng, NUT UPS
 - name: pkgs_debian; drew-piv3 NUT for UPS
   apt: name={{apt_piv3_item}} state=present
   with_items:
+    - ntopng
     - nut
     - nut-client
     - nut-server
   loop_control:
     loop_var: apt_piv3_item
   when: ansible_host == "drew-piv3"
+  notify:
+    - Start ntopng.service
+    - Start nut-driver.service
+    - Start nut-server.service
+    - Start nut-monitor.service
 
   # pine 64 requirements
 - name: pkgs_debian; pine64 extras needed for pip
