@@ -216,7 +216,7 @@
   - name: docker; create container nagios4
     docker_container:
       name: nagios4
-      image: jasonrivers/nagios:latest # 4.3.4
+      image: jasonrivers/nagios:4.4.1 # 4.3.4
       state: started
       restart_policy: unless-stopped
       hostname: nagios.invadelabs.com
