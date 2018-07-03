@@ -15,6 +15,5 @@
   loop_control:
     loop_var: nut_item
   notify:
-    - Start nut-driver.service
-    - Start nut-server.service
-    - Start nut-monitor.service
+    - Restart nut-server.service
+    - Restart nut-monitor.service

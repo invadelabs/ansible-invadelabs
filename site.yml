@@ -86,6 +86,9 @@
   - include: playbooks/postfix_relay.yml
     when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" ) or ( piv3_cluster == 1 )
 
+  - include: playbooks/ntop.yml # hardware specifics
+    when: ansible_host == "drew-piv3"
+
   - include: playbooks/nut_ups.yml # hardware specifics
     when: ansible_host == "drew-piv3"
 
@@ -118,6 +121,8 @@
     - docker; create container bind
 
   handlers:
+  - name: Start ntopng.service
+    service: name=ntopng   state=started enabled=yes
   - name: Start nut-driver.service
     service: name=nut-driver   state=started enabled=yes
   - name: Start nut-server.service
@@ -156,6 +161,12 @@
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+  - name: Restart ntopng.service
+    service: name=ntopng
+  - name: Restart nut-server.service
+    service: name=nut-server
+  - name: Restart nut-monitor.service
+    service: name=nut-monitor
   - name: Restart httpd.service
     service: name=httpd state=restarted
   - name: Restart filebeat.service
