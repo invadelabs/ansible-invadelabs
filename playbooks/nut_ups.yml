@@ -1,17 +1,18 @@
 ---
 - name: nut_ups; configs
   template:
-    src: templates/etc/nut/{{nut_item}}.j2
-    dest: /etc/nut/{{nut_item}}.conf
+    src: templates/etc/nut/{{nut_item.key}}.j2
+    dest: /etc/nut/{{nut_item.key}}.conf
     owner: root
     group: nut
-  with_items:
-    - hosts.conf
-    - notifycmd.sh
-    - nut.conf
-    - ups.conf
-    - upsd.users
-    - upsmon.conf
+    mode: "{{nut_item.value}}"
+  with_dict: {
+    'hosts.conf': '0644',
+    'notifycmd.sh': '0755',
+    'nut.conf': '0640',
+    'ups.conf': '0640',
+    'upsd.users': '0640',
+    'upsmon.conf': '0640' }
   loop_control:
     loop_var: nut_item
   notify:
