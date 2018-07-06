@@ -2,7 +2,7 @@
 - name: nut_ups; configs
   template:
     src: templates/etc/nut/{{nut_item.key}}.j2
-    dest: /etc/nut/{{nut_item.key}}.conf
+    dest: /etc/nut/{{nut_item.key}}
     owner: root
     group: nut
     mode: "{{nut_item.value}}"
