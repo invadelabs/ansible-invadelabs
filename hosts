@@ -1,11 +1,19 @@
-invadelabs.com key1=var1
+---
+[web]
+invadelabs.com
 
-[nm1]
-drew-serv piv3_cluster=0
-drew-piv3 piv3_cluster=0
-drew-pine64 piv3_cluster=0
+[rpi-cluster]
 drew-piv3-01 piv3_cluster=1
 drew-piv3-02 piv3_cluster=1
 drew-piv3-03 piv3_cluster=1
 drew-piv3-04 piv3_cluster=1
 drew-piv3-05 piv3_cluster=1
+
+[nm1-hosts]
+drew-serv piv3_cluster=0
+drew-piv3 piv3_cluster=0
+drew-pine64 piv3_cluster=0
+
+[nm1:children]
+rpi-cluster
+nm1-hosts
