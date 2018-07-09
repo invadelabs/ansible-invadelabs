@@ -7,6 +7,7 @@
     weekday: 6
     user: root
     job: /root/scripts/check_lynis.sh
+  when: piv3_cluster == 0
 
 - name: cron; ansible-pull
   cron:
@@ -25,6 +26,7 @@
     weekday: 6
     user: root
     job: /usr/sbin/logwatch --output mail
+  when: piv3_cluster == 0
 
 - name: cron; cron check_letsencrypt.sh
   cron:
