@@ -1,4 +1,5 @@
-- src: tersmitten.swapfile
-  version: v2.0.4
-- src: mongrelion.docker
-  version: 0.1.1
+---
+# - src: tersmitten.swapfile
+#   version: v2.0.4
+# - src: mongrelion.docker
+#   version: 0.1.1
