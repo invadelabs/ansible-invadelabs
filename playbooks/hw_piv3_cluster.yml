@@ -1,15 +1,31 @@
 ---
-# - name: hw; add static ifcfg-*
-#   template:
-#     src: templates/etc/sysconfig/network-scripts/{{ifcfg_item}}.j2
-#     dest: /etc/sysconfig/network-scripts/{{ifcfg_item}}
-#   with_items:
-#     - ifcfg-enp1s0
-#     - ifcfg-enp1s0:0
-#     - ifcfg-enp1s0:1
-#     - ifcfg-enp1s0:2
-#     - ifcfg-enp0s26u1u1c4i2
-#   loop_control:
-#     loop_var: ifcfg_item
-#   notify:
-#     - Restart NetworkManager.service
+- name: hw_piv3_cluster; disable swap
+  command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
+  when: ansible_swaptotal_mb > 0
+
+- name: hw_piv3_cluster; enable cpuset / memory cgroups
+  lineinfile:
+    dest: /boot/cmdline.txt
+    regexp: '^((?!.*\bcgroup_enable=cpuset cgroup_enable=memory\b).*)$'
+    line: '\1 cgroup_enable=cpuset cgroup_enable=memory'
+    backrefs: true
+    # backup: true # https://github.com/ansible/ansible/issues/10591
+    state: present
+
+- name: hw_piv3_cluster; set dhcpcd dns server
+  lineinfile:
+    dest: /etc/dhcpcd.conf
+    regexp: "^static domain_name_servers="
+    line: "static domain_name_servers=192.168.1.125"
+    state: present
+  notify:
+    - systemd daemon-reload
+    - Restart dhcpcd.service
+
+- name: hw_piv3_cluster; set dhcpcd dns server
+  lineinfile:
+    dest: /etc/resolvconf.conf
+    regexp: "^search_domains_append="
+    line: "search_domains_append=nm1.invadelabs.com"
+    state: present
+  notify: resolvconf -u

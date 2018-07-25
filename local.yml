@@ -161,6 +161,16 @@
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
 
+  - name: systemd daemon-reload
+    systemd: daemon_reload=yes
+
+  - name: resolvconf -u
+    command: resolvconf -u
+
+  - name: Restart networking.service
+    service: name=networking state=restarted
+  - name: Restart dhcpcd.service
+    service: name=dhcpcd
   - name: Restart ntopng.service
     service: name=ntopng
   - name: Restart nut-server.service
