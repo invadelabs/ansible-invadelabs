@@ -84,7 +84,7 @@
   - include: playbooks/postfix.yml
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix_relay.yml
-    when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" ) or ( piv3_cluster == 1 )
+    when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
 
   - include: playbooks/ntop.yml # hardware specifics
     when: ansible_host == "drew-piv3"
@@ -92,8 +92,8 @@
   - include: playbooks/nut_ups.yml # hardware specifics
     when: ansible_host == "drew-piv3"
 
-  - include: playbooks/hw_piv3_cluster.yml
-    when: piv3_cluster == 1
+  - include: playbooks/rpi-cluster.yml
+    when: "'rpi-cluster' in group_names"
 
 
   - include: playbooks/docker.yml

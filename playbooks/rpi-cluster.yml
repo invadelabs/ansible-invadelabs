@@ -1,9 +1,9 @@
 ---
-- name: hw_piv3_cluster; disable swap
+- name: rpi-cluster; disable swap
   command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
   when: ansible_swaptotal_mb > 0
 
-- name: hw_piv3_cluster; enable cpuset / memory cgroups
+- name: rpi-cluster; enable cpuset / memory cgroups
   lineinfile:
     dest: /boot/cmdline.txt
     regexp: '^((?!.*\bcgroup_enable=cpuset cgroup_enable=memory\b).*)$'
@@ -12,7 +12,7 @@
     # backup: true # https://github.com/ansible/ansible/issues/10591
     state: present
 
-- name: hw_piv3_cluster; set dhcpcd dns server
+- name: rpi-cluster; set dhcpcd dns server
   lineinfile:
     dest: /etc/dhcpcd.conf
     regexp: "^static domain_name_servers="
@@ -22,7 +22,7 @@
     - systemd daemon-reload
     - Restart dhcpcd.service
 
-- name: hw_piv3_cluster; set dhcpcd dns server
+- name: rpi-cluster; set dhcpcd dns server
   lineinfile:
     dest: /etc/resolvconf.conf
     regexp: "^search_domains_append="

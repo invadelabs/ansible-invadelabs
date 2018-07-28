@@ -12,8 +12,6 @@
   - postfix
   - libsasl2-modules # needed for postfix sendgrid
 
-  - docker.io
-
   #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
   - monitoring-plugins-standard
   - nagios-nrpe-server
@@ -43,6 +41,40 @@
     loop_var: apt_base_item
   notify:
   - Start postfix.service
+
+- name: pkgs_debian; add docker key
+  apt_key:
+    url: https://download.docker.com/linux/raspbian/gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo docker-ce
+  apt_repository:
+    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian stretch edge
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; add kubernetes key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo kubernetes
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+  # packages for ntopng, NUT UPS
+- name: pkgs_debian; rpi-cluster docker and kubernetes
+  apt: name={{apt_rpi_cluster_item}} state=present
+  with_items:
+    - docker-ce
+    - kubeadm
+  loop_control:
+    loop_var: apt_rpi_cluster_item
+  when: "'rpi-cluster' in group_names"
 
 - name: pkgs_debian; add ntop apt key
   apt_key:
@@ -94,7 +126,7 @@
 - name: pkgs_debian; install ansible via pip on arm
   pip:
     name: ansible
-  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( piv3_cluster == 1 )
+  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
 
   # invadelabs.com requirements
 - name: pkgs_debian; invadelabs.com
@@ -142,12 +174,12 @@
     dest: /root/installers/lynis_2.6.2-1_all.deb
     force: no
     checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( piv3_cluster == 1 )
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
 
 - name: pkgs_debian; install lynis
   apt:
     deb: /root/installers/lynis_2.6.2-1_all.deb
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( piv3_cluster == 1 )
+  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
 
 - name: pkgs_debian; download filebeat deb
   get_url:
