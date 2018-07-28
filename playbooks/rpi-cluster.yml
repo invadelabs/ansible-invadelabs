@@ -12,6 +12,13 @@
     # backup: true # https://github.com/ansible/ansible/issues/10591
     state: present
 
+- name: rpi-cluster; set gpu_mem to min 16
+  lineinfile:
+    dest: /boot/config.txt
+    regexp: '^gpu_mem='
+    line: 'gpu_mem=16'
+    state: present
+
 - name: rpi-cluster; set dhcpcd dns server
   lineinfile:
     dest: /etc/dhcpcd.conf
