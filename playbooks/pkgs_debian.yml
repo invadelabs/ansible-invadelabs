@@ -42,6 +42,40 @@
   notify:
   - Start postfix.service
 
+- name: pkgs_debian; add docker key
+  apt_key:
+    url: https://download.docker.com/linux/raspbian/gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo docker-ce
+  apt_repository:
+    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian stretch edge
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; add kubernetes key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo kubernetes
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+  # packages for ntopng, NUT UPS
+- name: pkgs_debian; rpi-cluster docker and kubernetes
+  apt: name={{apt_rpi_cluster_item}} state=present
+  with_items:
+    - docker-ce
+    - kubeadm
+  loop_control:
+    loop_var: apt_rpi_cluster_item
+  when: "'rpi-cluster' in group_names"
+
 - name: pkgs_debian; add ntop apt key
   apt_key:
     url: http://packages.ntop.org/apt/ntop.key
