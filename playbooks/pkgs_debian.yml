@@ -12,8 +12,6 @@
   - postfix
   - libsasl2-modules # needed for postfix sendgrid
 
-  - docker.io
-
   #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
   - monitoring-plugins-standard
   - nagios-nrpe-server
