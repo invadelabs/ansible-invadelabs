@@ -1,6 +1,6 @@
 ---
 - name: rpi-cluster; disable swap
-  command: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
+  shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
   when: ansible_swaptotal_mb > 0
 
 - name: rpi-cluster; enable cpuset / memory cgroups
