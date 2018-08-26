@@ -58,6 +58,7 @@
     name: gen_sitemap.sh
     minute: 0
     hour: 23
+    weekday: 6
     user: root
     job: /root/scripts/gen_sitemap.sh -s
   when: ansible_fqdn == 'invadelabs.com'
