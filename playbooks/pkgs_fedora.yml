@@ -97,3 +97,6 @@
   dnf:
     name: /root/installers/rclone-v1.41-linux-amd64.rpm
   when: ansible_os_family == "RedHat"
+
+- name: pkgs_fedora; install google-cloud-sdk snap
+  command: snap install google-cloud-sdk --classic
