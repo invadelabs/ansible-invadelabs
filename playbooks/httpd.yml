@@ -14,3 +14,8 @@
     insertbefore: "</IfModule>"
     content: "        SSLStaplingCache        shmcb:/var/run/ocsp(128000)"
   notify: Restart httpd.service
+
+- name: httpd; drew-serv docroot
+  template:
+    src: templates/var/www/html/index.html.j2
+    dest: /var/www/html/index.html
