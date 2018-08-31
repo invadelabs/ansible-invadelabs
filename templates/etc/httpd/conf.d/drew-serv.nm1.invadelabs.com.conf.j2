@@ -28,6 +28,9 @@
   ProxyPass /cgi-bin http://127.0.0.1:8080/cgi-bin
   ProxyPassReverse /cgi-bin http://127.0.0.1:8080/cgi-bin
 
+  ProxyPass /nightscout http://127.0.0.1:1337
+  ProxyPassReverse /nightscout http://127.0.0.1:1337
+
   ProxyPass /app/kibana http://localhost:5601/app/kibana
   ProxyPassReverse /app/kibana http://localhost:5601/app/kibana
 
