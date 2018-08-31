@@ -16,23 +16,26 @@ Ubuntu 18.04:
 sudo apt-get install -y python-minimal
 ~~~
 
-# Install Ansible Galaxy roles, check, and run our playbook:
+# Install Ansible Galaxy roles, check, and run our playbooks:
 ~~~
-# site.yml = internal network, invadelabs.com.yml = external
+# local.yml = internal network, invadelabs.com.yml = external
 
 # Download community modules:
 ansible-galaxy install -r requirements.yml -p roles/
 
 # Check (don't take action) and show diff:
-ansible-playbook -i hosts site.yml --check --diff
+ansible-playbook -i hosts local.yml --check --diff
 ansible-playbook -i hosts invadelabs.com.yml --check --diff --private-key=~/.ssh/google_compute_engine
 
 # Take action and show diff:
-ansible-playbook -i hosts site.yml --diff
+ansible-playbook -i hosts local.yml --diff
 ansible-playbook -i hosts invadelabs.com.yml --diff --private-key=~/.ssh/google_compute_engine
 
 # Ex limit:
-ansible-playbook -i hosts site.yml --diff -l 192.168.1.125
+ansible-playbook -i hosts local.yml --diff -l drew-serv,drew-piv3
+
+# Ex start at task / step
+ansible-playbook -i hosts -l drew-serv --start-at-task="httpd; add site templates" --step
 ~~~
 
 # Example Ansible Commands
