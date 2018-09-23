@@ -60,7 +60,7 @@
     hour: 23
     weekday: 6
     user: root
-    job: /root/scripts/gen_sitemap.sh -s
+    job: /root/scripts/gen_sitemap.sh
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: cron; gdrive_backup.sh drew-serv.invadelabs.com
