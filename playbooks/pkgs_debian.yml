@@ -1,10 +1,12 @@
 ---
+## debconf
 - name: pkgs_debian; debconf; postfix; option type 'Internet with smarthost'
   debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
 
 - name: pkgs_debian; debconf; postfix; option type 'System mail name'
   debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
+## base packages to install on every device
 - name: pkgs_debian; install packages
   apt: name={{apt_base_item}} state=present # update_cache=yes
   with_items:
@@ -41,7 +43,9 @@
     loop_var: apt_base_item
   notify:
   - Start postfix.service
+  - update-alternatives; editor vim-basic
 
+## docker apt
 - name: pkgs_debian; add docker key
   apt_key:
     url: https://download.docker.com/linux/raspbian/gpg
@@ -54,6 +58,7 @@
     state: present
   when: "'rpi-cluster' in group_names"
 
+## kubernetes apt
 - name: pkgs_debian; add kubernetes key
   apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
@@ -66,7 +71,7 @@
     state: present
   when: "'rpi-cluster' in group_names"
 
-  # packages for ntopng, NUT UPS
+## rpi-cluster apt docker-ce & kubenetes
 - name: pkgs_debian; rpi-cluster docker and kubernetes
   apt: name={{apt_rpi_cluster_item}} state=present
   with_items:
@@ -76,6 +81,7 @@
     loop_var: apt_rpi_cluster_item
   when: "'rpi-cluster' in group_names"
 
+## ntop
 - name: pkgs_debian; add ntop apt key
   apt_key:
     url: http://packages.ntop.org/apt/ntop.key
@@ -94,7 +100,7 @@
     state: present
   when: ansible_host == "drew-piv3"
 
-  # packages for ntopng, NUT UPS
+## install ntopng AND nut for ups
 - name: pkgs_debian; drew-piv3 NUT for UPS
   apt: name={{apt_piv3_item}} state=present
   with_items:
@@ -111,24 +117,7 @@
     - Start nut-server.service
     - Start nut-monitor.service
 
-  # pine 64 requirements
-- name: pkgs_debian; pine64 extras needed for pip
-  apt: name={{apt_pine64_item}} state=present
-  with_items:
-    - libmonitoring-plugin-perl # for nrpe
-    - python-dev # needed to build ansible via pip on pine64 u16.04
-    - libffi-dev # needed to build ansible via pip on pine64 u16.04
-    - python-pkg-resources # needed to build ansible via pip on pine64 u16.04
-  loop_control:
-    loop_var: apt_pine64_item
-  when: ansible_host == "drew-pine64"
-
-- name: pkgs_debian; install ansible via pip on arm
-  pip:
-    name: ansible
-  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
-
-  # invadelabs.com requirements
+## invadelabs.com requirements
 - name: pkgs_debian; invadelabs.com
   apt: name={{invadelabs_item}} state=present
   with_items:
@@ -155,6 +144,7 @@
   - Start php7.2-fpm.service
   when: ansible_fqdn == "invadelabs.com"
 
+## mod_pagespeed
 - name: pkgs_debian; download mod_pagespeed
   get_url:
     url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
@@ -168,6 +158,7 @@
     deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
   when: ansible_fqdn == "invadelabs.com"
 
+## lynis
 - name: pkgs_debian; download lynis
   get_url:
     url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
@@ -181,6 +172,7 @@
     deb: /root/installers/lynis_2.6.2-1_all.deb
   when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
 
+## filebeat
 - name: pkgs_debian; download filebeat deb
   get_url:
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
@@ -194,9 +186,3 @@
     deb: /root/installers/filebeat-6.2.4-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
   notify: Start filebeat.service
-
-- name: initial; update-alternatives editor to vim-basic
-  alternatives:
-    name: editor
-    path: /usr/bin/vim.basic
-  when: ansible_os_family == "Debian"

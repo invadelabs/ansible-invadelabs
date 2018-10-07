@@ -71,13 +71,13 @@
   - Start libvirtd.service
   - Setup lm_sensors
 
+## filebeat
 - name: pkgs_fedora; download filebeat rpm
   get_url:
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-x86_64.rpm
     dest: /root/installers/filebeat-6.2.4-x86_64.rpm
     force: no
     checksum: "sha256:479a25895ac022afaa44f6e15ae6eb396fa7db03f7e4c05b14c5d6fb21b6815d"
-  when: ansible_os_family == "RedHat"
 
 - name: pkgs_fedora; install filebeat rpm
   dnf:
@@ -85,18 +85,17 @@
   when: ansible_os_family == "RedHat"
   notify: Start filebeat.service
 
+## rclone
 - name: pkgs_fedora; download rclone rpm
   get_url:
     url: https://downloads.rclone.org/v1.41/rclone-v1.41-linux-amd64.rpm
     dest: /root/installers/rclone-v1.41-linux-amd64.rpm
     force: no
     checksum: "sha256:8f43108e81ee2652c2f66fc3a260e111b018daba9162898e2d6c38220cc8b72a"
-  when: ansible_os_family == "RedHat"
 
 - name: pkgs_fedora; install rclone rpm
   dnf:
     name: /root/installers/rclone-v1.41-linux-amd64.rpm
-  when: ansible_os_family == "RedHat"
 
 - name: pkgs_fedora; install google-cloud-sdk snap
   command: snap install google-cloud-sdk --classic
