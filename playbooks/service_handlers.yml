@@ -1,0 +1,80 @@
+---
+## Start Service Handlers
+- name: Start apache2.service
+  service: name=apache2 state=started enabled=yes
+- name: Start chronyd.service
+  service: name=chronyd state=started enabled=yes
+- name: Start docker.service
+  service: name=docker state=started enabled=yes
+- name: Start filebeat.service
+  service: name=filebeat state=started enabled=yes
+- name: Start httpd.service
+  service: name=httpd state=started enabled=yes
+- name: Start libvirtd.service
+  service: name=libvirtd state=started enabled=yes
+- name: Start mcelog.service
+  service: name=mcelog state=started enabled=yes
+- name: Start nmb.service
+  service: name=nmb state=started enabled=yes
+- name: Start nrpe.service
+  service: name=nrpe state=started enabled=yes
+- name: Start ntopng.service
+  service: name=ntopng state=started enabled=yes
+- name: Start nut-monitor.service
+  service: name=nut-monitor state=started enabled=yes
+- name: Start nut-driver.service
+  service: name=nut-driver state=started enabled=yes
+- name: Start nut-server.service
+  service: name=nut-server state=started enabled=yes
+- name: Start php7.2-fpm.service
+  service: name=php7.2-fpm.service state=started enabled=yes
+- name: Start postfix.service
+  service: name=postfix state=started enabled=yes
+- name: Start rsyslog.service
+  service: name=rsyslog state=started enabled=yes
+- name: Start smb.service
+  service: name=smb state=started enabled=yes
+
+## Restart Service Handlers
+- name: Restart apache2.service
+  service: name=apache2 state=restarted  
+- name: Restart dhcpcd.service
+  service: name=dhcpcd
+- name: Restart filebeat.service
+  service: name=filebeat state=restarted
+- name: Restart httpd.service
+  service: name=httpd state=restarted
+- name: Restart nagios-nrpe-server.service
+  service: name=nagios-nrpe-server state=restarted
+  when: ansible_os_family == "Debian"
+- name: Restart networking.service
+  service: name=networking state=restarted
+- name: Restart nrpe.service
+  service: name=nrpe state=restarted
+  when: ansible_os_family == "RedHat"
+- name: Restart ntopng.service
+  service: name=ntopng
+- name: Restart nut-monitor.service
+  service: name=nut-monitor
+- name: Restart nut-server.service
+  service: name=nut-server
+- name: Restart NetworkManager.service
+  service: name=network state=restarted
+- name: Restart postfix.service
+  service: name=postfix state=restarted
+- name: Restart rsyslog.service
+  service: name=rsyslog state=restarted
+- name: Restart smartd.service
+  service: name=smartd state=restarted
+- name: Restart sshd.service
+  service: name=sshd state=restarted
+  when: ansible_os_family == "RedHat"
+- name: Restart ssh.service
+  service: name=ssh state=restarted
+- name: Restart sshguard.service
+  service: name=sshguard state=restarted
+  when: ansible_os_family == "Debian"
+- name: Restart systemd-journald.service
+  service: name=systemd-journald state=restarted
+- name: Restart smb.service
+  service: name=smb state=restarted
