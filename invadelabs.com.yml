@@ -14,30 +14,12 @@
       msg: "Host name is not set to invadelabs.com! Run; hostnamectl set-hostname invadelabs.com"
     when: ansible_fqdn != "invadelabs.com"
 
-  - name: stat required files in /root
-    stat:
-      path: "{{item}}"
-    with_items:
-      - /root/apache_env
-      - /root/github_token
-      - /root/postfix_passwd
-      - /root/slacktee.conf
-    register: item
-    failed_when: item.stat.exists == False
-
-  - name: check if drive initalized
-    shell: drive quota >/dev/null && touch /var/log/drive-init.touch
-    args:
-      chdir: /root
-      creates: /var/log/drive-init.touch
-    register: drive_stat
-    failed_when: drive_stat.rc != 0 # rc = proccess exit code
-
+  - include: playbooks/preflight_check.yml # fail if missing secrets
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
-  - include: playbooks/pip.yml # XXX move pip items here
-  - include: playbooks/pkgs_debian.yml # all software bits needed
+  - include: playbooks/pip.yml # anything pip here
+  - include: playbooks/pkgs_debian.yml # all apt / dpkg software bits needed
   - include: playbooks/sshd_config.yml # sshd_config
-  - include: playbooks/logging.yml # sshd_config
+  - include: playbooks/logging.yml # rsyslog / filebeat
   - include: playbooks/postfix.yml # sendgrid relay config
   - include: playbooks/drive.yml # initalize drive, configures letsencrypt
   - include: playbooks/letsencrypt.yml # setup certbot
@@ -48,33 +30,7 @@
   - include: playbooks/nrpe.yml # sshd_config
 
   handlers:
-  - name: Start filebeat.service
-    service: name=filebeat state=started enabled=yes
-  - name: Start apache2.service
-    service: name=apache2 state=started enabled=yes
-  - name: Start php7.2-fpm.service
-    service: name=php7.2-fpm.service state=started enabled=yes
-  - name: Start postfix.service
-    service: name=postfix state=started enabled=yes
-
-  - name: Restart filebeat.service
-    service: name=filebeat state=restarted
-  - name: Restart nagios-nrpe-server.service
-    service: name=nagios-nrpe-server state=restarted
-  - name: Restart rsyslog.service
-    service: name=rsyslog state=restarted
-  - name: Restart systemd-journald.service
-    service: name=systemd-journald state=restarted
-  - name: Restart sshd.service
-    service: name=sshd state=restarted
-  - name: Restart ssh.service
-    service: name=ssh state=restarted
-  - name: Restart sshguard.service
-    service: name=sshguard state=restarted
-  - name: Restart apache2.service
-    service: name=apache2 state=restarted
-  - name: Restart postfix.service
-    service: name=postfix state=restarted
+  - include: playbooks/service_handlers.yml # start / restart systemd stuff
 
   - name: apache2; set env variables
     shell: grep {{a2env_vars_item}} /root/apache_env | awk -F '"' '{print $2}'
@@ -120,6 +76,6 @@
       loop_var: a2ensite_item
     notify: Restart apache2.service
 
-  roles:
+  # roles:
   # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
   # - { role: mongrelion.docker, userland-proxy: false }

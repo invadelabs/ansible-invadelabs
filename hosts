@@ -1,6 +1,6 @@
 ---
 [web]
-invadelabs.com
+invadelabs.com # var=string
 
 [rpi-cluster]
 drew-piv3-01

@@ -9,64 +9,7 @@
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
 
   tasks:
-  - name: fail if hostname not set
-    fail:
-      msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"
-    when: ( ansible_fqdn == "localhost" ) or ( ansible_fqdn == "raspberrypi" ) or ( ansible_fqdn == "pine64" )
-
-  - name: stat required files in /root
-    stat:
-      path: "{{item}}"
-    with_items:
-      - /root/check_ddns.cred
-      - /root/postfix_passwd
-      - /root/slacktee.conf
-    register: item
-    failed_when: item.stat.exists == False
-    when: ansible_host == "drew-serv"
-
-  - name: /etc/hosts has IP, hostname, and fqdn
-    shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
-    args:
-      chdir: /root
-      creates: /var/log/hosts-init.touch
-    register: hosts_rc
-    failed_when: hosts_rc.rc != 0 # rc = proccess exit code
-
-  - name: check if drive initalized
-    shell: /var/lib/snapd/snap/bin/drive quota >/dev/null && touch /var/log/drive-init.touch;
-    args:
-      chdir: /root
-      creates: /var/log/drive-init.touch
-    register: drive_stat
-    failed_when: drive_stat.rc != 0 # rc = proccess exit code
-    when: ansible_host == "drew-serv"
-
-  - name: check if rclone initalized
-    shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
-    args:
-      chdir: /root
-      creates: /var/log/rclone-init.touch
-    register: rclone_stat
-    failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-    when: ansible_host == "drew-serv"
-
-  # (run as root if fails) gcloud auth login drewderivative@gmail.com && gcloud config set project invadelabs
-  - name: check if google cloud sdk initalized
-    shell: gcloud auth list | grep drewderivative@gmail.com && touch /var/log/gcloud-sdk.touch
-    args:
-      chdir: /root
-      creates: /var/log/gcloud-sdk.touch
-    register: rclone_stat
-    failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-    when: ansible_host == "drew-serv"
-
-  - name: docker; ensure /srv/docker-elk/data exists
-    stat:
-      path: /srv/docker-elk/data
-    register: elk_data
-    failed_when: elk_data.stat.exists == False
-    when: ansible_host == "drew-serv"
+  - include: playbooks/preflight_check.yml # fail if missing secrets
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
@@ -75,14 +18,14 @@
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"
 
-  - include: playbooks/pip.yml # XXX move pip items here
+  - include: playbooks/pip.yml
 
   - include: playbooks/firewall.yml
   - include: playbooks/logging.yml
 
   - include: playbooks/hw_drew-serv.yml # hardware specifics
     when: ansible_host == "drew-serv"
-  - include: playbooks/drive.yml # Nagios NRPE config
+  - include: playbooks/drive.yml # google drive bits
     when: ansible_host == "drew-serv"
   - include: playbooks/mount.yml
     when: ansible_host == "drew-serv"
@@ -105,13 +48,12 @@
   - include: playbooks/rpi-cluster.yml
     when: "'rpi-cluster' in group_names"
 
-
   - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
 
-  # if this fails drive is not initialized! `cd /root; drive init`
+  # docker containers; if this fails drive is not initialized! `cd /root; drive init`
   - name: docker; get drew-serv-bkup-latest.tar.xz backup
     shell: |
       P="/var/lib/snapd/snap/bin"
@@ -119,10 +61,10 @@
       -piped "$($P/drive ls Backup/Web | grep drew-serv | \
       grep -v sha256 | sort | tail -n 1 | cut -c 2-)" > \
       /srv/drew-serv-bkup-latest.tar.xz
-      touch /srv/first-run
+      touch /var/log/docker-init.touch
     args:
       chdir: /root
-      creates: /srv/first-run
+      creates: /var/log/docker-init.touch
     when: ansible_host == "drew-serv"
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
@@ -131,97 +73,26 @@
     - docker; create container bind
 
   handlers:
-  - name: Start ntopng.service
-    service: name=ntopng   state=started enabled=yes
-  - name: Start nut-driver.service
-    service: name=nut-driver   state=started enabled=yes
-  - name: Start nut-server.service
-    service: name=nut-server   state=started enabled=yes
-  - name: Start nut-monitor.service
-    service: name=nut-monitor   state=started enabled=yes
-  - name: Start filebeat.service
-    service: name=filebeat state=started enabled=yes
-  - name: Start docker.service
-    service: name=docker state=started enabled=yes
-  # base
-  - name: Start chronyd.service
-    service: name=chronyd state=started enabled=yes
-  - name: Start mcelog.service
-    service: name=mcelog state=started enabled=yes
-  - name: Start smb.service
-    service: name=smb state=started enabled=yes
-  - name: Start nmb.service
-    service: name=nmb state=started enabled=yes
-  - name: Start httpd.service
-    service: name=httpd state=started enabled=yes
-  - name: Start postfix.service
-    service: name=postfix state=started enabled=yes
-  - name: Start rsyslog.service
-    service: name=rsyslog state=started enabled=yes
-  # nagios
-  - name: Start nrpe.service
-    service: name=nrpe state=started enabled=yes
-  # kvm
-  - name: Start libvirtd.service
-    service: name=libvirtd state=started enabled=yes
+  - include: playbooks/service_handlers.yml # start / restart systemd stuff
 
+  ## Misc Handlers
   - name: Setup lm_sensors
     command: sensors-detect --auto # XXX not when modules have already been inserted
-
   - name: grub2-mkconfig -o /boot/grub2/grub.cfg
     command: grub2-mkconfig -o /boot/grub2/grub.cfg
-
   - name: systemd daemon-reload
     systemd: daemon_reload=yes
-
   - name: resolvconf -u
     command: resolvconf -u
-
-  - name: Restart networking.service
-    service: name=networking state=restarted
-  - name: Restart dhcpcd.service
-    service: name=dhcpcd
-  - name: Restart ntopng.service
-    service: name=ntopng
-  - name: Restart nut-server.service
-    service: name=nut-server
-  - name: Restart nut-monitor.service
-    service: name=nut-monitor
-  - name: Restart httpd.service
-    service: name=httpd state=restarted
-  - name: Restart filebeat.service
-    service: name=filebeat state=restarted
-  - name: Restart NetworkManager.service
-    service: name=network state=restarted
-  - name: Restart postfix.service
-    service: name=postfix state=restarted
-  - name: Restart systemd-journald.service
-    service: name=systemd-journald state=restarted
-  - name: Restart smartd.service
-    service: name=smartd state=restarted
-
-  - name: Restart sshd.service
-    service: name=sshd state=restarted
-    when: ansible_os_family == "RedHat"
-  - name: Restart ssh.service
-    service: name=ssh state=restarted
+  - name: update-alternatives; editor vim-basic
+    alternatives:
+      name: editor
+      path: /usr/bin/vim.basic
     when: ansible_os_family == "Debian"
-
-  - name: Restart nrpe.service
-    service: name=nrpe state=restarted
-    when: ansible_os_family == "RedHat"
-  - name: Restart nagios-nrpe-server.service
-    service: name=nagios-nrpe-server state=restarted
-    when: ansible_os_family == "Debian"
-
-  - name: Restart smb.service
-    service: name=smb state=restarted
-  - name: Restart rsyslog.service
-    service: name=rsyslog state=restarted
-
   - name: Run sysctl
     command: sysctl -p
 
+  ## Docker Handlers
   - name: docker; extract drew-serv-bkup-latest.tar.xz
     unarchive:
       src: /srv/drew-serv-bkup-latest.tar.xz

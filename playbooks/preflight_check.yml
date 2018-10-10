@@ -1,0 +1,85 @@
+---
+- name: preflight_check; fail if hostname not set
+  fail:
+    msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"
+  when: ( ansible_fqdn == "localhost" ) or ( ansible_fqdn == "raspberrypi" ) or ( ansible_fqdn == "pine64" )
+
+- name: preflight_check; invadelabs.com stat required files in /root
+  stat:
+    path: "{{invadelabs_file_item}}"
+  with_items:
+    - /root/apache_env
+    - /root/github_token
+    - /root/postfix_passwd
+    - /root/slacktee.conf
+  loop_control:
+    loop_var: invadelabs_file_item
+  register: item
+  failed_when: item.stat.exists == False
+  when: ansible_host == "invadelabs.com"
+
+- name: preflight_check; drew-serv stat required files in /root
+  stat:
+    path: "{{drewserv_file_item }}"
+  with_items:
+    - /root/check_ddns.cred
+    - /root/postfix_passwd
+    - /root/slacktee.conf
+  loop_control:
+    loop_var: drewserv_file_item
+  register: item
+  failed_when: item.stat.exists == False
+  when: ansible_host == "drew-serv"
+
+- name: preflight_check; /etc/hosts has IP, hostname, and fqdn
+  shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
+  args:
+    chdir: /root
+    creates: /var/log/hosts-init.touch
+  register: hosts_rc
+  failed_when: hosts_rc.rc != 0 # rc = proccess exit code
+  when: ansible_host != "invadelabs.com"
+
+- name: preflight_check; if drew-serv drive initalized
+  shell: /var/lib/snapd/snap/bin/drive quota >/dev/null && touch /var/log/drive-init.touch;
+  args:
+    chdir: /root
+    creates: /var/log/drive-init.touch
+  register: drive_stat
+  failed_when: drive_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "drew-serv"
+
+- name: preflight_check; if invadelabs.com drive initalized
+  shell: drive quota >/dev/null && touch /var/log/drive-init.touch
+  args:
+    chdir: /root
+    creates: /var/log/drive-init.touch
+  register: drive_stat
+  failed_when: drive_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "invadelabs.com"
+
+- name: preflight_check; if rclone initalized
+  shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
+  args:
+    chdir: /root
+    creates: /var/log/rclone-init.touch
+  register: rclone_stat
+  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "drew-serv"
+
+# (run as root if fails) gcloud auth login my.email@adress.com && gcloud config set project invadelabs
+- name: preflight_check; if google cloud sdk initalized
+  shell: gcloud auth list | grep drewderivative@gmail.com && touch /var/log/gcloud-sdk.touch
+  args:
+    chdir: /root
+    creates: /var/log/gcloud-sdk.touch
+  register: rclone_stat
+  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "drew-serv"
+
+- name: preflight_check; docker; ensure /srv/docker-elk/data exists
+  stat:
+    path: /srv/docker-elk/data
+  register: elk_data
+  failed_when: elk_data.stat.exists == False
+  when: ansible_host == "drew-serv"
