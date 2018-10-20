@@ -3,7 +3,7 @@
 - name: apache2; use /dev/shm for mod_pagespeed
   lineinfile:
     dest: /etc/apache2/mods-available/pagespeed.conf
-    regexp: "^    ModPagespeedFileCachePath"
+    regexp: "^.*ModPagespeedFileCachePath"
     line: '    ModPagespeedFileCachePath "/dev/shm/mod_pagespeed/"'
     state: present
   notify: Restart apache2.service
