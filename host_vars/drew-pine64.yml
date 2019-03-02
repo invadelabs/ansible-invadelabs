@@ -7,4 +7,4 @@
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_apt: "{{nrpe_plugins_dir}}/check_apt -t 60"
-    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65"
+    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 75 -c 80"
