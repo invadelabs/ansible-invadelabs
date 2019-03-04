@@ -25,6 +25,7 @@
     - /root/check_ddns.cred
     - /root/postfix_passwd
     - /root/slacktee.conf
+    - /home/drew/.ssh/id_rsa # XXX add check these are 0400
   loop_control:
     loop_var: drewserv_file_item
   register: item
