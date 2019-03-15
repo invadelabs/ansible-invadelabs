@@ -3,6 +3,7 @@
   shell: |
     firewall-cmd --add-service=ssh --permanent
     firewall-cmd --add-service=smtp --permanent
+    firewall-cmd --add-port=25/tcp --permanent # XXX had to do this for some reason..
     firewall-cmd --add-service=http --permanent
     firewall-cmd --add-service=https --permanent
     firewall-cmd --add-port=139/tcp --permanent
