@@ -70,6 +70,7 @@
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
     - docker; create container gitlab
+    - docker; create container nightscout
     - docker; create container bind
 
   handlers:
@@ -131,26 +132,43 @@
         - "0.0.0.0:8080:80/tcp"
     when: ansible_host == "drew-serv"
 
-    # https://docs.gitlab.com/runner/install/docker.html
-  - name: docker; create container gitlab
+#    # https://docs.gitlab.com/runner/install/docker.html
+#  - name: docker; create container gitlab
+#    docker_container:
+#      name: gitlab
+#      image: gitlab/gitlab-ce:latest # 10.8.2 / 10.8.2-ce.0
+#      state: stopped # XXX
+#      restart_policy: unless-stopped
+#      hostname: gitlab.invadelabs.com
+#      log_driver: json-file
+#      log_options:
+#        max-size: "10m"
+#      volumes:
+#        - /srv/gitlab/config:/etc/gitlab
+#        - /srv/gitlab/logs:/var/log/gitlab
+#        - /srv/gitlab/data:/var/opt/gitlab
+#        - /etc/letsencrypt:/etc/letsencrypt:ro
+#      ports:
+#        - "0.0.0.0:9443:443/tcp"
+#        - "0.0.0.0:9980:80/tcp"
+#        - "0.0.0.0:9922:22/tcp"
+#    when: ansible_host == "drew-serv"
+
+  - name: docker; create container nightscout
     docker_container:
-      name: gitlab
-      image: gitlab/gitlab-ce:latest # 10.8.2 / 10.8.2-ce.0
-      state: stopped # XXX
-      restart_policy: unless-stopped
-      hostname: gitlab.invadelabs.com
+      name: nightscout
+      image: drewderivative/nightscout:2019.03.10
+      state: started
+      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron
+      hostname: nightscout.invadelabs.com
       log_driver: json-file
       log_options:
         max-size: "10m"
       volumes:
-        - /srv/gitlab/config:/etc/gitlab
-        - /srv/gitlab/logs:/var/log/gitlab
-        - /srv/gitlab/data:/var/opt/gitlab
-        - /etc/letsencrypt:/etc/letsencrypt:ro
+        - /srv/bind:/data
       ports:
-        - "0.0.0.0:9443:443/tcp"
-        - "0.0.0.0:9980:80/tcp"
-        - "0.0.0.0:9922:22/tcp"
+        - "0.0.0.0:1337:1337/tcp"
+      env_file: /root/my.env
     when: ansible_host == "drew-serv"
 
   - name: docker; create container bind
