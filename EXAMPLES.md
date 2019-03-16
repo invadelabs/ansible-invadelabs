@@ -40,3 +40,8 @@ Increase how many operations occur concurrently
 ~~~
 -f 10
 ~~~
+
+Run playbook for a particular host starting at a particular task
+~~~
+ansible-playbook -i hosts -l drew-serv --diff --start-at-step "docker; create container nightscout" local.yml
+~~~
