@@ -1,14 +1,12 @@
 ---
 - name: firewall; add firewalld rules
   shell: |
-    firewall-cmd --add-service=ssh --permanent
-    firewall-cmd --add-service=smtp --permanent
-    firewall-cmd --add-port=25/tcp --permanent # XXX had to do this for some reason..
-    firewall-cmd --add-service=http --permanent
-    firewall-cmd --add-service=https --permanent
-    firewall-cmd --add-port=139/tcp --permanent
-    firewall-cmd --add-port=445/tcp --permanent
-    firewall-cmd --add-port=5666/tcp --permanent
+    firewall-cmd --add-service=ssh --permanent --zone=public
+    firewall-cmd --add-service=smtp --permanent --zone=public
+    firewall-cmd --add-service=http --permanent --zone=public
+    firewall-cmd --add-service=https --permanent --zone=public
+    firewall-cmd --add-service=samba --permanent --zone=public
+    firewall-cmd --add-port=5666/tcp --permanent --zone=public
     firewall-cmd --reload
     touch /var/log/firewall-first.touch
   args:
