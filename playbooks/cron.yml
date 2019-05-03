@@ -130,7 +130,7 @@
     minute: 50
     hour: 0
     user: root
-    job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I "pxz -T 2" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy --bwlimit 400k . --include=docker-elk.* googledrive:/Backup/elasticsearch
+    job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I "pxz -T 2" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy --bwlimit 400k . --include=*.tar.xz --include=*.snar googledrive:/Backup/elasticsearch
   when: ansible_host == "drew-serv"
 
 # cleanup snapshots on the first of the month
