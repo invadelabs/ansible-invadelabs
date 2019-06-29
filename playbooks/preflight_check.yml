@@ -12,7 +12,6 @@
     - /root/github_token
     - /root/postfix_passwd
     - /root/slacktee.conf
-    - /root/my.env
   loop_control:
     loop_var: invadelabs_file_item
   register: item
@@ -27,6 +26,7 @@
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /home/drew/.ssh/id_rsa # XXX add check these are 0400
+    - /root/my.env    
   loop_control:
     loop_var: drewserv_file_item
   register: item
