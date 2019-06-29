@@ -53,9 +53,9 @@
     state: present
   when: ansible_os_family == "Debian"
 
-#- name: initial; dnf; install etckeeper # XXX fix python2-dnf requirement for fedora 30
-#  dnf: name=etckeeper state=present
-#  when: ansible_distribution == "Fedora"
+- name: initial; dnf; install etckeeper # XXX fix python2-dnf requirement for fedora 30
+  dnf: name=etckeeper state=present
+  when: ansible_distribution == "Fedora"
 
 - name: initial; gitconfig
   git_config:
