@@ -7,14 +7,13 @@
   when: ansible_host == "drew-pine64"
 
 - name: pkgs_debian; pine64 extras needed for pip
-  apt: name={{apt_pine64_item}} state=present
-  with_items:
-    - libmonitoring-plugin-perl # for nrpe
-    - python-dev # needed to build ansible via pip on pine64 u16.04
-    - libffi-dev # needed to build ansible via pip on pine64 u16.04
-    - python-pkg-resources # needed to build ansible via pip on pine64 u16.04
-  loop_control:
-    loop_var: apt_pine64_item
+  apt:
+    pkg:
+      - libmonitoring-plugin-perl # for nrpe
+      - python-dev # needed to build ansible via pip on pine64 u16.04
+      - libffi-dev # needed to build ansible via pip on pine64 u16.04
+      - python-pkg-resources # needed to build ansible via pip on pine64 u16.04
+    state: present
   when: ansible_host == "drew-pine64"
 
 ## pip for rms
@@ -26,9 +25,6 @@
 ## docker
 - name: pkgs_debian; install pip modules for docker # needed for ubuntu16.04-armhf ansible & docker-py
   pip:
-    name: "{{docker_pip_item}}"
-  with_items:
-  - setuptools
-  - docker-py
-  loop_control:
-    loop_var: docker_pip_item
+    name:
+    - setuptools
+    - docker-py
