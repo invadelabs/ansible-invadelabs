@@ -13,8 +13,8 @@
 
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
 
-  - include: playbooks/pkgs_fedora.yml
-    when: ansible_os_family == "RedHat"
+  # - include: playbooks/pkgs_fedora.yml # XXX fix python2-dnf requirement for fedora 30
+  #   when: ansible_os_family == "RedHat"
   - include: playbooks/pkgs_debian.yml
     when: ansible_os_family == "Debian"
 
