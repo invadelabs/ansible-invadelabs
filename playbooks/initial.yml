@@ -46,17 +46,16 @@
   when: ansible_hostname == "drew-piv3"
 
 - name: initial; apt; install etckeeper and initial packages
-  apt: name={{int_apt_item}} state=present
-  with_items:
-  - etckeeper
-  - python-apt # for ansible
-  loop_control:
-    loop_var: int_apt_item
+  apt:
+    pkg:
+    - etckeeper
+    - python-apt # for ansible
+    state: present
   when: ansible_os_family == "Debian"
 
-- name: initial; dnf; install etckeeper
-  dnf: name=etckeeper state=present
-  when: ansible_distribution == "Fedora"
+#- name: initial; dnf; install etckeeper # XXX fix python2-dnf requirement for fedora 30
+#  dnf: name=etckeeper state=present
+#  when: ansible_distribution == "Fedora"
 
 - name: initial; gitconfig
   git_config:

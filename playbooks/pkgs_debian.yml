@@ -8,39 +8,38 @@
 
 ## base packages to install on every device
 - name: pkgs_debian; install packages
-  apt: name={{apt_base_item}} state=present # update_cache=yes
-  with_items:
-  - mailutils
-  - postfix
-  - libsasl2-modules # needed for postfix sendgrid
+  apt:
+    pkg:
+    - mailutils
+    - postfix
+    - libsasl2-modules # needed for postfix sendgrid
 
-  #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
-  - monitoring-plugins-standard
-  - nagios-nrpe-server
-  - monitoring-plugins-basic
-  - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
-  - debian-keyring # needed for nrpe debian package
-  - debian-archive-keyring # needed for nrpe debian package
+    #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
+    - monitoring-plugins-standard
+    - nagios-nrpe-server
+    - monitoring-plugins-basic
+    - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
+    - debian-keyring # needed for nrpe debian package
+    - debian-archive-keyring # needed for nrpe debian package
 
-  #- ansible # will be installed via pip for arm devices
-  - software-properties-common # for ansible
-  - python-paramiko # for ansible-pull
-  - python-jinja2 # for ansible-pull
+    #- ansible # will be installed via pip for arm devices
+    - software-properties-common # for ansible
+    - python-paramiko # for ansible-pull
+    - python-jinja2 # for ansible-pull
 
-  - vim
-  - logwatch
-  - python-pip # needed for docker-py
-  - libdate-manip-perl # needed for logwatch date ranges
-  - curl # for invadelabs/cron-invadelabs
-  - highlight # for invadelabs/cron-invadelabs
-  - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
-  - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-  - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-  - pxz # for invadelabs/cron-invadelabs/gdrive.sh
-  - gawk # for lynis and ansi2html
-  - dbus # for lynis and ansi2html
-  loop_control:
-    loop_var: apt_base_item
+    - vim
+    - logwatch
+    - python-pip # needed for docker-py
+    - libdate-manip-perl # needed for logwatch date ranges
+    - curl # for invadelabs/cron-invadelabs
+    - highlight # for invadelabs/cron-invadelabs
+    - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
+    - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+    - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
+    - pxz # for invadelabs/cron-invadelabs/gdrive.sh
+    - gawk # for lynis and ansi2html
+    - dbus # for lynis and ansi2html
+    state: present
   notify:
   - Start postfix.service
   - update-alternatives; editor vim-basic
@@ -73,12 +72,11 @@
 
 ## rpi-cluster apt docker-ce & kubenetes
 - name: pkgs_debian; rpi-cluster docker and kubernetes
-  apt: name={{apt_rpi_cluster_item}} state=present
-  with_items:
-    - docker-ce
-    - kubeadm
-  loop_control:
-    loop_var: apt_rpi_cluster_item
+  apt:
+    pkg:
+      - docker-ce
+      - kubeadm
+    state: present
   when: "'rpi-cluster' in group_names"
 
 ## ntop
@@ -102,14 +100,13 @@
 
 ## install ntopng AND nut for ups
 - name: pkgs_debian; drew-piv3 NUT for UPS
-  apt: name={{apt_piv3_item}} state=present
-  with_items:
-    - ntopng
-    - nut
-    - nut-client
-    - nut-server
-  loop_control:
-    loop_var: apt_piv3_item
+  apt:
+    pkg:
+      - ntopng
+      - nut
+      - nut-client
+      - nut-server
+    state: present
   when: ansible_host == "drew-piv3"
   notify:
     - Start ntopng.service
@@ -119,26 +116,25 @@
 
 ## invadelabs.com requirements
 - name: pkgs_debian; invadelabs.com
-  apt: name={{invadelabs_item}} state=present
-  with_items:
-    - snapd # for invadelabs/cron-invadelabs/gdrive.sh
-    - ansible
+  apt:
+    pkg:
+      - snapd # for invadelabs/cron-invadelabs/gdrive.sh
+      - ansible
 
-    - apache2
-    - php7.2-fpm
-    - libapache2-mod-php
-    - php-sqlite3
-    - php-mbstring
-    - php-xml
-    - php-curl
-    - php-apcu
+      - apache2
+      - php7.2-fpm
+      - libapache2-mod-php
+      - php-sqlite3
+      - php-mbstring
+      - php-xml
+      - php-curl
+      - php-apcu
 
-    - php-mbstring # for drewwiki
+      - php-mbstring # for drewwiki
 
-    - certbot
-    - python-certbot-apache
-  loop_control:
-    loop_var: invadelabs_item
+      - certbot
+      - python-certbot-apache
+    state: present
   notify:
   - Start apache2.service
   - Start php7.2-fpm.service
