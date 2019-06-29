@@ -161,11 +161,9 @@
       state: started
       restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron
       hostname: nightscout.invadelabs.com
-      log_driver: json-file
+      log_driver: none
       log_options:
         max-size: "10m"
-      volumes:
-        - /srv/bind:/data
       ports:
         - "0.0.0.0:1337:1337/tcp"
       env_file: /root/my.env
