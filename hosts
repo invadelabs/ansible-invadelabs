@@ -11,6 +11,7 @@ drew-piv3-05
 [nm1-hosts]
 drew-serv
 drew-piv3
+drew-piv4
 drew-pine64
 
 [nm1:children]
