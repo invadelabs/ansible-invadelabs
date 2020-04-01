@@ -1,6 +1,9 @@
 sudo: false
 language: python
 cache: pip
+branches:
+  only:
+    - master
 python:
 - 2.7
 addons:
