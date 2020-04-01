@@ -4,9 +4,9 @@
     path: /mnt/share
     state: directory
 
-- name: mount; vg_share/share
-  mount:
-    path: /mnt/share
-    src: UUID=29a687bf-2150-4825-ac20-a65c6c0a88dd
-    fstype: ext4
-    state: mounted
+# - name: mount; vg_share/share
+#   mount:
+#     path: /mnt/share
+#     src: UUID=29a687bf-2150-4825-ac20-a65c6c0a88dd
+#     fstype: ext4
+#     state: mounted
