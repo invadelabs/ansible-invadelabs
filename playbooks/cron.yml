@@ -105,6 +105,15 @@
     job: autossh -M 0 -f -N -R 11514:192.168.1.125:10514 -R 5001:192.168.1.125:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/id_rsa drew@invadelabs.com
   when: ansible_host == "drew-serv"
 
+- name: cron; restart autossh tunnel
+  cron:
+    name: restart autossh tunnel
+    minute: "30"
+    hour: "*/6"
+    user: root
+    job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | cut -d" " -f6)
+  when: ansible_host == "drew-serv"
+
 - name: cron; docker start bind
   cron:
     name: docker start bind
