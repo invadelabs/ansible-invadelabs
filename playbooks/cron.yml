@@ -111,7 +111,7 @@
     minute: "30"
     hour: "*/6"
     user: root
-    job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | cut -d" " -f6)
+    job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
   when: ansible_host == "drew-serv"
 
 - name: cron; docker start bind
