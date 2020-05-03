@@ -56,11 +56,7 @@
   # docker containers; if this fails drive is not initialized! `cd /root; drive init`
   - name: docker; get drew-serv-bkup-latest.tar.xz backup
     shell: |
-      P="/var/lib/snapd/snap/bin"
-      $P/drive pull \
-      -piped "$($P/drive ls Backup/Web | grep drew-serv | \
-      grep -v sha256 | sort | tail -n 1 | cut -c 2-)" > \
-      /srv/drew-serv-bkup-latest.tar.xz
+      rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^drew-serv.*.tar.xz$' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
       touch /var/log/docker-init.touch
     args:
       chdir: /root

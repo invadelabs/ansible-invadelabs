@@ -76,7 +76,7 @@
     minute: "0"
     hour: "23"
     user: root
-    job: /root/scripts/gdrive_backup.sh -a drewserv -f googledrive:/Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+    job: /root/scripts/gdrive_backup.sh -a drew-serv -f googledrive:/Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
   when: ansible_host == "drew-serv"
 
 - name: cron; gdrive_backup.sh invadelabs.com
