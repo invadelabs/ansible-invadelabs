@@ -39,6 +39,7 @@
     - pxz # for invadelabs/cron-invadelabs/gdrive.sh
     - gawk # for lynis and ansi2html
     - dbus # for lynis and ansi2html
+    - jq
     state: present
   notify:
   - Start postfix.service
@@ -182,3 +183,17 @@
     deb: /root/installers/filebeat-6.2.4-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
   notify: Start filebeat.service
+
+## rclone-1.48.0
+- name: pkgs_debian; download filebeat deb
+  get_url:
+    url: https://downloads.rclone.org/v1.48.0/rclone-v1.48.0-linux-amd64.deb
+    dest: /root/installers/rclone-v1.48.0-linux-amd64.deb
+    force: no
+    checksum: "sha256:e4b7a63ca6fa2bee37cbb33afeaa3fa60be2c595ef95a0b262ad8c8e770ea3b3"
+  when: ansible_fqdn == "invadelabs.com"
+
+- name: pkgs_debian; install rclone
+  apt:
+    deb: /root/installers/rclone-v1.48.0-linux-amd64.deb
+  when: ansible_fqdn == "invadelabs.com"
