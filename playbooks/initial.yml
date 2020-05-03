@@ -113,6 +113,24 @@
     checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
   when: ansible_host == "drew-piv3"
 
+## slacktee.sh
+- name: initial; ansi2html.sh
+  get_url:
+    url: https://raw.githubusercontent.com/pixelb/scripts/dce7689196f6fd2efa87fd2d64e6e491c927b349/scripts/ansi2html.sh
+    dest: /usr/local/bin/ansi2html.sh
+    mode: 0755
+    force: no
+    checksum: "sha256:6bff734f83234046cb94de6bff001f0038104462c5336769f09b6f0df9cc6d2e"
+
+## slacktee.sh
+- name: initial; slacktee.sh
+  get_url:
+    url: https://raw.githubusercontent.com/coursehero/slacktee/v1.4.2/slacktee.sh
+    dest: /usr/local/bin/slacktee.sh
+    mode: 0755
+    force: no
+    checksum: "sha256:f17b39737c5fe1926c354890ac6e9e5cf11afd09d8351e9b498fe9a608cf2e95"
+
 - name: initial; nrpe; download check_temp.sh
   copy:
     src: /root/scripts/check_temp.sh

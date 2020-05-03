@@ -1,21 +1,7 @@
 ---
-- name: drive; symlink /var/lib/snapd/snap to /snap for fedora 28 work around
-  file:
-    src: /var/lib/snapd/snap
-    dest: /snap
-    owner: root
-    group: root
-    state: link
-  when: ansible_os_family == "RedHat"
-
-- name: drive; install drive via snap
-  command: snap install drive --classic
-  args:
-    creates: /snap/bin/drive
-
 - name: drive; Get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
-    /snap/bin/drive pull -piped $(/snap/bin/drive ls Backup/Web | grep invadelabs.com | grep -v sha256 | sort | tail -n 1 | cut -c 2-) > /srv/invadelabs.com-bkup-latest.tar.xz
+    rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^invadelabs.com.*.tar.xz$' | sort | tail -n 1) /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
     creates: /srv/invadelabs.com-bkup-latest.tar.xz

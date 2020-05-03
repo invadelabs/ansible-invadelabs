@@ -2,7 +2,7 @@
 - name: drewwiki; extract mediawiki for drew.invadelabs.com
   unarchive:
     remote_src: yes
-    src: https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.1.tar.gz
+    src: https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.7.tar.gz
     dest: /var/www/drew.invadelabs.com
     owner: www-data
     group: www-data
@@ -27,7 +27,7 @@
 
 - name: drewwiki; add logo
   get_url:
-    url: https://media.giphy.com/media/4SZJKul9erj2mYTCAF/giphy.gif
+    url: https://s6.gifyu.com/images/omgz_square.gif
     dest: /var/www/drew.invadelabs.com/omgz_square.gif
     owner: www-data
     group: www-data

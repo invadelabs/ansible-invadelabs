@@ -11,7 +11,7 @@
     - /root/apache_env
     - /root/github_token
     - /root/postfix_passwd
-    - /root/slacktee.conf
+    - /root/slacktee.conf # XXX add check these are 0400
   loop_control:
     loop_var: invadelabs_file_item
   register: item
@@ -26,7 +26,7 @@
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /home/drew/.ssh/id_rsa # XXX add check these are 0400
-    - /root/my.env    
+    - /root/my.env
   loop_control:
     loop_var: drewserv_file_item
   register: item
@@ -42,24 +42,6 @@
   failed_when: hosts_rc.rc != 0 # rc = proccess exit code
   when: ansible_host != "invadelabs.com"
 
-- name: preflight_check; if drew-serv drive initalized
-  shell: /var/lib/snapd/snap/bin/drive quota >/dev/null && touch /var/log/drive-init.touch;
-  args:
-    chdir: /root
-    creates: /var/log/drive-init.touch
-  register: drive_stat
-  failed_when: drive_stat.rc != 0 # rc = proccess exit code
-  when: ansible_host == "drew-serv"
-
-- name: preflight_check; if invadelabs.com drive initalized
-  shell: drive quota >/dev/null && touch /var/log/drive-init.touch
-  args:
-    chdir: /root
-    creates: /var/log/drive-init.touch
-  register: drive_stat
-  failed_when: drive_stat.rc != 0 # rc = proccess exit code
-  when: ansible_host == "invadelabs.com"
-
 - name: preflight_check; if rclone initalized
   shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
   args:
@@ -67,7 +49,7 @@
     creates: /var/log/rclone-init.touch
   register: rclone_stat
   failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-  when: ansible_host == "drew-serv"
+  when: (ansible_host == "drew-serv") or (ansible_host == "invadelabs.com")
 
 # (run as root if fails) gcloud auth login my.email@adress.com
 - name: preflight_check; if google cloud sdk initalized
@@ -92,6 +74,13 @@
 - name: preflight_check; docker; ensure /srv/docker-elk/data exists
   stat:
     path: /srv/docker-elk/data
+  register: elk_data
+  failed_when: elk_data.stat.exists == False
+  when: ansible_host == "drew-serv"
+
+- name: preflight_check; ensure /mnt/share/bkup exists
+  stat:
+    path: /mnt/share/bkup
   register: elk_data
   failed_when: elk_data.stat.exists == False
   when: ansible_host == "drew-serv"

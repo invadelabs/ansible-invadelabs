@@ -6,7 +6,9 @@
     firewall-cmd --add-service=http --permanent --zone=public
     firewall-cmd --add-service=https --permanent --zone=public
     firewall-cmd --add-service=samba --permanent --zone=public
-    firewall-cmd --add-port=5666/tcp --permanent --zone=public
+    firewall-cmd --add-port=5666/tcp --permanent --zone=public # nagios-nrpe
+    firewall-cmd --add-port=10514/tcp --permanent --zone=public # elasticsearch / syslog
+    firewall-cmd --add-port=5000/tcp --permanent --zone=public # elasticsearch /filebeat
     firewall-cmd --reload
     touch /var/log/firewall-first.touch
   args:
