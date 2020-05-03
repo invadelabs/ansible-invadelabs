@@ -2,7 +2,7 @@
 - name: invadelabs.com; initial site deploy invadelabs.com
   shell: |
     mkdir -p /var/www/invadelabs.com
-    git clone --depth 1 https://github.com/invadelabs/invadelabs.com.git /tmp/inv-first
+    git clone --depth 1 git@github.com:drew-holt/invadelabs.com.git /tmp/inv-first
     mv -v /tmp/inv-first/site/* /var/www/invadelabs.com
     chown -R www-data:www-data /var/www/invadelabs.com
     rm -rf /tmp/inv-first
