@@ -1,4 +1,11 @@
 ---
+- name: cron; create "PATH=/usr/local/bin:/usr/bin:/bin" on top of crontab
+  cron:
+    name: PATH
+    env: yes
+    user: root
+    job: /usr/local/bin:/usr/bin:/bin
+
 - name: cron; check_lynis.sh
   cron:
     name: check_lynis.sh
@@ -6,7 +13,7 @@
     hour: "22"
     weekday: "6"
     user: root
-    job: /root/scripts/check_lynis.sh
+    job: /root/scripts/check_lynis.sh drew@invadelabs.com
   when: "'rpi-cluster' not in group_names"
 
 - name: cron; ansible-pull
@@ -69,7 +76,7 @@
     minute: "0"
     hour: "23"
     user: root
-    job: /root/scripts/gdrive_backup.sh -a drew-serv -d /var/lib/snapd/snap/bin -f Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+    job: /root/scripts/gdrive_backup.sh -a drewserv -f googledrive:/Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
   when: ansible_host == "drew-serv"
 
 - name: cron; gdrive_backup.sh invadelabs.com
@@ -78,7 +85,7 @@
     minute: "0"
     hour: "23"
     user: root
-    job: /root/scripts/gdrive_backup.sh -a invadelabs.com -d /snap/bin -f Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
+    job: /root/scripts/gdrive_backup.sh -a invadelabs.com -f googledrive:/Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
   when: ansible_fqdn == 'invadelabs.com'
 
 # - name: cron; Add cron certbot
