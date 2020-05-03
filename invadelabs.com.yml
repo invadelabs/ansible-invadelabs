@@ -21,7 +21,7 @@
   - include: playbooks/sshd_config.yml # sshd_config
   - include: playbooks/logging.yml # rsyslog / filebeat
   - include: playbooks/postfix.yml # sendgrid relay config
-  - include: playbooks/drive.yml # initalize drive, configures letsencrypt
+  - include: playbooks/drive.yml # initalize rclone, configures letsencrypt
   - include: playbooks/letsencrypt.yml # setup certbot
   - include: playbooks/apache2.yml # a2enmod, a2ensite, apache2.conf
   - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
