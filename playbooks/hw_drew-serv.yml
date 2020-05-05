@@ -10,21 +10,6 @@
   notify:
     - Restart NetworkManager.service
 
-- name: hw; sysctl network disable ipv6
-  lineinfile:
-    dest: "/etc/sysctl.conf"
-    regexp: "^{{sysctl.key}}"
-    line: "{{sysctl.key}} = {{sysctl.value}}"
-    state: present
-  with_dict: {
-    "net.ipv6.conf.all.disable_ipv6": "1",
-    "net.ipv6.conf.default.disable_ipv6": "1"
-    }
-  loop_control:
-    loop_var: sysctl
-  notify:
-    - Run sysctl
-
 # XXX if enabled rd.lvm.lv= needs to be set correctly!
 # - name: hw; set /etc/default/grub nomodeset
 #   lineinfile:
