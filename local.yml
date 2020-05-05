@@ -69,6 +69,7 @@
     - docker; create container nightscout
     - docker; create container bind
 
+## HANDLERS ##
   handlers:
   - include: playbooks/service_handlers.yml # start / restart systemd stuff
 
@@ -128,6 +129,39 @@
         - "0.0.0.0:8080:80/tcp"
     when: ansible_host == "drew-serv"
 
+  - name: docker; create container bind
+    docker_container:
+      name: bind
+      image: sameersbn/bind:9.10.3-20180127
+      state: started
+      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron @reboot
+      hostname: ns.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/bind:/data
+      ports:
+        - "192.168.1.125:53:53/tcp"
+        - "192.168.1.125:53:53/udp"
+        - "0.0.0.0:10000:10000/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container nightscout
+    docker_container:
+      name: nightscout
+      image: nightscout/cgm-remote-monitor-travis:13.0.1
+      state: started
+      restart_policy: unless-stopped
+      hostname: nightscout.invadelabs.com
+      log_driver: none
+      log_options:
+        max-size: "10m"
+      ports:
+        - "0.0.0.0:1337:1337/tcp"
+      env_file: /root/my.env
+    when: ansible_host == "drew-serv"
+
 #    # https://docs.gitlab.com/runner/install/docker.html
 #  - name: docker; create container gitlab
 #    docker_container:
@@ -149,36 +183,3 @@
 #        - "0.0.0.0:9980:80/tcp"
 #        - "0.0.0.0:9922:22/tcp"
 #    when: ansible_host == "drew-serv"
-
-  - name: docker; create container nightscout
-    docker_container:
-      name: nightscout
-      image: drewderivative/nightscout:2019.03.10
-      state: started
-      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron
-      hostname: nightscout.invadelabs.com
-      log_driver: none
-      log_options:
-        max-size: "10m"
-      ports:
-        - "0.0.0.0:1337:1337/tcp"
-      env_file: /root/my.env
-    when: ansible_host == "drew-serv"
-
-  - name: docker; create container bind
-    docker_container:
-      name: bind
-      image: sameersbn/bind:9.10.3-20180127
-      state: started
-      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron
-      hostname: ns.invadelabs.com
-      log_driver: json-file
-      log_options:
-        max-size: "10m"
-      volumes:
-        - /srv/bind:/data
-      ports:
-        - "192.168.1.125:53:53/tcp"
-        - "192.168.1.125:53:53/udp"
-        - "0.0.0.0:10000:10000/tcp"
-    when: ansible_host == "drew-serv"
