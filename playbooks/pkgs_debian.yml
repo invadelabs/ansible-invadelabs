@@ -12,13 +12,13 @@
     pkg:
     - mailutils
     - postfix
-    - libsasl2-modules # needed for postfix sendgrid
+    - libsasl2-modules # needed for postfix + sendgrid
 
     #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
     - monitoring-plugins-standard
     - nagios-nrpe-server
     - monitoring-plugins-basic
-    - nagios-plugins-contrib # XXX installs a lo tof deps for 1 scripts, work around?
+    - nagios-plugins-contrib # XXX installs several dependencies for 1 scripts, work around?
     - debian-keyring # needed for nrpe debian package
     - debian-archive-keyring # needed for nrpe debian package
 
@@ -100,7 +100,7 @@
   when: ansible_host == "drew-piv3"
 
 ## install ntopng AND nut for ups
-- name: pkgs_debian; drew-piv3 NUT for UPS
+- name: pkgs_debian; drew-piv3 ntopng and NUT for UPS
   apt:
     pkg:
       - ntopng
@@ -119,22 +119,15 @@
 - name: pkgs_debian; invadelabs.com
   apt:
     pkg:
-      - snapd # for invadelabs/cron-invadelabs/gdrive.sh
       - ansible
-
       - apache2
       - php7.2-fpm
       - libapache2-mod-php
-      - php-sqlite3
-      - php-mbstring
-      - php-xml
-      - php-curl
-      - php-apcu
-
+      - php-sqlite3 # for drewwiki
       - php-mbstring # for drewwiki
-
-      - certbot
-      - python-certbot-apache
+      - php-xml
+      - php-curl # for selenium-invadelabs script
+      - php-apcu # Alternative PHP Cache (APC)
     state: present
   notify:
   - Start apache2.service
@@ -169,7 +162,7 @@
     deb: /root/installers/lynis_2.6.2-1_all.deb
   when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
 
-## filebeat
+## filebeat (for apache logs)
 - name: pkgs_debian; download filebeat deb
   get_url:
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb

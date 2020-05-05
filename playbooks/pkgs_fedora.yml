@@ -3,14 +3,17 @@
   dnf:
     state: present
     name:
-    - docker # docker-ce when fedora 28 stable pkgs are available
+    # https://www.linuxuprising.com/2019/11/how-to-install-and-use-docker-on-fedora.html
+    # XXX switch moby-engine for podman at some point
+    # sudo grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+    - moby-engine # replaces upstream docker package in fedora 31
     - docker-compose
     # base bits
     - ansible
     - autossh
     - rsync
     - jq
-    - redhat-lsb-core
+    - redhat-lsb-core # XXX used for which script?
     - vim-enhanced
     - mcelog
     - logwatch
@@ -19,26 +22,23 @@
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
     - bind-utils # for dig
-    - dnf-plugins-core # for docker install
-    - snapd # for drive
+    - dnf-plugins-core # for moby-engine / docker-ce install
+    - snapd # for google-cloud-sdk
     - pxz # parallel xz for backups
     - wget
     - chrony
     - samba
     - httpd
     - mod_ssl
+    - mod_http2
     - postfix
-    - cyrus-sasl-plain # needed for sendmail + postfix
+    - cyrus-sasl-plain # needed for postfix + sendgrid
     - rsyslog # for elasticsearch
     - mailx
     - screen
     - smartmontools
     - lm_sensors
     - lynis
-    # python bits
-    - python2-pip # for ansible docker module
-    - python2-virtualenv # for ansible docker module
-    - libselinux-python # for ansible
     # nagios / nrpe bits
     - nrpe
     - nagios-plugins-nrpe
@@ -51,10 +51,10 @@
     - nagios-plugins-uptime
     - perl-Nagios-Plugin
     - perl-Monitoring-Plugin
-    # hypervisor
-    - qemu-kvm
-    - libvirt
-    - virt-install
+    # # hypervisor
+    # - qemu-kvm
+    # - libvirt
+    # - virt-install
     - bridge-utils
     - libguestfs-tools
   notify: # XXX break this into smaller groups for when new packages are needed
