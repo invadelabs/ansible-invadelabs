@@ -16,15 +16,15 @@
     state: present
   when: ansible_host == "drew-pine64"
 
-## pip for rms
+## pip for ARM
 - name: pip; install ansible via pip on arm
   pip:
     name: ansible
   when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
 
 ## docker
-- name: pip; install pip modules for docker # needed for ubuntu16.04-armhf ansible & docker-py
+- name: pip; install pip modules for docker
   pip:
     name:
     - setuptools
-    - docker-py
+    - docker-py # needed for ubuntu16.04-armhf ansible & docker-py
