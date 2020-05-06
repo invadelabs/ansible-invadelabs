@@ -9,4 +9,8 @@
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker -p /mnt/share -p /srv"
     - check_updates: "{{nrpe_plugins_dir}}/check_updates -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 90 -c 99"
+    - check_es_mem: "/usr/local/bin/check_es_system.sh -H localhost -t mem -d 2"
+    - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 10"
+    - check_es_readonly: "/usr/local/bin/check_es_system.sh -H localhost -t readonly"
+    - check_es_status: "/usr/local/bin/check_es_system.sh -H localhost -t status"
   postfix_mynetworks: "172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
