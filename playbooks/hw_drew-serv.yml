@@ -1,44 +1,47 @@
 ---
-- name: hw; add static ifcfg-*
-  template:
-    src: templates/etc/sysconfig/network-scripts/{{ifcfg_item}}.j2
-    dest: /etc/sysconfig/network-scripts/{{ifcfg_item}}
-  with_items:
-    - ifcfg-enp1s0
-  loop_control:
-    loop_var: ifcfg_item
-  notify:
-    - Restart NetworkManager.service
+# - name: hw; add static ifcfg-*
+#   template:
+#     src: templates/etc/sysconfig/network-scripts/{{ifcfg_item}}.j2
+#     dest: /etc/sysconfig/network-scripts/{{ifcfg_item}}
+#   with_items:
+#     - ifcfg-enp0s25
+#   loop_control:
+#     loop_var: ifcfg_item
+#   notify:
+#     - Restart NetworkManager.service
 
-# XXX if enabled rd.lvm.lv= needs to be set correctly!
+# when laptop lid is closed keep power on
+- name: hw_drew-serv; set /etc/systemd/logind.conf
+  lineinfile:
+    dest: /etc/systemd/logind.conf
+    regexp: "^{{logind_item.key}}"
+    line: "{{logind_item.key}}={{logind_item.value}}"
+    state: present
+  with_dict: {
+    "HandleLidSwitch": "ignore",
+    "HandleLidSwitchExternalPower": "ignore",
+    "HandleLidSwitchDocked": "ignore" }
+  loop_control:
+    loop_var: logind_item
+  notify:
+    - Restart systemd-logind.service
+
 # - name: hw; set /etc/default/grub nomodeset
+#   shell: grubby --update-kernel=ALL --args="nomodeset"
+#
+# - name: hw_drew-serv; set gfx mode /etc/default/grub
 #   lineinfile:
 #     dest: /etc/default/grub
-#     regexp: "^GRUB_CMDLINE_LINUX="
-#     line: 'GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/root rhgb nomodeset"' # XXX make this dynamic fedora/root or dragons ahead
+#     regexp: "^{{grub_item.key}}"
+#     line: '{{grub_item.key}}="{{grub_item.value}}"'
 #     state: present
+#   with_dict: {
+#     "GRUB_GFXMODE": "1024x768x32",
+#     "GRUB_GFXPAYLOAD": 1024x768x32"",
+#     "GRUB_GFXPAYLOAD_LINUX": "1024x768x32" }
+#   loop_control:
+#     loop_var: grub_item
 #   notify: grub2-mkconfig -o /boot/grub2/grub.cfg
-# - name: Set /etc/default/grub GRUB_GFXMODE
-#   lineinfile:
-#     dest: /etc/default/grub
-#     regexp: "^GRUB_GFXMODE="
-#     line: 'GRUB_GFXMODE="1024x768x32"'
-#     state: present
-#
-# - name: Set /etc/default/grub GRUB_GFXPAYLOAD
-#   lineinfile:
-#     dest: /etc/default/grub
-#     regexp: "^GRUB_GFXPAYLOAD="
-#     line: 'GRUB_GFXPAYLOAD="1024x768x32"'
-#     state: present
-#
-#  # only entry that adds gfxmode into grub.cfg
-# - name: Set /etc/default/grub GRUB_GFXPAYLOAD_LINUX
-#   lineinfile:
-#     dest: /etc/default/grub
-#     regexp: "^GRUB_GFXPAYLOAD_LINUX="
-#     line: 'GRUB_GFXPAYLOAD_LINUX="1024x768x32"'
-#     state: present
 
 - name: hw; smartd mail root
   lineinfile:
