@@ -103,17 +103,7 @@
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
   when: ( ansible_host == "drew-serv" ) or ( ansible_host == "drew-pine64" )
 
-# dl check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
-- name: initial; nrpe; dl fail2ban.sh
-  get_url:
-    url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
-    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
-    mode: 0755
-    force: no
-    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
-  when: ansible_host == "drew-piv3"
-
-## slacktee.sh
+## ansi2html.sh
 - name: initial; ansi2html.sh
   get_url:
     url: https://raw.githubusercontent.com/pixelb/scripts/dce7689196f6fd2efa87fd2d64e6e491c927b349/scripts/ansi2html.sh
@@ -131,12 +121,33 @@
     force: no
     checksum: "sha256:f17b39737c5fe1926c354890ac6e9e5cf11afd09d8351e9b498fe9a608cf2e95"
 
+# check_temp.sh
 - name: initial; nrpe; download check_temp.sh
   copy:
     src: /root/scripts/check_temp.sh
     dest: /usr/local/bin/check_temp.sh
     mode: 0755
     remote_src: yes
+
+## check_es_system.sh
+- name: initial; check_es_system.sh
+  get_url:
+    url: https://raw.githubusercontent.com/Napsty/check_es_system/1.8/check_es_system.sh
+    dest: /usr/local/bin/check_es_system.sh
+    mode: 0755
+    force: no
+    checksum: "sha256:7cc84d9136bf31ae021bc48997167375ddbbe701c2886f74fa4d7b00abaa0242"
+  when: ansible_host == "drew-serv"
+
+## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
+- name: initial; nrpe; dl fail2ban.sh
+  get_url:
+    url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
+    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
+    mode: 0755
+    force: no
+    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
+  when: ansible_host == "drew-piv3"
 
 - name: initial; nrpe; /var/run/fail2ban/fail2ban.sock perms
   file:
