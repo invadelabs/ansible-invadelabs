@@ -14,7 +14,7 @@
 - name: hw_drew-serv; set /etc/systemd/logind.conf
   lineinfile:
     dest: /etc/systemd/logind.conf
-    regexp: "^{{logind_item.key}}"
+    regexp: "^{{logind_item.key}}="
     line: "{{logind_item.key}}={{logind_item.value}}"
     state: present
   with_dict: {
