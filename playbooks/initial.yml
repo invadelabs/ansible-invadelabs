@@ -15,6 +15,14 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
+- name: initial; ensure "nrpe" is in sudoers with smartctl
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^nrpe ALL='
+    line: 'nrpe ALL = NOPASSWD: /usr/sbin/smartctl'
+    validate: '/usr/sbin/visudo -cf %s'
+
 - name: initial; mkdir /root/installers
   file:
     path: /root/installers
