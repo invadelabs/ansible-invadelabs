@@ -139,6 +139,16 @@
     checksum: "sha256:7cc84d9136bf31ae021bc48997167375ddbbe701c2886f74fa4d7b00abaa0242"
   when: ansible_host == "drew-serv"
 
+## check_smart.pl
+- name: initial; check_smart.pl
+  get_url:
+    url: https://github.com/Napsty/check_smart/raw/6.7.0/check_smart.pl
+    dest: /usr/local/bin/check_smart.pl
+    mode: 0755
+    force: no
+    checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
+  when: ansible_host == "drew-serv"
+
 ## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
 - name: initial; nrpe; dl fail2ban.sh
   get_url:
