@@ -37,7 +37,7 @@
 
 ## Restart Service Handlers
 - name: Restart apache2.service
-  service: name=apache2 state=restarted  
+  service: name=apache2 state=restarted
 - name: Restart dhcpcd.service
   service: name=dhcpcd
 - name: Restart filebeat.service
@@ -78,3 +78,5 @@
   service: name=systemd-journald state=restarted
 - name: Restart smb.service
   service: name=smb state=restarted
+- name: Restart systemd-logind.service
+  service: name=systemd-logind state=restarted
