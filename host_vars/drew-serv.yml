@@ -13,4 +13,7 @@
     - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 10"
     - check_es_readonly: "/usr/local/bin/check_es_system.sh -H localhost -t readonly"
     - check_es_status: "/usr/local/bin/check_es_system.sh -H localhost -t status"
+    - check_smart_sda: "/usr/local/bin/check_smart.pl -d /dev/sda -i auto -w Reallocated_Event_Count=5"
+    - check_smart_sdb: "/usr/local/bin/check_smart.pl -d /dev/sdb -i auto"
+    - check_smart_sdc: "/usr/local/bin/check_smart.pl -d /dev/sdc -i auto"
   postfix_mynetworks: "172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
