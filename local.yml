@@ -27,28 +27,25 @@
     when: ansible_host == "drew-serv"
   - include: playbooks/drive.yml # google drive bits
     when: ansible_host == "drew-serv"
-  - include: playbooks/mount.yml
+  - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
-  - include: playbooks/samba.yml
+  - include: playbooks/httpd.yml # reverse https proxy for nagios/ns/kibana
     when: ansible_host == "drew-serv"
-  - include: playbooks/httpd.yml
+  - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
-
-  - include: playbooks/postfix.yml
-    when: ansible_host == "drew-serv"
-  - include: playbooks/postfix_relay.yml
+  - include: playbooks/postfix_relay.yml # postfix config for relay
     when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
 
-  - include: playbooks/ntop.yml # hardware specifics
+  - include: playbooks/ntop.yml # ntop network monitoring
     when: ansible_host == "drew-piv3"
 
-  - include: playbooks/nut_ups.yml # hardware specifics
+  - include: playbooks/nut_ups.yml # NUT UPS config
     when: ansible_host == "drew-piv3"
 
   - include: playbooks/rpi-cluster.yml
     when: "'rpi-cluster' in group_names"
 
-  - include: playbooks/docker.yml
+  - include: playbooks/docker.yml # config for raspberry pi kubernetes cluster
   - include: playbooks/sshd_config.yml
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
@@ -65,9 +62,9 @@
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
-    - docker; create container gitlab
     - docker; create container nightscout
     - docker; create container bind
+    # - docker; create container gitlab
 
 ## HANDLERS ##
   handlers:

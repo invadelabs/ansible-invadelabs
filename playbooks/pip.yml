@@ -28,3 +28,4 @@
     name:
     - setuptools
     - docker-py # needed for ubuntu16.04-armhf ansible & docker-py
+  when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
