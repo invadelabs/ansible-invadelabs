@@ -56,8 +56,8 @@
     # - qemu-kvm
     # - libvirt
     # - virt-install
+    # - libguestfs-tools
     - bridge-utils
-    - libguestfs-tools
   notify: # XXX break this into smaller groups for when new packages are needed
   - Start docker.service
   - Start chronyd.service
@@ -68,7 +68,7 @@
   - Start postfix.service
   - Start rsyslog.service
   - Start nrpe.service
-  - Start libvirtd.service
+  # - Start libvirtd.service
   - Setup lm_sensors
 
 ## filebeat

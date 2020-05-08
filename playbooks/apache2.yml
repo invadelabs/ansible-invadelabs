@@ -81,7 +81,7 @@
 - name: apache2; /var/www/html/index.html
   copy:
     dest: /var/www/html/index.html
-    content: ""
+    content: "oops"
   notify: Restart apache2.service
 
 # disable default site otherwise breaks some 302 http->https

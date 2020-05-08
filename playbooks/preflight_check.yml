@@ -71,6 +71,9 @@
   failed_when: rclone_stat.rc != 0 # rc = proccess exit code
   when: ansible_host == "drew-serv"
 
+- debug:
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
+
 - name: preflight_check; docker; ensure /srv/docker-elk/data exists
   stat:
     path: /srv/docker-elk/data
