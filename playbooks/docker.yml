@@ -18,7 +18,7 @@
     groups: docker
     append: yes
 
-# /etc/sysconfig/docker XXX
+# /etc/sysconfig/docker
 #+#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
 #+OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
 
@@ -30,4 +30,4 @@
   when: ansible_host == "drew-serv"
 
 - debug:
-    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here." # XXX
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
