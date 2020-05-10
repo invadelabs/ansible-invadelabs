@@ -51,32 +51,12 @@
   failed_when: rclone_stat.rc != 0 # rc = proccess exit code
   when: (ansible_host == "drew-serv") or (ansible_host == "invadelabs.com")
 
-# (run as root if fails) gcloud auth login my.email@adress.com
-- name: preflight_check; if google cloud sdk initalized
-  shell: gcloud auth list | grep drewderivative@gmail.com && touch /var/log/gcloud-sdk.touch
-  args:
-    chdir: /root
-    creates: /var/log/gcloud-sdk.touch
-  register: rclone_stat
-  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-  when: ansible_host == "drew-serv"
-
-# (run as root if fails) gcloud config set project invadelabs
-- name: preflight_check; if google cloud sdk project set
-  shell: gcloud config list project | grep invadelabs && touch /var/log/gcloud-sdk-proj.touch
-  args:
-    chdir: /root
-    creates: /var/log/gcloud-sdk.touch
-  register: rclone_stat
-  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-  when: ansible_host == "drew-serv"
-
 - debug:
-    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
 
-- name: preflight_check; docker; ensure /srv/docker-elk/data exists
+- name: preflight_check; docker; ensure /srv/data exists
   stat:
-    path: /srv/docker-elk/data
+    path: /srv/data
   register: elk_data
   failed_when: elk_data.stat.exists == False
   when: ansible_host == "drew-serv"
