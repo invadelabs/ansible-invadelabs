@@ -28,7 +28,6 @@
     path: /root/installers
     state: directory
 
-#XXX install python2-libselinux here
 - name: initial; add /etc/motd
   template:
     src: templates/etc/motd.j2
@@ -44,7 +43,7 @@
   command: timedatectl set-timezone America/Denver
   when: tz_localtime.stat.lnk_target != "../usr/share/zoneinfo/America/Denver"
 
-# will be handled by gce firewall list
+# XXX will be handled by gce firewall list
 - name: initial; disable sshguard invadelabs.com
   service: name=sshguard state=stopped enabled=no
   when: ansible_fqdn == "invadelabs.com"
