@@ -160,10 +160,10 @@
 - name: initial; nrpe; dl fail2ban.sh
   get_url:
     url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
-    dest: /usr/lib/nagios/plugins/check_fail2ban.sh
+    dest: /usr/local/bin/check_fail2ban.sh
     mode: 0755
     force: no
-    checksum: "sha256:bd5f071f253c27ae18ae5f7dd984d7ac31ac2962f24be84bcbee5395aea5f578"
+    checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
   when: ansible_host == "drew-piv3"
 
 - name: initial; nrpe; /var/run/fail2ban/fail2ban.sock perms

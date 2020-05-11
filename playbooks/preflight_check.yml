@@ -1,4 +1,7 @@
 ---
+- debug:
+    msg: "preflight_check; passwd pi; useradd -m -k drew; passwd drew; sudo visudo; sudo vi /etc/hosts 192.168... drew-piv4; sudo hostnamectl set-hostname drew-piv4.blabla;"
+
 - name: preflight_check; fail if hostname not set
   fail:
     msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"

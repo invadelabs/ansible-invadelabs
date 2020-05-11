@@ -1,14 +1,45 @@
----
-- name: ntop; ntopng config
-  lineinfile:
-    dest: /etc/ntopng/ntopng.conf
-    regexp: "^{{ntop_item.key}}"
-    line: "{{ntop_item.key}}"
-    state: present
-  with_dict: {
-    '-G=/var/run/ntopng.pid': '',
-    '-F "es;flows;ntopng-%Y.%m;http://192.168.1.125:9200/_bulk;"': ''}
-  loop_control:
-    loop_var: ntop_item
-  notify:
-    - Restart ntopng.service
+# ---
+# # XXX switching to package in raspbian buster repo
+#
+# ## install ntopng AND nut for ups
+# - name: pkgs_debian; drew-piv3 ntopng and NUT for UPS
+#   apt:
+#     pkg:
+#       - ntopng
+#     state: present
+#   when: ansible_host == "drew-piv3"
+#   notify:
+#     - Start ntopng.service
+#
+# ## ntop
+# - name: pkgs_debian; add ntop apt key
+#   apt_key:
+#     url: http://packages.ntop.org/apt/ntop.key
+#     state: present
+#   when: ansible_host == "drew-piv3"
+#
+# - name: pkgs_debian; apt repo ntop armhf
+#   apt_repository:
+#     repo: deb http://apt.ntop.org/buster_pi armhf/
+#     state: present
+#   when: ansible_host == "drew-piv3"
+#
+# - name: pkgs_debian; apt repo ntop all
+#   apt_repository:
+#     repo: deb http://apt.ntop.org/buster_pi all/
+#     state: present
+#   when: ansible_host == "drew-piv3"
+#
+# - name: ntop; ntopng config
+#   lineinfile:
+#     dest: /etc/ntopng/ntopng.conf
+#     regexp: "^{{ntop_item.key}}"
+#     line: "{{ntop_item.key}}"
+#     state: present
+#   with_dict: {
+#     '-G=/var/run/ntopng.pid': '',
+#     '-F "es;flows;ntopng-%Y.%m;http://192.168.1.125:9200/_bulk;"': ''}
+#   loop_control:
+#     loop_var: ntop_item
+#   notify:
+#     - Restart ntopng.service
