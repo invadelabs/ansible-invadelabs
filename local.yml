@@ -34,7 +34,7 @@
   - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix_relay.yml # postfix config for relay
-    when: (ansible_host == "drew-pine64") or ( ansible_host == "drew-piv3" ) or ( 'rpi-cluster' in group_names )
+    when: (ansible_host != "drew-serv")
 
   - include: playbooks/ntop.yml # ntop network monitoring
     when: ansible_host == "drew-piv3"

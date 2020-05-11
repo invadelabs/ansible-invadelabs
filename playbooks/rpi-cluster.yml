@@ -1,4 +1,39 @@
 ---
+## docker apt
+- name: pkgs_debian; add docker key
+  apt_key:
+    url: https://download.docker.com/linux/raspbian/gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo docker-ce
+  apt_repository:
+    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian stretch edge
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+## kubernetes apt
+- name: pkgs_debian; add kubernetes key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+- name: pkgs_debian; apt repo kubernetes
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+  when: "'rpi-cluster' in group_names"
+
+## rpi-cluster apt docker-ce & kubenetes
+- name: pkgs_debian; rpi-cluster docker and kubernetes
+  apt:
+    pkg:
+      - docker-ce
+      - kubeadm
+    state: present
+  when: "'rpi-cluster' in group_names"
+
 - name: rpi-cluster; disable swap
   shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
   when: ansible_swaptotal_mb > 0
