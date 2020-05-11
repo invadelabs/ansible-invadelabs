@@ -85,6 +85,12 @@
   when: ansible_os_family == "RedHat"
   notify: Start filebeat.service
 
+# google cloud sdk
+- name: pkgs_fedora; install google-cloud-sdk snap
+  command: snap install google-cloud-sdk --classic
+  args:
+    creates: /var/lib/snapd/snap/bin/gcloud
+
 - debug:
     msg: "Run `gcloud auth login drewderivative@gmail.com` if we fail here"
 
@@ -108,6 +114,3 @@
   register: rclone_stat
   failed_when: rclone_stat.rc != 0 # rc = proccess exit code
   when: ansible_host == "drew-serv"
-
-- name: pkgs_fedora; install google-cloud-sdk snap
-  command: snap install google-cloud-sdk --classic
