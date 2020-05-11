@@ -1,4 +1,5 @@
 ---
+  ansible_python_interpreter: "/usr/bin/python3"
   nrpe_plugins_dir: "/usr/lib/nagios/plugins"
   nrpe_specific:
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 4,2,1 -c 6,4,2"
@@ -8,5 +9,5 @@
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_apt: "{{nrpe_plugins_dir}}/check_apt -l -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 65 -c 70"
-    - check_fail2ban: "{{nrpe_plugins_dir}}/check_fail2ban.sh -w 1 -c 2"
+    - check_fail2ban: "/usr/local/bin/check_fail2ban.sh -w 1 -c 2"
     - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"

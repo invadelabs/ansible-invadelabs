@@ -13,30 +13,30 @@
     - mailutils
     - postfix
     - libsasl2-modules # needed for postfix + sendgrid
+    - python-apt # needed for rasbian buster ansible
 
     #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
     - monitoring-plugins-standard
     - nagios-nrpe-server
     - monitoring-plugins-basic
-    - nagios-plugins-contrib # XXX installs several dependencies for 1 scripts, work around?
-    - debian-keyring # needed for nrpe debian package
-    - debian-archive-keyring # needed for nrpe debian package
+    - nagios-plugins-contrib # XXX installs ~112 pkg deps for check_memory / check_uptime, work around?
+    # - debian-keyring # needed for nrpe debian package
+    # - debian-archive-keyring # needed for nrpe debian package
 
-    #- ansible # will be installed via pip for arm devices
-    - software-properties-common # for ansible
-    - python-paramiko # for ansible-pull
-    - python-jinja2 # for ansible-pull
+    # #- ansible # will be installed via pip for arm devices
+    # - software-properties-common # for ansible
+    # - python-paramiko # for ansible-pull
+    # - python-jinja2 # for ansible-pull
 
     - vim
     - logwatch
-    - python-pip # needed for docker-py
-    - libdate-manip-perl # needed for logwatch date ranges
+    # - python-pip # needed for docker-py
+    # - libdate-manip-perl # needed for logwatch date ranges
     - curl # for invadelabs/cron-invadelabs
     - highlight # for invadelabs/cron-invadelabs
     - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
     - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
     - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-    - pxz # for invadelabs/cron-invadelabs/gdrive.sh
     - gawk # for lynis and ansi2html
     - dbus # for lynis and ansi2html
     - jq
@@ -45,72 +45,17 @@
   - Start postfix.service
   - update-alternatives; editor vim-basic
 
-## docker apt
-- name: pkgs_debian; add docker key
-  apt_key:
-    url: https://download.docker.com/linux/raspbian/gpg
-    state: present
-  when: "'rpi-cluster' in group_names"
-
-- name: pkgs_debian; apt repo docker-ce
-  apt_repository:
-    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian stretch edge
-    state: present
-  when: "'rpi-cluster' in group_names"
-
-## kubernetes apt
-- name: pkgs_debian; add kubernetes key
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-  when: "'rpi-cluster' in group_names"
-
-- name: pkgs_debian; apt repo kubernetes
-  apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-  when: "'rpi-cluster' in group_names"
-
-## rpi-cluster apt docker-ce & kubenetes
-- name: pkgs_debian; rpi-cluster docker and kubernetes
-  apt:
-    pkg:
-      - docker-ce
-      - kubeadm
-    state: present
-  when: "'rpi-cluster' in group_names"
-
-## ntop
-- name: pkgs_debian; add ntop apt key
-  apt_key:
-    url: http://packages.ntop.org/apt/ntop.key
-    state: present
-  when: ansible_host == "drew-piv3"
-
-- name: pkgs_debian; apt repo ntop armhf
-  apt_repository:
-    repo: deb http://apt.ntop.org/stretch_pi armhf/
-    state: present
-  when: ansible_host == "drew-piv3"
-
-- name: pkgs_debian; apt repo ntop all
-  apt_repository:
-    repo: deb http://apt.ntop.org/stretch_pi all/
-    state: present
-  when: ansible_host == "drew-piv3"
-
 ## install ntopng AND nut for ups
-- name: pkgs_debian; drew-piv3 ntopng and NUT for UPS
+- name: pkgs_debian; drew-piv3 NUT for UPS and ntopng
   apt:
     pkg:
-      - ntopng
+      - ntopng # XXX
       - nut
       - nut-client
       - nut-server
     state: present
   when: ansible_host == "drew-piv3"
   notify:
-    - Start ntopng.service
     - Start nut-driver.service
     - Start nut-server.service
     - Start nut-monitor.service
@@ -128,6 +73,7 @@
       - php-xml
       - php-curl # for selenium-invadelabs script
       - php-apcu # Alternative PHP Cache (APC)
+      - pxz # for invadelabs/cron-invadelabs/gdrive.sh
     state: present
   notify:
   - Start apache2.service
@@ -147,20 +93,6 @@
   apt:
     deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
   when: ansible_fqdn == "invadelabs.com"
-
-## lynis
-- name: pkgs_debian; download lynis
-  get_url:
-    url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
-    dest: /root/installers/lynis_2.6.2-1_all.deb
-    force: no
-    checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
-
-- name: pkgs_debian; install lynis
-  apt:
-    deb: /root/installers/lynis_2.6.2-1_all.deb
-  when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
 
 ## filebeat (for apache logs)
 - name: pkgs_debian; download filebeat deb
@@ -190,3 +122,17 @@
   apt:
     deb: /root/installers/rclone-v1.48.0-linux-amd64.deb
   when: ansible_fqdn == "invadelabs.com"
+
+# ## lynis
+# - name: pkgs_debian; download lynis
+#   get_url:
+#     url: http://ftp.debian.org/debian/pool/main/l/lynis/lynis_2.6.2-1_all.deb
+#     dest: /root/installers/lynis_2.6.2-1_all.deb
+#     force: no
+#     checksum: "sha256:7a9d0b3f20cd21599272d0525dc0c37807b7c62c39ed529107d47309e4ceff32"
+#   when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
+#
+# - name: pkgs_debian; install lynis
+#   apt:
+#     deb: /root/installers/lynis_2.6.2-1_all.deb
+#   when: (ansible_host == "drew-piv3") or (ansible_host == "drew-pine64") or ( 'rpi-cluster' in group_names )
