@@ -1,14 +1,19 @@
 ---
 - name: firewall; add firewalld rules
   shell: |
-    firewall-cmd --add-service=ssh --permanent --zone=public
-    firewall-cmd --add-service=smtp --permanent --zone=public
-    firewall-cmd --add-service=http --permanent --zone=public
-    firewall-cmd --add-service=https --permanent --zone=public
-    firewall-cmd --add-service=samba --permanent --zone=public
-    firewall-cmd --add-port=5666/tcp --permanent --zone=public # nagios-nrpe
-    firewall-cmd --add-port=10514/tcp --permanent --zone=public # elasticsearch / syslog
-    firewall-cmd --add-port=5000/tcp --permanent --zone=public # elasticsearch /filebeat
+    firewall-cmd --permanent --zone=FedoraServer --add-masquerade
+    # firewall-cmd --permanent --zone=FedoraServer --add-interface=docker0
+    # firewall-cmd --permanent --zone=FedoraServer --add-rich-rule='rule family=ipv4 source address=172.17.0.0/16 accept' && firewall-cmd --reload
+    firewall-cmd --permanent --zone=FedoraServer --add-service=ssh
+    firewall-cmd --permanent --zone=FedoraServer --add-service=smtp
+    firewall-cmd --permanent --zone=FedoraServer --add-service=http
+    firewall-cmd --permanent --zone=FedoraServer --add-service=https
+    firewall-cmd --permanent --zone=FedoraServer --add-service=samba
+    # 5000, 5601, 10514 needed for nagios container to connect to es bridge containers
+    firewall-cmd --permanent --zone=FedoraServer --add-port=5000/tcp # elasticsearch logstash/ filebeat via docker
+    firewall-cmd --permanent --zone=FedoraServer --add-port=5601/tcp # elasticsearch kibana
+    firewall-cmd --permanent --zone=FedoraServer --add-port=5666/tcp # nagios-nrpe
+    firewall-cmd --permanent --zone=FedoraServer --add-port=10514/tcp # elasticsearch logstash / syslog via docker
     firewall-cmd --reload
     touch /var/log/firewall-first.touch
   args:
