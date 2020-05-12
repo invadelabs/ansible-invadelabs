@@ -23,7 +23,6 @@
     # - debian-keyring # needed for nrpe debian package
     # - debian-archive-keyring # needed for nrpe debian package
 
-    # #- ansible # will be installed via pip for arm devices
     # - software-properties-common # for ansible
     # - python-paramiko # for ansible-pull
     # - python-jinja2 # for ansible-pull
@@ -44,6 +43,14 @@
   notify:
   - Start postfix.service
   - update-alternatives; editor vim-basic
+
+# XXX >ubuntu18.04 and debian buster install ansible via apt (python3)
+- name: pkgs_debian; install ansible via apt
+  apt:
+    pkg:
+      - ansible
+    state: present
+  when: "'rpi-cluster' not in group_names"
 
 ## install ntopng AND nut for ups
 - name: pkgs_debian; drew-piv3 NUT for UPS and ntopng
