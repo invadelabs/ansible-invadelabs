@@ -45,3 +45,18 @@
   notify:
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
+
+# pine64 buster needs something like
+# libb-hooks-op-check-perl
+# libclass-accessor-perl
+# libconfig-tiny-perl
+# libdevel-callchecker-perl
+# libdynaloader-functions-perl
+# libmath-calc-units-perl
+# libmodule-implementation-perl
+# libmodule-runtime-perl
+# libparams-classify-perl
+# libparams-validate-perl
+# libsub-name-perl
+# libtry-tiny-perl
+# dpkg -i http://ftp.us.debian.org/debian/pool/main/libn/libnagios-plugin-perl/libnagios-plugin-perl_0.36-1_all.deb

@@ -108,7 +108,7 @@
     mode: 0755
     force: no
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
-  when: ( ansible_host == "drew-serv" ) or ( ansible_host == "drew-pine64" )
+  when: ansible_host == "drew-serv"
 
 ## ansi2html.sh
 - name: initial; ansi2html.sh
