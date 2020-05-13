@@ -49,7 +49,7 @@
     name: check_ddns.sh
     minute: "*/5"
     user: root
-    job: /root/scripts/check_ddns.sh nm.invadelabs.com
+    job: /root/scripts/check_ddns.sh nm.invadelabs.com > /dev/null 2>&1
   when: ansible_host == "drew-serv"
 
 - name: cron; check_docker.sh
@@ -57,7 +57,7 @@
     name: check_docker.sh
     minute: "*/1"
     user: root
-    job: /root/scripts/check_docker.sh
+    job: /root/scripts/check_docker.sh  > /dev/null 2>&1
   when: ansible_host == "drew-serv"
 
 - name: cron; gen_sitemap.sh
