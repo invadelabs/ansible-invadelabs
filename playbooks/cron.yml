@@ -121,6 +121,15 @@
     job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
   when: ansible_host == "drew-serv"
 
+# XXX temp workaround
+- name: cron; disable wifi
+  cron:
+    name: disable wifi
+    special_time: reboot
+    user: root
+    job: nmcli dev set wlo1 managed no && rfkill block 0
+  when: ansible_host == "drew-serv"
+
 - name: cron; docker start bind
   cron:
     name: docker start bind
