@@ -25,6 +25,8 @@
 
   - include: playbooks/hw_drew-serv.yml # hardware specifics
     when: ansible_host == "drew-serv"
+  - include: playbooks/hw_rpi.yml # hardware specifics
+    when: "'debian-arm' in group_names"
   - include: playbooks/drive.yml # google drive bits
     when: ansible_host == "drew-serv"
   - include: playbooks/samba.yml # samba
@@ -50,7 +52,7 @@
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
 
-  # docker containers; if this fails drive is not initialized! `cd /root; drive init`
+  # docker containers; if this fails rclone is not initialized! `cd /root; drive init`
   - name: docker; get drew-serv-bkup-latest.tar.xz backup
     shell: |
       rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^drew-serv.*.tar.xz$' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
@@ -68,24 +70,7 @@
 
 ## HANDLERS ##
   handlers:
-  - include: playbooks/service_handlers.yml # start / restart systemd stuff
-
-  ## Misc Handlers
-  - name: Setup lm_sensors
-    command: sensors-detect --auto # XXX not when modules have already been inserted
-  - name: grub2-mkconfig -o /boot/grub2/grub.cfg
-    command: grub2-mkconfig -o /boot/grub2/grub.cfg
-  - name: systemd daemon-reload
-    systemd: daemon_reload=yes
-  - name: resolvconf -u
-    command: resolvconf -u
-  - name: update-alternatives; editor vim-basic
-    alternatives:
-      name: editor
-      path: /usr/bin/vim.basic
-    when: ansible_os_family == "Debian"
-  - name: Run sysctl
-    command: sysctl -p
+  - include: playbooks/handlers.yml # start / restart systemd stuff, other things
 
   ## Docker Handlers
   - name: docker; extract drew-serv-bkup-latest.tar.xz

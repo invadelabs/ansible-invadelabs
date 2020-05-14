@@ -6,6 +6,9 @@
 - name: pkgs_debian; debconf; postfix; option type 'System mail name'
   debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
 
+- name: pkgs_debian; debconf; debsescan; skip daily email
+  debconf: name=postifx question="debsecan/report" value=false vtype="boolean"
+
 ## base packages to install on every device
 - name: pkgs_debian; install packages
   apt:
@@ -39,10 +42,26 @@
     - gawk # for lynis and ansi2html
     - dbus # for lynis and ansi2html
     - jq
+
+    # sec
+    - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
+    - debsums # for the verification of installed package files against MD5 checksums. [CUST-0875]
+    - needrestart # after upgrades to determine which daemons are using old versions of libraries and need restarting. [CUST-0831]
+    - chkrootkit # malware scanner, to perform periodic file system scans [HRDN-7230]
     state: present
   notify:
   - Start postfix.service
   - update-alternatives; editor vim-basic
+
+    #
+
+# # XXX misisng in ubuntu # to display a list of critical bugs prior to each APT installation. [CUST-0810]
+- name: pkgs_debian; install apt-listbugs
+  apt:
+    pkg:
+      - apt-listbugs
+    state: present
+  when: ansible_host != "invadelabs.com"
 
 # XXX >ubuntu18.04 and debian buster install ansible via apt (python3)
 - name: pkgs_debian; install ansible via apt
