@@ -71,6 +71,7 @@
   when: ansible_os_family == "RedHat"
 - name: Restart ssh.service
   service: name=ssh state=restarted
+  when: ansible_os_family == "Debian"
 - name: Restart sshguard.service
   service: name=sshguard state=restarted
   when: ansible_os_family == "Debian"
@@ -80,3 +81,20 @@
   service: name=smb state=restarted
 - name: Restart systemd-logind.service
   service: name=systemd-logind state=restarted
+
+## Misc Handlers
+- name: Setup lm_sensors
+  command: sensors-detect --auto # XXX not when modules have already been inserted
+- name: grub2-mkconfig -o /boot/grub2/grub.cfg
+  command: grub2-mkconfig -o /boot/grub2/grub.cfg
+- name: systemd daemon-reload
+  systemd: daemon_reload=yes
+- name: resolvconf -u
+  command: resolvconf -u
+- name: update-alternatives; editor vim-basic
+  alternatives:
+    name: editor
+    path: /usr/bin/vim.basic
+  when: ansible_os_family == "Debian"
+- name: Run sysctl
+  command: sysctl -p

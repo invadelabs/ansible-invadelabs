@@ -53,21 +53,3 @@
     regexp: '^gpu_mem='
     line: 'gpu_mem=16'
     state: present
-
-- name: rpi-cluster; set dhcpcd dns server
-  lineinfile:
-    dest: /etc/dhcpcd.conf
-    regexp: "^static domain_name_servers="
-    line: "static domain_name_servers=192.168.1.125"
-    state: present
-  notify:
-    - systemd daemon-reload
-    - Restart dhcpcd.service
-
-- name: rpi-cluster; set dhcpcd dns server
-  lineinfile:
-    dest: /etc/resolvconf.conf
-    regexp: "^search_domains_append="
-    line: "search_domains_append=nm1.invadelabs.com"
-    state: present
-  notify: resolvconf -u

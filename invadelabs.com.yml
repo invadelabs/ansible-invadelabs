@@ -30,7 +30,7 @@
   - include: playbooks/nrpe.yml # sshd_config
 
   handlers:
-  - include: playbooks/service_handlers.yml # start / restart systemd stuff
+  - include: playbooks/handlers.yml # start / restart systemd stuff, other things
 
   - name: apache2; set env variables
     shell: grep {{a2env_vars_item}} /root/apache_env | awk -F '"' '{print $2}'
