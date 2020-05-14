@@ -58,6 +58,9 @@
     # - virt-install
     # - libguestfs-tools
     - bridge-utils
+
+    # sec
+    - chkrootkit
   notify: # XXX break this into smaller groups for when new packages are needed
   - Start docker.service
   - Start chronyd.service
