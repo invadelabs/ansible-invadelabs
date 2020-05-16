@@ -27,8 +27,6 @@
     when: ansible_host == "drew-serv"
   - include: playbooks/hw_rpi.yml # hardware specifics
     when: "'debian-arm' in group_names"
-  - include: playbooks/drive.yml # google drive bits
-    when: ansible_host == "drew-serv"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
   - include: playbooks/httpd.yml # reverse https proxy for nagios/ns/kibana
@@ -56,10 +54,8 @@
   - name: docker; get drew-serv-bkup-latest.tar.xz backup
     shell: |
       rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^drew-serv.*.tar.xz$' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
-      touch /var/log/docker-init.touch
     args:
-      chdir: /root
-      creates: /var/log/docker-init.touch
+      creates: /srv/drew-serv-bkup-latest.tar.xz
     when: ansible_host == "drew-serv"
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz

@@ -30,4 +30,4 @@
   when: ansible_host == "drew-serv"
 
 - debug:
-    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/docker-elk/data if we fail around here."
+    msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
