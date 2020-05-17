@@ -21,6 +21,11 @@
   failed_when: item.stat.exists == False
   when: ansible_host == "invadelabs.com"
 
+- name: preflight_check; ensure tunnel key is in authorized_keys
+  shell: grep tunnel_2020.05.17 /home/drew/.ssh/authorized_keys
+  when: ansible_host == "invadelabs.com"
+  changed_when: false
+
 - name: preflight_check; drew-serv stat required files in /root
   stat:
     path: "{{drewserv_file_item}}"
@@ -28,8 +33,8 @@
     - /root/check_ddns.cred
     - /root/postfix_passwd
     - /root/slacktee.conf
-    - /home/drew/.ssh/id_rsa # XXX add check these are 0400
-    - /root/my.env
+    - /home/drew/.ssh/tunnel_2020.05.17
+    - /root/my.env # XXX add check these are 0400
   loop_control:
     loop_var: drewserv_file_item
   register: item
