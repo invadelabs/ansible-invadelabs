@@ -10,7 +10,7 @@
     - check_updates: "{{nrpe_plugins_dir}}/check_updates -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 90 -c 99"
     - check_es_mem: "/usr/local/bin/check_es_system.sh -H localhost -t mem -d 4"
-    - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 10"
+    - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 20"
     - check_es_readonly: "/usr/local/bin/check_es_system.sh -H localhost -t readonly"
     - check_es_status: "/usr/local/bin/check_es_system.sh -H localhost -t status"
     - check_smart_sda: "/usr/local/bin/check_smart.pl -d /dev/sda -i auto -w Reallocated_Event_Count=5"
