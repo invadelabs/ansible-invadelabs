@@ -127,7 +127,7 @@
     name: disable wifi
     special_time: reboot
     user: root
-    job: sleep 30 && nmcli dev set wlo1 managed no && rfkill block 0
+    job: sleep 30 && nmcli dev set wlo1 managed no && /usr/sbin/rfkill block 0
   when: ansible_host == "drew-serv"
 
 - name: cron; docker start bind
