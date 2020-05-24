@@ -10,6 +10,7 @@
   service: name=filebeat state=started enabled=yes
 - name: Start httpd.service
   service: name=httpd state=started enabled=yes
+  when: ansible_os_family == "RedHat"
 - name: Start libvirtd.service
   service: name=libvirtd state=started enabled=yes
 - name: Start mcelog.service
@@ -44,6 +45,7 @@
   service: name=filebeat state=restarted
 - name: Restart httpd.service
   service: name=httpd state=restarted
+  when: ansible_os_family == "RedHat"
 - name: Restart nagios-nrpe-server.service
   service: name=nagios-nrpe-server state=restarted
   when: ansible_os_family == "Debian"

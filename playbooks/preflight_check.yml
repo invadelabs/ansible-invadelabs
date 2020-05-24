@@ -75,3 +75,10 @@
   register: elk_data
   failed_when: elk_data.stat.exists == False
   when: ansible_host == "drew-serv"
+
+- name: preflight_check; ensure /mnt/share/nexus-backup exists
+  stat:
+    path: /mnt/share/nexus-data
+  register: elk_data
+  failed_when: elk_data.stat.exists == False
+  when: ansible_host == "drew-serv"
