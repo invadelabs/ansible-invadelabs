@@ -8,7 +8,8 @@
 
 - name: pkgs_debian; apt repo docker-ce
   apt_repository:
-    repo: deb [arch=armhf] https://download.docker.com/linux/raspbian stretch edge
+    repo: deb [arch=armhf] {{ nexus_repo }}/docker-raspbian/ stretch edge
+    filename: docker-ce
     state: present
   when: "'rpi-cluster' in group_names"
 
@@ -21,7 +22,8 @@
 
 - name: pkgs_debian; apt repo kubernetes
   apt_repository:
-    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    repo: deb {{ nexus_repo }}/kubernetes-apt/ kubernetes-xenial main
+    filename: kubernetes
     state: present
   when: "'rpi-cluster' in group_names"
 

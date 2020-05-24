@@ -15,6 +15,7 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
+# XXX find a better way for this
 - name: initial; ensure "nrpe" is in sudoers with smartctl
   lineinfile:
     path: /etc/sudoers
@@ -47,6 +48,33 @@
 - name: initial; disable sshguard invadelabs.com
   service: name=sshguard state=stopped enabled=no
   when: ansible_fqdn == "invadelabs.com"
+
+- name: initial; add /etc/apt/sources.list apt proxy
+  template:
+    src: templates/etc/apt/sources.list.rpi.j2
+    dest: /etc/apt/sources.list
+  notify: Restart httpd.service
+  when: "'debian-arm' in group_names"
+
+- name: initial; add /etc/apt/sources.list.d/raspi.list apt proxy
+  template:
+    src: templates/etc/apt/sources.list.d/raspi.list.rpi.j2
+    dest: /etc/apt/sources.list.d/raspi.list
+  notify: Restart httpd.service
+  when: "'debian-arm' in group_names"
+
+- name: initial; add lynis gpg key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: C80E383C3DE9F082E01391A0366C67DE91CA5D5F
+  when: "'debian-arm' in group_names"
+
+- name: initial; add /etc/apt/sources.list.d/lynis.list apt proxy
+  template:
+    src: templates/etc/apt/sources.list.d/lynis.list.rpi.j2
+    dest: /etc/apt/sources.list.d/lynis.list
+  notify: Restart httpd.service
+  when: "'debian-arm' in group_names"
 
 - name: initial; drew-piv3; apt; install fail2ban
   apt: name=fail2ban state=present
