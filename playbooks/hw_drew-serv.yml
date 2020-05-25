@@ -38,6 +38,11 @@
   notify:
     - Restart systemd-logind.service
 
+- name: hw; set /etc/default/grub no rhgb quiet
+  shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" && touch /var/log/grubby.touch
+  args:
+    creates: /var/log/grubby.touch
+
 # - name: hw; set /etc/default/grub nomodeset
 #   shell: grubby --update-kernel=ALL --args="nomodeset"
 #

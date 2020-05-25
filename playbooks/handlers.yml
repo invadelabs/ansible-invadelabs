@@ -31,6 +31,8 @@
   service: name=php7.2-fpm.service state=started enabled=yes
 - name: Start postfix.service
   service: name=postfix state=started enabled=yes
+- name: Start powertop.service
+  service: name=powertop state=started enabled=yes
 - name: Start rsyslog.service
   service: name=rsyslog state=started enabled=yes
 - name: Start smb.service
