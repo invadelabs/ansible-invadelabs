@@ -41,6 +41,8 @@
     - lm_sensors
     - lynis
     - fuse-encfs
+    - powertop
+    - upower # /etc/UPower/Upower.conf
     # nagios / nrpe bits
     - nrpe
     - nagios-plugins-nrpe
@@ -63,15 +65,16 @@
     # sec
     - chkrootkit
   notify: # XXX break this into smaller groups for when new packages are needed
-  - Start docker.service
   - Start chronyd.service
-  - Start mcelog.service
-  - Start smb.service
-  - Start nmb.service
+  - Start docker.service
   - Start httpd.service
+  - Start mcelog.service
+  - Start powertop.service
   - Start postfix.service
-  - Start rsyslog.service
+  - Start nmb.service
   - Start nrpe.service
+  - Start rsyslog.service
+  - Start smb.service
   # - Start libvirtd.service
   - Setup lm_sensors
 

@@ -181,8 +181,18 @@
     checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
   when: ansible_host == "drew-serv"
 
+## check_bat # XXX set checksum when done
+- name: initial; nrpe; dl check_bat
+  get_url:
+    url: https://github.com/drew-holt/nagios-plugins/raw/master/check_bat
+    dest: /usr/local/bin/check_bat
+    mode: 0755
+    force: no
+    # checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
+  when: ansible_host == "drew-serv"
+
 ## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
-- name: initial; nrpe; dl fail2ban.sh
+- name: initial; nrpe; dl check_fail2ban.sh
   get_url:
     url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
     dest: /usr/local/bin/check_fail2ban.sh
