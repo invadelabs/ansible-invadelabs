@@ -14,6 +14,10 @@
     firewall-cmd --permanent --zone=FedoraServer --add-port=5601/tcp # elasticsearch kibana
     firewall-cmd --permanent --zone=FedoraServer --add-port=5666/tcp # nagios-nrpe
     firewall-cmd --permanent --zone=FedoraServer --add-port=10514/tcp # elasticsearch logstash / syslog via docker
+    # 1883 needed for mosquitto so other containers may connect to it on bridge network
+    firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
+    # 8123 needed for home-assistant so other containers may connect to it on bridge network
+    firewall-cmd --permanent --zone=FedoraServer --add-port=8123/tcp
     firewall-cmd --reload
     touch /var/log/firewall-first.touch
   args:
