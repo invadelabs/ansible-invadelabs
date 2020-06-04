@@ -64,6 +64,9 @@
     - docker; create container nightscout
     - docker; create container bind
     - docker; create container nexus
+    - docker; create container mosquitto
+    - docker; create container zigbee2mqtt
+    - docker; create container homeassistant
     # - docker; create container gitlab
 
 ## HANDLERS ##
@@ -134,7 +137,7 @@
       state: started
       restart_policy: unless-stopped
       hostname: nightscout.invadelabs.com
-      log_driver: json-file
+      log_driver: none
       log_options:
         max-size: "10m"
       ports:
@@ -156,6 +159,60 @@
         - /mnt/share/nexus-data:/nexus-data
       ports:
         - "0.0.0.0:8081:8081/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container mosquitto
+    docker_container:
+      name: mosquitto
+      image: eclipse-mosquitto:1.6.10
+      state: started
+      restart_policy: unless-stopped
+      hostname: mosquitto.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+        - /srv/mosquitto/data:/mosquitto/data
+      ports:
+        - "0.0.0.0:1883:1883/tcp"
+        - "0.0.0.0:9001:9001/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container zigbee2mqtt
+    docker_container:
+      name: zigbee2mqtt
+      image: koenkk/zigbee2mqtt:1.13.1
+      state: started
+      restart_policy: unless-stopped
+      hostname: zigbee2mqtt.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/zigbee2mqtt:/app/data
+      devices:
+        - /dev/ttyACM0:/dev/ttyACM0
+      env:
+        TZ: "America/Denver"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container homeassistant
+    docker_container:
+      name: homeassistant
+      image: homeassistant/home-assistant:stable
+      state: started
+      restart_policy: unless-stopped
+      hostname: homeassistant.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/homeassistant:/config
+      ports:
+        - "0.0.0.0:8123:8123/tcp"
+      env:
+        TZ: "America/Denver"
     when: ansible_host == "drew-serv"
 
 #    # https://docs.gitlab.com/runner/install/docker.html
