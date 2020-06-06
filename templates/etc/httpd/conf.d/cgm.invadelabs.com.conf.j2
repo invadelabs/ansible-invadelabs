@@ -1,0 +1,39 @@
+<VirtualHost *:80>
+  ServerName cgm.invadelabs.com
+  ServerAdmin drew@invadelabs.com
+
+  ErrorLog logs/cgm.invadelabs.com.error.log
+  CustomLog logs/cgm.invadelabs.com.access.log vhost_combined
+
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+  RewriteCond %{SERVER_NAME} =invadelabs.com
+  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+
+<IfModule mod_ssl.c>
+
+<VirtualHost *:443>
+  ServerName cgm.invadelabs.com
+  ServerAdmin drew@invadelabs.com
+  DocumentRoot /var/www/html
+
+  ErrorLog logs/cgm.invadelabs.com.secure.error.log
+  CustomLog logs/cgm.invadelabs.com.secure.access.log vhost_combined
+
+  ProxyPreserveHost On
+  ProxyRequests off
+  ProxyPass / http://127.0.0.1:1337
+  ProxyPassReverse / http://127.0.0.1:1337
+
+  RewriteEngine on
+  RewriteRule /(.*)  http://127.0.0.1:1337/$1 [P,L]
+
+  Include /etc/letsencrypt/options-ssl-apache.conf
+
+  SSLCertificateFile /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/invadelabs.com-0001/privkey.pem
+</VirtualHost>
+
+</IfModule>

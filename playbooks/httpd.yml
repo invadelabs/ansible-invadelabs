@@ -2,9 +2,15 @@
 # fedora vhosts
 - name: httpd; add site templates
   template:
-    src: templates/etc/httpd/conf.d/drew-serv.nm1.invadelabs.com.conf.j2
-    dest: /etc/httpd/conf.d/drew-serv.nm1.invadelabs.com.conf
-  no_log: true
+    src: templates/etc/httpd/conf.d/{{httpd_template_item}}.conf.j2
+    dest: /etc/httpd/conf.d/{{httpd_template_item}}.conf
+  with_items:
+    - drew-serv.nm1.invadelabs.com
+    - cgm.invadelabs.com
+    - ha.invadelabs.com
+  loop_control:
+    loop_var: httpd_template_item
+  when: ansible_host == "drew-serv"
   notify: Restart httpd.service
 
 - name: apache2; add SSLStapling Cache to ssl.conf
