@@ -8,6 +8,7 @@
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     rsyslog_host: "192.168.1.125"
     rsyslog_port: "10514"
+    mon_containers: "bind nightscout nexus docker-elk_logstash_1 docker-elk_kibana_1 docker-elk_elasticsearch_1 nightscout mosquitto zigbee2mqtt homeassistant graphite"
 
   tasks:
   - include: playbooks/preflight_check.yml # fail if missing secrets
