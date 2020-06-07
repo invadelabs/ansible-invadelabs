@@ -62,12 +62,13 @@
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
-    - docker; create container nightscout
     - docker; create container bind
+    - docker; create container nightscout
     - docker; create container nexus
     - docker; create container mosquitto
     - docker; create container zigbee2mqtt
     - docker; create container homeassistant
+    - docker; create container graphite
     # - docker; create container gitlab
 
 ## HANDLERS ##
