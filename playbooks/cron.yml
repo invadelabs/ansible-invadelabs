@@ -57,7 +57,7 @@
     name: check_docker.sh
     minute: "*/1"
     user: root
-    job: /root/scripts/check_docker.sh "nagios4 bind nightscout nexus docker-elk_logstash_1 docker-elk_kibana_1 docker-elk_elasticsearch_1 nightscout" > /dev/null 2>&1
+    job: /root/scripts/check_docker.sh "nagios4" > /dev/null 2>&1
   when: ansible_host == "drew-serv"
 
 - name: cron; gen_sitemap.sh
