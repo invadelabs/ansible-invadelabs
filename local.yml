@@ -217,6 +217,28 @@
         TZ: "America/Denver"
     when: ansible_host == "drew-serv"
 
+  - name: docker; create container graphite
+    docker_container:
+      name: graphite
+      image: graphiteapp/graphite-statsd
+      state: started
+      restart_policy: unless-stopped
+      hostname: graphite.invadelabs.com
+      log_driver: none
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/graphite/conf:/opt/graphite/conf
+        - /srv/graphite/storage:/opt/graphite/storage
+        - /srv/graphite/statsd_config:/opt/statsd/config
+      ports:
+        - "2080:80/tcp"
+        - "2003-2004:2003-2004/tcp"
+        - "2023-2024:2023-2024/tcp"
+        - "8125:8125/udp"
+        - "8126:8126/tcp"
+    when: ansible_host == "drew-serv"
+
 #    # https://docs.gitlab.com/runner/install/docker.html
 #  - name: docker; create container gitlab
 #    docker_container:
