@@ -204,7 +204,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: homeassistant/home-assistant:stable
+      image: homeassistant/home-assistant:0.110.6
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -222,7 +222,7 @@
   - name: docker; create container graphite
     docker_container:
       name: graphite
-      image: graphiteapp/graphite-statsd
+      image: graphiteapp/graphite-statsd:1.1.7-2
       state: started
       restart_policy: unless-stopped
       hostname: graphite.invadelabs.com
