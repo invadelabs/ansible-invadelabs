@@ -38,8 +38,8 @@
   notify:
     - Restart systemd-logind.service
 
-- name: hw; set /etc/default/grub no rhgb quiet
-  shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" && touch /var/log/grubby.touch
+- name: hw; grubby remove rhgb quiet and disable cgroupsv2
+  shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" --args="systemd.unified_cgroup_hierarchy=0" && touch /var/log/grubby.touch
   args:
     creates: /var/log/grubby.touch
 

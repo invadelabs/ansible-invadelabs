@@ -93,6 +93,15 @@
     state: present
   when: ansible_os_family == "Debian"
 
+- name: initial; fedora needs link /var/lib/snapd/snap to /snap
+  file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    owner: root
+    group: root
+    state: link
+  when: ansible_host == "drew-serv"
+
 - name: initial; dnf; install etckeeper # XXX fix python2-dnf requirement for fedora 30
   dnf: name=etckeeper state=present
   when: ansible_distribution == "Fedora"

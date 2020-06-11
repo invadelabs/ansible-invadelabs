@@ -1,4 +1,14 @@
 ---
+# install certs
+- name: httpd; initial letsencrypt
+  shell: /root/scripts/check_letsencrypt.sh
+  args:
+    creates: /etc/letsencrypt
+  register: rclone_stat
+  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "drew-serv"
+  notify: Restart httpd.service
+
 # fedora vhosts
 - name: httpd; add site templates
   template:
