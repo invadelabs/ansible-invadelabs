@@ -18,7 +18,7 @@
     - vim-enhanced
     - mcelog
     - logwatch
-    - rclone
+    - rclone # googledrive cli backup
     - cronie # crontab
     - git # for github.com/invadelabs/cron-invadelabs
     - bc # for github.com/invadelabs/cron-invadelabs
