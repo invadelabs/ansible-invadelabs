@@ -89,7 +89,7 @@
   apt:
     pkg:
     - etckeeper
-    - python-apt # for ansible
+    - python3-apt # for ansible
     state: present
   when: ansible_os_family == "Debian"
 
@@ -205,7 +205,7 @@
     dest: /usr/local/bin/check_bat
     mode: 0755
     force: no
-    # checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
+    checksum: "sha256:50bafe42bfbf9cde2c34daaf56b64f940f2502ceeb9ae5ea71dd5b936837e345"
   when: ansible_host == "drew-serv"
 
 ## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
