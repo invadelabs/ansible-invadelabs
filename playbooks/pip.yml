@@ -1,5 +1,7 @@
 ---
 - name: pip; install check-docker on drew-serv
   pip:
-    name: check-docker
+    name:
+      - check-docker
+      - pymongo
   when: ansible_host == "drew-serv"

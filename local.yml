@@ -8,6 +8,7 @@
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     rsyslog_host: "192.168.1.125"
     rsyslog_port: "10514"
+    docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
     monitor_containers: "bind \
                          nightscout \
                          nexus \
@@ -42,7 +43,7 @@
     when: "'debian-arm' in group_names"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
-  - include: playbooks/httpd.yml # reverse https proxy for nagios/ns/kibana
+  - include: playbooks/httpd.yml # reverse https proxy for nagios/cgm/ha
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
@@ -58,13 +59,12 @@
   - include: playbooks/rpi-cluster.yml
     when: "'rpi-cluster' in group_names"
 
-  - include: playbooks/docker.yml # config for raspberry pi kubernetes cluster
+  - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
 
-  # docker containers; if this fails rclone is not initialized! `cd /root; drive init`
-  - name: docker; get drew-serv-bkup-latest.tar.xz backup
+  - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup
     shell: |
       rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^drew-serv.*.tar.xz$' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
     args:
@@ -102,7 +102,7 @@
   - name: docker; create container nagios4
     docker_container:
       name: nagios4
-      image: jasonrivers/nagios:4.4.4 # 4.4.2, 4.3.4, 4.4.1
+      image: jasonrivers/nagios:4.4.4
       state: started
       restart_policy: unless-stopped
       hostname: nagios.invadelabs.com
@@ -196,7 +196,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: koenkk/zigbee2mqtt:1.13.1
+      image: koenkk/zigbee2mqtt:1.14.0
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
