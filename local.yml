@@ -20,7 +20,9 @@
                          zigbee2mqtt \
                          ring-mqtt \
                          homeassistant \
-                         graphite"
+                         graphite \
+                         influxdb \
+                         grafana"
 
   tasks:
   - include: playbooks/preflight_check.yml # fail if missing secrets
@@ -81,6 +83,8 @@
     - docker; create container ring-mqtt
     - docker; create container homeassistant
     - docker; create container graphite
+    - docker; create container influxdb
+    - docker; create container grafana
     # - docker; create container gitlab
 
 ## HANDLERS ##
@@ -266,6 +270,41 @@
         - "2023-2024:2023-2024/tcp"
         - "8125:8125/udp"
         - "8126:8126/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container influxdb
+    docker_container:
+      name: influxdb
+      image: influxdb:1.8.0
+      state: started
+      restart_policy: unless-stopped
+      hostname: influxdb.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - /srv/influxdb:/var/lib/influxdb
+      ports:
+        - "8083:8083/tcp"
+        - "8086:8086/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container grafana
+    docker_container:
+      name: grafana
+      image: grafana/grafana:7.0.3
+      state: started
+      restart_policy: unless-stopped
+      hostname: grafana.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      env:
+        GF_SECURITY_ALLOW_EMBEDDING: "true"
+      volumes:
+        - /srv/grafana:/var/lib/grafana
+      ports:
+        - "3000:3000/tcp"
     when: ansible_host == "drew-serv"
 
 #    # https://docs.gitlab.com/runner/install/docker.html
