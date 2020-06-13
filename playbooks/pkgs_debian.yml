@@ -112,6 +112,9 @@
     url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
     dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
     force: no
+    owner: root
+    group: root
+    mode: 0644
     checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
   when: ansible_fqdn == "invadelabs.com"
 
@@ -126,6 +129,9 @@
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
     dest: /root/installers/filebeat-6.2.4-amd64.deb
     force: no
+    owner: root
+    group: root
+    mode: 0644
     checksum: "sha256:003c3a49450c30f3c92543226108a99dfaf70f8eca5869b30d0f31859a23e010"
   when: ansible_fqdn == "invadelabs.com"
 
@@ -141,6 +147,9 @@
     url: https://downloads.rclone.org/v1.48.0/rclone-v1.48.0-linux-amd64.deb
     dest: /root/installers/rclone-v1.48.0-linux-amd64.deb
     force: no
+    owner: root
+    group: root
+    mode: 0644
     checksum: "sha256:e4b7a63ca6fa2bee37cbb33afeaa3fa60be2c595ef95a0b262ad8c8e770ea3b3"
   when: ansible_fqdn == "invadelabs.com"
 

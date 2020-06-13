@@ -85,6 +85,9 @@
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-x86_64.rpm
     dest: /root/installers/filebeat-6.2.4-x86_64.rpm
     force: no
+    owner: root
+    group: root
+    mode: 0644
     checksum: "sha256:479a25895ac022afaa44f6e15ae6eb396fa7db03f7e4c05b14c5d6fb21b6815d"
 
 - name: pkgs_fedora; install filebeat rpm

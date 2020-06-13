@@ -3,6 +3,9 @@
   template:
     src: templates/etc/filebeat/filebeat-{{ansible_fqdn}}.yml.j2
     dest: /etc/filebeat/filebeat.yml
+    owner: root
+    group: root
+    mode: 0600
   when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.nm1.invadelabs.com" )
   notify: Restart filebeat.service
 
@@ -23,12 +26,18 @@
   template:
     src: "templates/etc/rsyslog.d/logstash.conf.j2"
     dest: "/etc/rsyslog.d/logstash.conf"
+    owner: root
+    group: root
+    mode: 0644
   notify: Restart rsyslog.service
 
 - name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv # for logstash container
   copy:
     dest: "/etc/sysctl.d/vm.max_map_count.conf"
     content: "vm.max_map_count = 262144"
+    owner: root
+    group: root
+    mode: 0600
   when: ansible_host == "drew-serv"
   notify: Restart rsyslog.service
 
@@ -36,6 +45,9 @@
   template:
     src: "templates/etc/rsyslog.d/{{rsyslog_item}}.j2"
     dest: "/etc/rsyslog.d/{{rsyslog_item}}"
+    owner: root
+    group: root
+    mode: 0644
   with_items:
     - ignore-audit.conf
     - ignore-systemd.conf

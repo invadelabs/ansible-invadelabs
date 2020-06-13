@@ -3,6 +3,9 @@
   copy:
     src: templates/etc/samba/smb.conf
     dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0644
     validate: /usr/bin/testparm -s %s
   notify: Restart smb.service
   # XXX add smb users here / better unix password sync
