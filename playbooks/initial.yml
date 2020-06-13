@@ -41,6 +41,9 @@
   template:
     src: templates/etc/motd.j2
     dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0644
 
 - name: initial; stat /etc/localtime
   stat: path=/etc/localtime
@@ -61,12 +64,18 @@
   template:
     src: templates/etc/apt/sources.list.rpi.j2
     dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: 0644
   when: "'debian-arm' in group_names"
 
 - name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
   template:
     src: templates/etc/apt/sources.list.d/raspi.list.rpi.j2
     dest: /etc/apt/sources.list.d/raspi.list
+    owner: root
+    group: root
+    mode: 0644
   when: "'debian-arm' in group_names"
 
 - name: initial; add lynis gpg key
@@ -79,6 +88,15 @@
   template:
     src: templates/etc/apt/sources.list.d/lynis.list.rpi.j2
     dest: /etc/apt/sources.list.d/lynis.list
+  when: "'debian-arm' in group_names"
+
+- name: initial; add /etc/apt/apt.conf.d/10periodic
+  template:
+    src: templates/etc/apt/apt.conf.d/10periodic.j2
+    dest: /etc/apt/apt.conf.d/10periodic
+    owner: root
+    group: root
+    mode: 0644
   when: "'debian-arm' in group_names"
 
 - name: initial; drew-piv3; apt; install fail2ban
@@ -148,6 +166,8 @@
     url: https://gist.githubusercontent.com/drew-holt/4da247a2874b7a0470bd3d55d5191312/raw/d24673b607dfee98f8a859acca21ef5dde26aa3d/check_memory.pl
     dest: /usr/local/bin/check_memory.pl
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
   when: ansible_host == "drew-serv"
@@ -158,6 +178,8 @@
     url: https://raw.githubusercontent.com/pixelb/scripts/dce7689196f6fd2efa87fd2d64e6e491c927b349/scripts/ansi2html.sh
     dest: /usr/local/bin/ansi2html.sh
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:6bff734f83234046cb94de6bff001f0038104462c5336769f09b6f0df9cc6d2e"
 
@@ -167,6 +189,8 @@
     url: https://raw.githubusercontent.com/coursehero/slacktee/v1.4.2/slacktee.sh
     dest: /usr/local/bin/slacktee.sh
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:f17b39737c5fe1926c354890ac6e9e5cf11afd09d8351e9b498fe9a608cf2e95"
 
@@ -176,6 +200,18 @@
     src: /root/scripts/check_temp.sh
     dest: /usr/local/bin/check_temp.sh
     mode: 0755
+    owner: root
+    group: root
+    remote_src: yes
+
+# check_temp.sh
+- name: initial; nrpe; download check_mongo_mybg.py
+  copy:
+    src: /root/scripts/check_mongo_mybg.py
+    dest: /usr/local/bin/check_mongo_mybg.py
+    mode: 0755
+    owner: root
+    group: root
     remote_src: yes
 
 ## check_es_system.sh
@@ -184,6 +220,8 @@
     url: https://raw.githubusercontent.com/Napsty/check_es_system/1.8/check_es_system.sh
     dest: /usr/local/bin/check_es_system.sh
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:7cc84d9136bf31ae021bc48997167375ddbbe701c2886f74fa4d7b00abaa0242"
   when: ansible_host == "drew-serv"
@@ -194,6 +232,8 @@
     url: https://github.com/Napsty/check_smart/raw/6.7.0/check_smart.pl
     dest: /usr/local/bin/check_smart.pl
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
   when: ansible_host == "drew-serv"
@@ -204,6 +244,8 @@
     url: https://github.com/drew-holt/nagios-plugins/raw/master/check_bat
     dest: /usr/local/bin/check_bat
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:50bafe42bfbf9cde2c34daaf56b64f940f2502ceeb9ae5ea71dd5b936837e345"
   when: ansible_host == "drew-serv"
@@ -214,6 +256,8 @@
     url: http://nagios.fm4dd.com/plugins/source/check_fail2ban.sh
     dest: /usr/local/bin/check_fail2ban.sh
     mode: 0755
+    owner: root
+    group: root
     force: no
     checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
   when: ansible_host == "drew-piv3"
@@ -221,7 +265,7 @@
 - name: initial; nrpe; /var/run/fail2ban/fail2ban.sock perms
   file:
     dest: /var/run/fail2ban/fail2ban.sock
+    mode: 0660
     owner: root
     group: nagios
-    mode: 0770
   when: ansible_host == "drew-piv3"

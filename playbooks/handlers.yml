@@ -89,8 +89,6 @@
 ## Misc Handlers
 - name: Setup lm_sensors
   command: sensors-detect --auto # XXX not when modules have already been inserted
-- name: grub2-mkconfig -o /boot/grub2/grub.cfg
-  command: grub2-mkconfig -o /boot/grub2/grub.cfg
 - name: systemd daemon-reload
   systemd: daemon_reload=yes
 - name: resolvconf -u

@@ -5,6 +5,9 @@
   args:
     chdir: /root
     creates: /srv/invadelabs.com-bkup-latest.tar.xz
+    owner: root
+    group: root
+    mode: 0600
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: drive; Extract invadelabs.com-bkup-latest.tar.xz
@@ -29,6 +32,7 @@
     state: directory
     owner: www-data
     group: www-data
+    mode: 0755
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: drive; mv /home/drew/drew_wiki.sqlite /var/www/data
@@ -45,6 +49,7 @@
     state: directory
     owner: www-data
     group: www-data
+    mode: 0755
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: drive; mkdir -p /var/www/drew.invadelabs.com; mv /home/drew/LocalSettings.php /var/www/drew.invadelabs.com
