@@ -1,0 +1,35 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    #- name: Cache pip
+    #  uses: actions/cache@v2
+    #  with:
+    #    path: ~/.cache/pip
+    #    key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }} # looks for cache hits
+    #    restore-keys: |
+    #      ${{ runner.os }}-pip-
+    #      ${{ runner.os }}-
+    ## - name: Install dependencies
+    ##   run: pip install -r requirements.txt
+    - name: Install dependencies
+      #run: python -m pip install --upgrade pip setuptools wheel
+      run: pip install ansible ansible-lint
+    - name: Display Python version
+      run: python -c "import sys; print(sys.version)"
+    - name: Ansible Lint
+      run: ansible-lint -t '!ANSIBLE0010' *.yml playbooks/*.yml
+    - name: Ansible Syntax Check
+      run: ansible-playbook -i hosts --syntax-check $(ls *.yml | grep -v requirements.yml)
