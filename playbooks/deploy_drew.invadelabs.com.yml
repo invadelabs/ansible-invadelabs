@@ -31,6 +31,7 @@
     dest: /var/www/drew.invadelabs.com/omgz_square.gif
     owner: www-data
     group: www-data
+    mode: 0644
 
 # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
 - name: drewwiki; remove softwareInformation SpecialVersion.php
