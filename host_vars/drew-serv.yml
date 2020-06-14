@@ -18,4 +18,5 @@
     - check_smart_sdc: "/usr/local/bin/check_smart.pl -d /dev/sdc -i auto"
     - check_bat: "/usr/local/bin/check_bat"
     - check_docker: "sudo /usr/local/bin/check_docker --connection /run/docker.sock --present --status running --containers {{monitor_containers}}"
+    - check_mongo_mybg: "/usr/local/bin/check_mongo_mybg.py /etc/default/cgm.env 14400"
   postfix_mynetworks: "172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
