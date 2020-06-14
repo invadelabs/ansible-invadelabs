@@ -50,11 +50,11 @@
     mode: 0644
   with_items:
     - ignore-audit.conf
+    - ignore-rngd.conf
     - ignore-systemd.conf
   loop_control:
     loop_var: rsyslog_item
   notify: Restart rsyslog.service
-  when: ansible_host == "drew-serv"
 
 - name: logging; remove logwatch daily
   file:
