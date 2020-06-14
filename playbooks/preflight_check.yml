@@ -34,7 +34,8 @@
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /home/drew/.ssh/tunnel_2020.05.17
-    - /root/my.env # XXX add check these are 0400
+    - /etc/default/cgm.env
+    - /etc/default/ring-mqtt.env
   loop_control:
     loop_var: drewserv_file_item
   register: item
