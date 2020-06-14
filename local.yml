@@ -160,7 +160,7 @@
         max-size: "10m"
       ports:
         - "0.0.0.0:1337:1337/tcp"
-      env_file: /root/my.env
+      env_file: /etc/default/cgm.env
     when: ansible_host == "drew-serv"
 
   - name: docker; create container nexus
@@ -227,7 +227,7 @@
       log_driver: json-file
       log_options:
         max-size: "10m"
-      env_file: /srv/ring-mqtt/ring-mqtt.env
+      env_file: /etc/default/ring-mqtt.env
       #env:
       #  DEBUG: ring-mqtt
     when: ansible_host == "drew-serv"
