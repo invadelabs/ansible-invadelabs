@@ -43,6 +43,7 @@
     - fuse-encfs
     - powertop
     - upower # /etc/UPower/Upower.conf
+    - chkconfig # for `systemctl enable filebeat`
     # nagios / nrpe bits
     - nrpe
     - nagios-plugins-nrpe
