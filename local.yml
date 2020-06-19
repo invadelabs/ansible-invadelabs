@@ -65,6 +65,8 @@
   - include: playbooks/sshd_config.yml
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
+  - include: playbooks/dashboard.yml
+    when: ansible_host == "drew-piv4"
 
   - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup
     shell: |

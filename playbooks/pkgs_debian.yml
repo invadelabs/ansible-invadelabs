@@ -53,7 +53,13 @@
   - Start postfix.service
   - update-alternatives; editor vim-basic
 
-    #
+#
+- name: pkgs_debian; install unclutter
+  apt:
+    pkg:
+      - unclutter
+    state: present
+  when: ansible_host == "drew-piv4"
 
 # # XXX misisng in ubuntu # to display a list of critical bugs prior to each APT installation. [CUST-0810]
 - name: pkgs_debian; install apt-listbugs
