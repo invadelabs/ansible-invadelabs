@@ -1,0 +1,45 @@
+---
+- name: dashboard; add /home/drew/dashboard.html
+  template:
+    src: "templates/home/drew/dashboard.html.j2"
+    dest: "/home/drew/dashboard.html"
+    owner: drew
+    group: drew
+    mode: 0644
+
+- name: dashboard; add /home/drew/dashboard-launch.sh
+  template:
+    src: "templates/home/drew/dashboard-launch.sh.j2"
+    dest: "/home/drew/dashboard-launch.sh"
+    owner: drew
+    group: drew
+    mode: 0755
+
+- name: dashboard; create dir /home/drew/.config/lxsession/LXDE-pi
+  file:
+    path: /home/drew/.config/lxsession/LXDE-pi
+    state: directory
+    owner: drew
+    group: drew
+    mode: 0755
+    recurse: yes
+
+- name: dashboard; add /home/drew/.config/lxsession/LXDE-pi/autostart
+  template:
+    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart.j2"
+    dest: "/home/drew/.config/lxsession/LXDE-pi/autostart"
+    owner: drew
+    group: drew
+    mode: 0755
+
+- name: dashboard; /etc/lightdm/lightdm.conf
+  lineinfile:
+    dest: /etc/lightdm/lightdm.conf
+    regexp: "^{{lightdm_item.key}}"
+    line: "{{lightdm_item.key}}={{lightdm_item.value}}"
+    state: present
+  with_dict: {
+    "autologin-user": "drew"
+    }
+  loop_control:
+    loop_var: lightdm_item
