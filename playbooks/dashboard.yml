@@ -32,7 +32,7 @@
     group: drew
     mode: 0755
 
-- name: dashboard; /etc/lightdm/lightdm.conf
+- name: dashboard; set /etc/lightdm/lightdm.conf
   lineinfile:
     dest: /etc/lightdm/lightdm.conf
     regexp: "^{{lightdm_item.key}}"
@@ -43,3 +43,21 @@
     }
   loop_control:
     loop_var: lightdm_item
+
+- name: dashboard; set /boot/config.txt
+  lineinfile:
+    dest: /boot/config.txt
+    regexp: "^{{lightdm_item.key}}"
+    line: "{{lightdm_item.key}}={{lightdm_item.value}}"
+    state: present
+  with_dict: {
+    "disable_overscan": "1",
+    "hdmi_enable_4kp60": "1"
+    }
+  loop_control:
+    loop_var: lightdm_item
+
+- name: dashboard; create /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
+  shell: mkdir -p /home/drew/.synergy/SSL/Fingerprints && touch /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
+  args:
+    creates: /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
