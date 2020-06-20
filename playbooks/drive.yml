@@ -1,13 +1,10 @@
 ---
-- name: drive; Get invadelabs.com-bkup-latest.tar.xz backup
+- name: drive; get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
     rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^invadelabs.com.*.tar.xz$' | sort | tail -n 1) /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
     creates: /srv/invadelabs.com-bkup-latest.tar.xz
-    owner: root
-    group: root
-    mode: 0600
   when: ansible_fqdn == 'invadelabs.com'
 
 - name: drive; Extract invadelabs.com-bkup-latest.tar.xz
