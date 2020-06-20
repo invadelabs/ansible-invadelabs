@@ -7,21 +7,9 @@ Ansible run for invadelabs.
 sudo apt-get install -y ansible
 ~~~
 
-# Install python on guest machine
-~~~
-Fedora 28:
-sudo dnf install -y python2
-
-Ubuntu 18.04:
-sudo apt-get install -y python-minimal
-~~~
-
-# Install Ansible Galaxy roles, check, and run our playbooks:
+# Run playbooks:
 ~~~
 # local.yml = internal network, invadelabs.com.yml = external
-
-# Download community modules:
-ansible-galaxy install -r requirements.yml -p roles/
 
 # Check (don't take action) and show diff:
 ansible-playbook -i hosts local.yml --check --diff
@@ -32,9 +20,9 @@ ansible-playbook -i hosts local.yml --diff
 ansible-playbook -i hosts invadelabs.com.yml --diff --private-key=~/.ssh/google_compute_engine
 
 # Ex limit:
-ansible-playbook -i hosts local.yml --diff -l drew-serv,drew-piv3
+ansible-playbook -i hosts local.yml --diff -l "drew-serv,!drew-piv"
 
-# Ex start at task / step
+# Start at task and acknowledge each step
 ansible-playbook -i hosts -l drew-serv --start-at-task="httpd; add site templates" --step
 ~~~
 
