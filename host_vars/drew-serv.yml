@@ -4,10 +4,11 @@
   nrpe_specific:
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 10,6,4 -c 20,10,5"
     - check_total_procs: "{{nrpe_plugins_dir}}/check_procs -w 425 -c 475"
+    - check_zombie_procs: "{{nrpe_plugins_dir}}/check_procs -w 20 -c 25 -s Z"
     - check_memory: "/usr/local/bin/check_memory.pl -u M -w 20% -c 10%"
-    - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -c 10:"
+    - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -w 10: -c 30:"
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker -p /mnt/share -p /srv"
-    - check_updates: "{{nrpe_plugins_dir}}/check_updates -t 60"
+    - check_updates: "{{nrpe_plugins_dir}}/check_updates -w 1 -c 20 -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 90 -c 99"
     - check_es_mem: "/usr/local/bin/check_es_system.sh -H localhost -t mem -d 4"
     - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 20"

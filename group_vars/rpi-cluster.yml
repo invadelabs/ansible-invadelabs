@@ -3,7 +3,8 @@
   nrpe_specific:
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 4,2,1 -c 6,4,2"
     - check_total_procs: "{{nrpe_plugins_dir}}/check_procs -w 200 -c 250"
+    - check_zombie_procs: "{{nrpe_plugins_dir}}/check_procs -w 1 -c 2 -s Z"
     - check_memory: "{{nrpe_plugins_dir}}/check_memory -u M -w 20% -c 10%"
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_root: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p /"
-    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 70 -c 80"
+    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 65 -c 80"
