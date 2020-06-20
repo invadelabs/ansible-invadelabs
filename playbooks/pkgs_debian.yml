@@ -58,6 +58,7 @@
   apt:
     pkg:
       - unclutter
+      - synergy
     state: present
   when: ansible_host == "drew-piv4"
 
