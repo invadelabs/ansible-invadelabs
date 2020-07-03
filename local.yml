@@ -202,7 +202,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: koenkk/zigbee2mqtt:1.14.0
+      image: koenkk/zigbee2mqtt:1.14.1
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -237,7 +237,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: homeassistant/home-assistant:0.111.0
+      image: homeassistant/home-assistant:0.112.1
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
