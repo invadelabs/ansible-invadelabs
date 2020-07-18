@@ -1,17 +1,17 @@
 ---
-- name: rw_rpi; dhcpcd.conf use static dns
-  lineinfile:
-    dest: /etc/dhcpcd.conf
-    regexp: "^{{dhcpcd_item.key}}"
-    line: "{{dhcpcd_item.key}}={{dhcpcd_item.value}}"
-    state: present
-  with_dict: {
-    "static domain_name_servers": "192.168.1.125 8.8.8.8",
-    "static domain_search": "nm1.invadelabs.com local" } # XXX
-  loop_control:
-    loop_var: dhcpcd_item
-  notify:
-    - Restart dhcpcd.service
+# - name: rw_rpi; dhcpcd.conf use static dns
+#   lineinfile:
+#     dest: /etc/dhcpcd.conf
+#     regexp: "^{{dhcpcd_item.key}}"
+#     line: "{{dhcpcd_item.key}}={{dhcpcd_item.value}}"
+#     state: present
+#   with_dict: {
+#     "static domain_name_servers": "192.168.1.125 8.8.8.8",
+#     "static domain_search": "nm1.invadelabs.com local" } # XXX
+#   loop_control:
+#     loop_var: dhcpcd_item
+#   notify:
+#     - Restart dhcpcd.service
 
 # - name: rw_rpi; dhcpcd.conf oops
 #   lineinfile:

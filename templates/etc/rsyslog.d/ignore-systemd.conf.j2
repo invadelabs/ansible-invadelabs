@@ -22,8 +22,8 @@ $msg contains "Starting Create User" or
 $msg contains "Finished Create Use" or
 $msg contains "systemd-tmpfiles-clean.timer" or
 $msg contains "systemd-tmpfiles-setup.service" or
-$msg contains "Stopped Daily Cleanup of User"
-$msg contains "Closed REST API socket for snapd user session agent"
+$msg contains "Stopped Daily Cleanup of User" or
+$msg contains "Closed REST API socket for snapd user session agent" or
 $msg contains "Received SIGRTMIN+24 from PID " or
 $msg contains "Stopped User Manager for UID 0" or
 $msg contains "Started Session" or
@@ -46,7 +46,7 @@ $msg contains "Starting Create User" or
 $msg contains "Finished Create Use" or
 $msg contains "systemd-tmpfiles-clean.timer" or
 $msg contains "systemd-tmpfiles-setup.service" or
-$msg contains "Stopped Daily Cleanup of User"
-$msg contains "Closed REST API socket for snapd user session agent"
+$msg contains "Stopped Daily Cleanup of User" or
+$msg contains "Closed REST API socket for snapd user session agent" or
 $msg contains "session-"
 ) then stop
