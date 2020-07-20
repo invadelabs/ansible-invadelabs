@@ -26,6 +26,7 @@
     # - debian-keyring # needed for nrpe debian package
     # - debian-archive-keyring # needed for nrpe debian package
 
+    - ansible
     # - software-properties-common # for ansible
     # - python-paramiko # for ansible-pull
     # - python-jinja2 # for ansible-pull
@@ -89,7 +90,6 @@
 - name: pkgs_debian; invadelabs.com
   apt:
     pkg:
-      - ansible
       - apache2
       - php7.2-fpm
       - libapache2-mod-php
