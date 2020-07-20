@@ -1,0 +1,10 @@
+- name: selinux; /var/lib/setroubleshoot/email_alert_recipients
+  lineinfile:
+    dest: /var/lib/setroubleshoot/email_alert_recipients
+    regexp: "^{{selinux_item}}"
+    line: "{{selinux_item}}"
+    state: present
+  with_items:
+    - root
+  loop_control:
+    loop_var: selinux_item
