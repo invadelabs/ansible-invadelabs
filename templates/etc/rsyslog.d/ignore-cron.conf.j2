@@ -1,0 +1,4 @@
+if $programname == "CRON" and (
+$msg contains "pam_unix(cron:session): session closed for user daemon" or
+$msg contains "pam_unix(cron:session): session opened for user daemon by (uid=0)"
+) then stop
