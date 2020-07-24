@@ -1,0 +1,4 @@
+if $programname == "sudo" and (
+$msg contains "pam_unix(sudo:session): session closed for user root" or
+$Msg contains "pam_unix(sudo:session): session opened for user root"
+) then stop
