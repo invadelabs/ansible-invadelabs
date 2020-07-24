@@ -52,6 +52,9 @@
     - ignore-audit.conf
     - ignore-rngd.conf
     - ignore-systemd.conf
+    - ignore-sudo.conf
+    - ignore-cron.conf
+    - ignore-sshd.conf
   loop_control:
     loop_var: rsyslog_item
   notify: Restart rsyslog.service

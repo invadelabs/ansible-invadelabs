@@ -48,5 +48,15 @@ $msg contains "systemd-tmpfiles-clean.timer" or
 $msg contains "systemd-tmpfiles-setup.service" or
 $msg contains "Stopped Daily Cleanup of User" or
 $msg contains "Closed REST API socket for snapd user session agent" or
-$msg contains "session-"
+$msg contains "session-" or
+$msg contains "Stopping User Runtime Directory" or
+$msg contains "Starting User Runtime Directory" or
+$msg contains "Finished User Runtime Directory" or
+$msg contains "run-user-0.mount: Succeeded" or
+$msg contains "user-runtime-dir@0.service: Succeeded" or
+$msg contains "Listening on REST API socket for snapd user session agent" or
+$msg contains "Stopped Create User's Volatile Files and Directories" or
+$msg contains "Stopped User Runtime Directory /run/user/0." or
+$msg contains "pam_unix(sudo:session): session closed for user root" or
+$msg contains "pam_unix(systemd-user:session): session opened for user root by (uid=0)"
 ) then stop
