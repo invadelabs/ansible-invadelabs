@@ -22,15 +22,6 @@
     loop_var: journald_item
   notify: Restart systemd-journald.service
 
-- name: logging; add /etc/rsyslog.d/logstash.conf
-  template:
-    src: "templates/etc/rsyslog.d/logstash.conf.j2"
-    dest: "/etc/rsyslog.d/logstash.conf"
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart rsyslog.service
-
 - name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv # for logstash container
   copy:
     dest: "/etc/sysctl.d/vm.max_map_count.conf"
@@ -41,14 +32,16 @@
   when: ansible_host == "drew-serv"
   notify: Restart rsyslog.service
 
-- name: logging; add /etc/rsyslog.d entries # XXX get this manageable
+- name: logging; add /etc/rsyslog.d entries
   template:
     src: "templates/etc/rsyslog.d/{{rsyslog_item}}.j2"
     dest: "/etc/rsyslog.d/{{rsyslog_item}}"
     owner: root
     group: root
     mode: 0644
+    validate: 'rsyslogd -N1 -f /etc/rsyslog.conf'
   with_items:
+    - logstash.conf
     - ignore-audit.conf
     - ignore-rngd.conf
     - ignore-systemd.conf

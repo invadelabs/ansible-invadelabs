@@ -5,28 +5,28 @@
 #     url: https://download.docker.com/linux/raspbian/gpg
 #     state: present
 #   when: "'rpi-cluster' in group_names"
-# 
+#
 # - name: pkgs_debian; apt repo docker-ce
 #   apt_repository:
 #     repo: deb [arch=armhf] {{ nexus_repo }}/docker-raspbian/ stretch edge
 #     filename: docker-ce
 #     state: present
 #   when: "'rpi-cluster' in group_names"
-# 
+#
 # ## kubernetes apt
 # - name: pkgs_debian; add kubernetes key
 #   apt_key:
 #     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
 #     state: present
 #   when: "'rpi-cluster' in group_names"
-# 
+#
 # - name: pkgs_debian; apt repo kubernetes
 #   apt_repository:
 #     repo: deb {{ nexus_repo }}/kubernetes-apt/ kubernetes-xenial main
 #     filename: kubernetes
 #     state: present
 #   when: "'rpi-cluster' in group_names"
-# 
+#
 # ## rpi-cluster apt docker-ce & kubenetes
 # - name: pkgs_debian; rpi-cluster docker and kubernetes
 #   apt:
@@ -35,11 +35,11 @@
 #       - kubeadm
 #     state: present
 #   when: "'rpi-cluster' in group_names"
-# 
+#
 # - name: rpi-cluster; disable swap
 #   shell: dphys-swapfile swapoff && dphys-swapfile uninstall && update-rc.d dphys-swapfile remove
 #   when: ansible_swaptotal_mb > 0
-# 
+#
 # - name: rpi-cluster; enable cpuset / memory cgroups
 #   lineinfile:
 #     dest: /boot/cmdline.txt
@@ -48,11 +48,11 @@
 #     backrefs: true
 #     # backup: true # https://github.com/ansible/ansible/issues/10591
 #     state: present
-# 
+#
 # - name: rpi-cluster; set gpu_mem to min 16
 #   lineinfile:
 #     dest: /boot/config.txt
 #     regexp: '^gpu_mem='
 #     line: 'gpu_mem=16'
 #     state: present
-# 
+#

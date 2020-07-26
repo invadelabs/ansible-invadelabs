@@ -40,7 +40,7 @@
       - slack_env
     loop_control:
       loop_var: a2env_vars_item
-    register: apache_env_vars # XXX Fix this for invadelabs.com.conf.j2 temlate
+    register: apache_env_vars # XXX fix this for invadelabs.com.conf.j2 temlate
     no_log: true
     notify: apache2; add site templates
 
@@ -63,7 +63,6 @@
       - apache2; a2ensite templates
       - Restart apache2.service
 
-  # XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
   - name: apache2; a2ensite templates
     command: a2ensite {{a2ensite_item}}
     args:
@@ -75,7 +74,3 @@
     loop_control:
       loop_var: a2ensite_item
     notify: Restart apache2.service
-
-  # roles:
-  # - { role: tersmitten.swapfile, swapfile_size: 1GB, swapfile_swappiness: 10 } # XXX run this last
-  # - { role: mongrelion.docker, userland-proxy: false }

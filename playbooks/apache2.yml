@@ -91,7 +91,6 @@
   notify: Restart apache2.service
 
 # disable default site otherwise breaks some 302 http->https
-# XXX https://github.com/ansible/ansible-modules-extras/pull/1240 use this module when finished
 - name: apache2; a2dissite 000-default
   file:
     path: /etc/apache2/sites-enables/000-default.conf
