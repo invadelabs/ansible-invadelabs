@@ -43,8 +43,8 @@
     when: ansible_host == "drew-serv"
   - include: playbooks/hw_drew-serv.yml # hardware specifics
     when: ansible_host == "drew-serv"
-  - include: playbooks/hw_rpi.yml # hardware specifics
-    when: "'debian-arm' in group_names"
+  # - include: playbooks/hw_rpi.yml # hardware specifics
+  #   when: "'debian-arm' in group_names"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
   - include: playbooks/httpd.yml # reverse https proxy for nagios/cgm/ha
@@ -60,8 +60,8 @@
   - include: playbooks/nut_ups.yml # NUT UPS config
     when: ansible_host == "drew-piv3"
 
-  - include: playbooks/rpi-cluster.yml
-    when: "'rpi-cluster' in group_names"
+  # - include: playbooks/rpi-cluster.yml
+  #   when: "'rpi-cluster' in group_names"
 
   - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
@@ -317,3 +317,26 @@
         - "8443:443/tcp"
         - "9000:9000/tcp"
     when: ansible_host == "drew-serv"
+
+  - name: docker; create container diyhue
+    docker_container:
+      name: diyHue
+      image: diyhue/core:master-2861b4a5bb9424314cde798165f91510ce5a7a31
+      state: started
+      restart_policy: unless-stopped
+      hostname: diyhue.invadelabs.com
+      # log_driver: json-file
+      # log_options:
+      #   max-size: "10m"
+      env:
+        IP: "{{ ansible_eth0.ipv4.address }}"
+        MAC: "{{ ansible_eth0.macaddress }}"
+      volumes:
+        - /srv/hue-emulator:/opt/hue-emulator/export
+      ports:
+        - "80:80/tcp"
+        - "443:443/tcp"
+        - "1900:1900/udp"
+        - "2100:2100/udp"
+        - "1982:1982/udp"
+    when: ansible_host == "drew-pine64"

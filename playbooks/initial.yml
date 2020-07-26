@@ -15,8 +15,7 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
-# XXX find a better way for this
-- name: initial; ensure "nrpe" is in sudoers with smartctl
+- name: initial; ensure "nrpe" is in sudoers with smartctl # XXX find a better way to do this
   lineinfile:
     path: /etc/sudoers
     state: present
@@ -24,7 +23,7 @@
     line: 'nrpe ALL = NOPASSWD: /usr/sbin/smartctl'
     validate: '/usr/sbin/visudo -cf %s'
 
-- name: initial; ensure "nrpe" is in sudoers with check_docker
+- name: initial; ensure "nrpe" is in sudoers with check_docker # XXX find a better way to do this
   lineinfile:
     path: /etc/sudoers
     state: present
@@ -114,7 +113,7 @@
     state: link
   when: ansible_host == "drew-serv"
 
-- name: initial; dnf; install etckeeper # XXX fix python2-dnf requirement for fedora 30
+- name: initial; dnf; install etckeeper
   dnf: name=etckeeper state=present
   when: ansible_distribution == "Fedora"
 
@@ -232,7 +231,7 @@
     checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
   when: ansible_host == "drew-serv"
 
-## check_bat # XXX set checksum when done
+## check_bat
 - name: initial; nrpe; dl check_bat
   get_url:
     url: https://github.com/drew-holt/nagios-plugins/raw/master/check_bat

@@ -75,7 +75,7 @@
 - name: pkgs_debian; drew-piv3 NUT for UPS and ntopng
   apt:
     pkg:
-      - ntopng # XXX
+      - ntopng
       - nut
       - nut-client
       - nut-server
