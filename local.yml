@@ -238,7 +238,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: homeassistant/home-assistant:0.113.0
+      image: homeassistant/home-assistant:0.113.3
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com

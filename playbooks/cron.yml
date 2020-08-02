@@ -142,7 +142,7 @@
     name: fail2ban socket perms
     special_time: reboot
     user: root
-    job: chmod 660 /var/run/fail2ban/fail2ban.sock && chown root:nagios /var/run/fail2ban/fail2ban.sock
+    job: sleep 30 && chmod 660 /var/run/fail2ban/fail2ban.sock && chown root:nagios /var/run/fail2ban/fail2ban.sock
   when: ansible_host == "drew-serv"
 
 # takes >3 minute to run
