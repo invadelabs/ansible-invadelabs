@@ -1,5 +1,4 @@
 ---
-  ansible_python_interpreter: "/usr/bin/python3"
   nrpe_plugins_dir: "/usr/lib/nagios/plugins"
   nrpe_specific:
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 4,2,1 -c 6,4,2"
