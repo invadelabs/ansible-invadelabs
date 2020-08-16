@@ -4,6 +4,7 @@
     name:
       - check-docker
       - pymongo
+      - dnspython # needed for mongodb+srv uri
   when: ansible_host == "drew-serv"
 
 - name: pip; install check-docker on drew-pine64
