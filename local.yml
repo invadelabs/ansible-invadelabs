@@ -204,7 +204,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: koenkk/zigbee2mqtt:1.14.2
+      image: koenkk/zigbee2mqtt:1.14.3
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
