@@ -54,6 +54,8 @@
     - nagios-plugins-check-updates
     - nagios-plugins-mailq
     - nagios-plugins-uptime
+    - nagios-plugins-log
+    - nagios-plugins-snmp
     - perl-Nagios-Plugin
     - perl-Monitoring-Plugin
     # # hypervisor
