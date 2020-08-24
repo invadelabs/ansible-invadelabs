@@ -174,6 +174,8 @@
       state: started
       restart_policy: unless-stopped
       hostname: nightscout.invadelabs.com
+      ulimits:
+        nofile:65536:65536
       log_driver: json-file
       log_options:
         max-size: "10m"
@@ -181,6 +183,7 @@
         - /mnt/share/nexus-data:/nexus-data
       ports:
         - "0.0.0.0:8081:8081/tcp"
+        - "0.0.0.0:8181:8181/tcp" # docker-all group
     when: ansible_host == "drew-serv"
 
   - name: docker; create container mosquitto
@@ -224,7 +227,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: tsightler/ring-mqtt
+      image: tsightler/ring-mqtt:3.3.0
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
