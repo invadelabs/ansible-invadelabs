@@ -128,12 +128,12 @@
     job: sleep 30 && nmcli dev set wlo1 managed no && /usr/sbin/rfkill block 0
   when: ansible_host == "drew-serv"
 
-- name: cron; docker start bind # XXX temp workaround
+- name: cron; docker start pihole # XXX temp workaround
   cron:
-    name: docker start bind
+    name: docker start pihole
     special_time: reboot
     user: root
-    job: sleep 30; docker start bind >/dev/null
+    job: sleep 30; docker start pihole >/dev/null
   when: ansible_host == "drew-serv"
 
 - name: cron; fail2ban socket perms # XXX temp workaround

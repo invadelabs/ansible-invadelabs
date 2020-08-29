@@ -10,7 +10,7 @@
     rsyslog_host: "192.168.1.125"
     rsyslog_port: "10514"
     docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
-    monitor_containers: "bind \
+    monitor_containers: "pihole \
                          nightscout \
                          nexus \
                          docker-elk_logstash_1 \
@@ -80,7 +80,7 @@
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
-    - docker; create container bind
+    - docker; create container pihole
     - docker; create container nightscout
     - docker; create container nexus
     - docker; create container mosquitto
@@ -131,25 +131,31 @@
         "NAGIOS_TIMEZONE": "America/Denver"
         }
       ports:
-        - "0.0.0.0:8080:80/tcp"
+        - "8080:80/tcp"
     when: ansible_host == "drew-serv"
 
-  - name: docker; create container bind
+  - name: docker; create container pihole
     docker_container:
-      name: bind
-      image: sameersbn/bind:9.10.3-20180127
+      name: pihole
+      image:  pihole/pihole:v5.1.2
       state: started
-      restart_policy: unless-stopped # XXX orig issue cannot bind to interface on startup, so start on cron @reboot
-      hostname: ns.invadelabs.com
+      restart_policy: unless-stopped
+      hostname: pihole.invadelabs.com
       log_driver: json-file
       log_options:
         max-size: "10m"
       volumes:
-        - /srv/bind:/data
+        - "/srv/pihole/etc-pihole:/etc/pihole:z"
+        - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
       ports:
-        - "192.168.1.125:53:53/tcp"
-        - "192.168.1.125:53:53/udp"
-        - "0.0.0.0:10000:10000/tcp"
+        - "{{ ansible_enp0s25.ipv4.address }}:53:53/tcp"
+        - "{{ ansible_enp0s25.ipv4.address }}:53:53/udp"
+        - "6080:80/tcp"
+      env:
+        TZ: "America/Denver"
+      dns_servers:
+        - 127.0.0.1
+        - 1.1.1.1
     when: ansible_host == "drew-serv"
 
   - name: docker; create container nightscout
@@ -163,7 +169,7 @@
       log_options:
         max-size: "10m"
       ports:
-        - "0.0.0.0:1337:1337/tcp"
+        - "1337:1337/tcp"
       env_file: /etc/default/cgm.env
     when: ansible_host == "drew-serv"
 
@@ -182,8 +188,8 @@
       volumes:
         - /mnt/share/nexus-data:/nexus-data
       ports:
-        - "0.0.0.0:8081:8081/tcp"
-        - "0.0.0.0:8181:8181/tcp" # docker-all group
+        - "8081:8081/tcp"
+        - "8181:8181/tcp" # docker-all group
     when: ansible_host == "drew-serv"
 
   - name: docker; create container mosquitto
@@ -200,8 +206,8 @@
         - /srv/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
         - /srv/mosquitto/data:/mosquitto/data
       ports:
-        - "0.0.0.0:1883:1883/tcp"
-        - "0.0.0.0:9001:9001/tcp"
+        - "1883:1883/tcp"
+        - "9001:9001/tcp"
     when: ansible_host == "drew-serv"
 
   - name: docker; create container zigbee2mqtt
@@ -253,7 +259,7 @@
         - /etc/localtime:/etc/localtime:ro
         - /srv/homeassistant:/config
       ports:
-        - "0.0.0.0:8123:8123/tcp"
+        - "8123:8123/tcp"
     when: ansible_host == "drew-serv"
 
   - name: docker; create container influxdb
