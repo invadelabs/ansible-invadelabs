@@ -333,7 +333,7 @@
   - name: docker; create container diyhue
     docker_container:
       name: diyHue
-      image: "{{ nexus_docker_repo }}/diyhue/core:184" # github actions build id
+      image: "{{ nexus_docker_repo }}/diyhue/core:182" # github actions build id
       state: started
       restart_policy: unless-stopped
       hostname: diyhue.invadelabs.com
@@ -343,8 +343,11 @@
       env:
         IP: "{{ ansible_eth0.ipv4.address }}"
         MAC: "{{ ansible_eth0.macaddress }}"
+        # IP_RANGE: "135,135"
+        # DEBUG: "true"
       volumes:
         - /srv/hue-emulator:/opt/hue-emulator/export
+      # network_mode: host
       ports:
         - "80:80/tcp"
         - "443:443/tcp"
