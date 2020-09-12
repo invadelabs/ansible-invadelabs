@@ -234,7 +234,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.0.0"
+      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.1.0"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -321,6 +321,7 @@
         INSTALL_YOLO: "0"
         MULTI_PORT_START: "0"
         MULTI_PORT_END: "0"
+        ADVANCED_SCRIPT: "1"
       volumes:
         - "/srv/zoneminder:/config:z"
         - "/mnt/share/zoneminder/data:/var/cache/zoneminder:z"
