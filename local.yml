@@ -162,7 +162,7 @@
   - name: docker; create container nightscout
     docker_container:
       name: nightscout
-      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:13.0.1"
+      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:14.0.0"
       state: started
       restart_policy: unless-stopped
       hostname: nightscout.invadelabs.com
@@ -309,7 +309,7 @@
       log_driver: json-file
       log_options:
         max-size: "10m"
-      shm_size: 256M
+      shm_size: 4G
       env:
         TZ: "America/Denver"
         SHMEM: "90%"
