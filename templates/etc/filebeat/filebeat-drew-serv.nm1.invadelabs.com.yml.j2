@@ -6,6 +6,7 @@ filebeat.prospectors:
   processors:
   - add_docker_metadata: ~
 
+# only logstash was enabled
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
 

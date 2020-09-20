@@ -111,7 +111,7 @@
   - name: docker; create container nagios4
     docker_container:
       name: nagios4
-      image: "{{ nexus_docker_repo }}/jasonrivers/nagios:4.4.4"
+      image: "{{ nexus_docker_repo }}/jasonrivers/nagios:latest" # 4.4.4
       state: started
       restart_policy: unless-stopped
       hostname: nagios.invadelabs.com
@@ -162,7 +162,7 @@
   - name: docker; create container nightscout
     docker_container:
       name: nightscout
-      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:14.0.0"
+      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:14.0.3"
       state: started
       restart_policy: unless-stopped
       hostname: nightscout.invadelabs.com
@@ -234,7 +234,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.1.0"
+      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.1.1"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -249,7 +249,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.114.0"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.115.2"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -309,6 +309,10 @@
       log_driver: json-file
       log_options:
         max-size: "10m"
+      # log_driver: gelf
+      # log_options:
+      #   gelf-address: udp://localhost:12201
+      #   tag: homeassistant
       shm_size: 4G
       env:
         TZ: "America/Denver"
