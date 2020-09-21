@@ -44,6 +44,7 @@
     - powertop
     - upower # /etc/UPower/Upower.conf
     - chkconfig # for `systemctl enable filebeat`
+    - nethogs
     # nagios / nrpe bits
     - nrpe
     - nagios-plugins-nrpe

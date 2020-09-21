@@ -293,6 +293,7 @@
         max-size: "10m"
       env:
         GF_SECURITY_ALLOW_EMBEDDING: "true"
+        GF_INSTALL_PLUGINS: "natel-discrete-panel"
       volumes:
         - "/srv/grafana:/var/lib/grafana:z"
       ports:
@@ -313,7 +314,7 @@
       # log_options:
       #   gelf-address: udp://localhost:12201
       #   tag: homeassistant
-      shm_size: 4G
+      shm_size: 1G
       env:
         TZ: "America/Denver"
         SHMEM: "90%"
