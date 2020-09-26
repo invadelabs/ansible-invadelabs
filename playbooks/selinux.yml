@@ -1,10 +1,23 @@
+# service auditd restart
+- name: selinux; /etc/setroubleshoot/setroubleshoot.conf
+  lineinfile:
+    dest: /etc/setroubleshoot/setroubleshoot.conf
+    regexp: "^{{selinux_item.key}}"
+    line: "{{selinux_item.key}} = {{selinux_item.value}}"
+    state: present
+  with_dict: {
+    "smtp_host": "192.168.1.125",
+    "from_address": "selinux@invadelabs.com" }
+  loop_control:
+    loop_var: selinux_item
+
 - name: selinux; /var/lib/setroubleshoot/email_alert_recipients
   lineinfile:
     dest: /var/lib/setroubleshoot/email_alert_recipients
-    regexp: "^{{selinux_item}}"
-    line: "{{selinux_item}}"
+    regexp: "^{{selinux_email_item}}"
+    line: "{{selinux_email_item}}"
     state: present
   with_items:
     - root
   loop_control:
-    loop_var: selinux_item
+    loop_var: selinux_email_item
