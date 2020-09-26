@@ -262,3 +262,25 @@
     owner: root
     group: nagios
   when: ansible_host == "drew-piv3"
+
+## check_eth
+- name: initial; nrpe; dl check_eth
+  get_url:
+    url: https://gist.githubusercontent.com/drew-holt/c716d75766c8c542b81587e5aac1ac40/raw/ae31652fff95e7b4a62962349f1400296db9d268/check_eth
+    dest: /usr/local/bin/check_eth
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+    checksum: "sha256:b48de915ce7c9b91d5a118c21bca5df79c6983fe01ab512ab628f07808918fde"
+
+## check_iostat
+- name: initial; nrpe; dl check_iostat
+  get_url:
+    url: https://gist.githubusercontent.com/drew-holt/db58ae051a6923111ecec4d32cb3138d/raw/6e93b30051baf7b3b17925a341b06be61ac1ac3b/check_iostat
+    dest: /usr/local/bin/check_iostat
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+    checksum: "sha256:24edbf321e8ee092eabd0c54f00c9568fdadf902b97dc9efbaffedc8b5c6da05"

@@ -58,5 +58,8 @@ $msg contains "Listening on REST API socket for snapd user session agent" or
 $msg contains "Stopped Create User's Volatile Files and Directories" or
 $msg contains "Stopped User Runtime Directory /run/user/0." or
 $msg contains "pam_unix(sudo:session): session closed for user root" or
-$msg contains "pam_unix(systemd-user:session): session opened for user root by (uid=0)"
+$msg contains "pam_unix(systemd-user:session): session opened for user root by (uid=0)" or
+$msg contains "Finished system activity accounting tool" or
+$msg contains "Starting system activity accounting tool" or
+$msg contains "sysstat-collect.service: Succeeded."
 ) then stop
