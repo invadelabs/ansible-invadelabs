@@ -25,6 +25,7 @@
     - nagios-plugins-contrib # XXX installs ~112 pkg deps for check_memory / check_uptime, work around?
     # - debian-keyring # needed for nrpe debian package
     # - debian-archive-keyring # needed for nrpe debian package
+    - sysstat # for check_iostat
 
     - ansible
     # - software-properties-common # for ansible
