@@ -1,6 +1,6 @@
 ---
 - name: samba; smb.conf # XXX add smb users here / better unix password sync; smbpasswd -a drew && smbpasswd -e drew
-  copy:
+  template:
     src: templates/etc/samba/smb.conf
     dest: /etc/samba/smb.conf
     owner: root
