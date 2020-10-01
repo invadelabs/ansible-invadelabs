@@ -1,0 +1,4 @@
+{
+        "insecure-registries": ["docker.invadelabs.com"],
+        "registry-mirrors": ["https://docker.invadelabs.com"]
+}
