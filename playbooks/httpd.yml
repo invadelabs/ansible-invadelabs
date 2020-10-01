@@ -15,9 +15,14 @@
     src: templates/etc/httpd/conf.d/{{httpd_template_item}}.conf.j2
     dest: /etc/httpd/conf.d/{{httpd_template_item}}.conf
   with_items:
+    - docker.invadelabs.com
     - drew-serv.nm1.invadelabs.com
     - cgm.invadelabs.com
+    - grafana.invadelabs.com
     - ha.invadelabs.com
+    - kibana.invadelabs.com
+    - nexus.invadelabs.com
+    - zm.invadelabs.com
   loop_control:
     loop_var: httpd_template_item
   when: ansible_host == "drew-serv"

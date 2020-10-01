@@ -3,12 +3,12 @@
     Require ip 192.168.1.0/24
   </Location>
 
-  Protocols h2 http/1.1
-  ServerName drew-serv.nm1.invadelabs.com
+  Protocols http/1.1
+  ServerName docker.invadelabs.com
   ServerAdmin drew@invadelabs.com
 
-  ErrorLog logs/drew-serv.nm1.invadelabs.com.error.log
-  CustomLog logs/drew-serv.nm1.invadelabs.com.access.log vhost_combined
+  ErrorLog logs/docker.invadelabs.com.error.log
+  CustomLog logs/docker.invadelabs.com.access.log vhost_combined
 
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
@@ -24,24 +24,19 @@
     Require ip 192.168.1.0/24
   </Location>
 
-  Protocols h2 http/1.1
-  ServerName drew-serv.nm1.invadelabs.com
+  Protocols http/1.1
+  ServerName docker.invadelabs.com
   ServerAdmin drew@invadelabs.com
   DocumentRoot /var/www/html
 
-  ErrorLog logs/drew-serv.nm1.invadelabs.com.secure.error.log
-  CustomLog logs/drew-serv.nm1.invadelabs.com.secure.access.log vhost_combined
+  ErrorLog logs/docker.invadelabs.com.secure.error.log
+  CustomLog logs/docker.invadelabs.com.secure.access.log vhost_combined
 
   ProxyPreserveHost On
   ProxyRequests off
-  ProxyPass /nagios http://127.0.0.1:8080/nagios
-  ProxyPassReverse /nagios http://127.0.0.1:8080/nagios
-
-  ProxyPass /nagiosgraph http://127.0.0.1:8080/nagiosgraph
-  ProxyPassReverse /nagiosgraph http://127.0.0.1:8080/nagiosgraph
-
-  ProxyPass /cgi-bin http://127.0.0.1:8080/cgi-bin
-  ProxyPassReverse /cgi-bin http://127.0.0.1:8080/cgi-bin
+  ProxyPass / http://127.0.0.1:8181/ nocanon
+  ProxyPassReverse / http://127.0.0.1:8181/
+  RequestHeader set X-Forwarded-Proto "https"
 
   Include /etc/letsencrypt/options-ssl-apache.conf
 
