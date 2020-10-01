@@ -43,6 +43,8 @@
   service: name=apache2 state=restarted
 - name: Restart dhcpcd.service
   service: name=dhcpcd
+- name: Restart docker.service
+  service: name=docker
 - name: Restart filebeat.service
   service: name=filebeat state=restarted
 - name: Restart httpd.service

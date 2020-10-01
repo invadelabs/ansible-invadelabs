@@ -18,6 +18,16 @@
     groups: docker
     append: yes
 
+- name: docker; add mirrors in /etc/docker/daemon.json
+  template:
+    src: templates/etc/docker/daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart docker.service
+  when: ansible_host == "drew-serv" or ansible_host == "drew-pine64"
+
 # /etc/sysconfig/docker
 #+#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
 #+OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
