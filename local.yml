@@ -214,7 +214,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.14.4"
+      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.15.0"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -229,6 +229,8 @@
         - /dev/ttyACM0:/dev/ttyACM0
       env:
         TZ: "America/Denver"
+      ports:
+        - "5080:8080/tcp"
     when: ansible_host == "drew-serv"
 
   - name: docker; create container ring-mqtt
