@@ -151,7 +151,7 @@
     minute: "45"
     hour: "0"
     user: root
-    job: /usr/bin/curl -sS -XPUT 192.168.1.125:9200/_snapshot/my_backup/snapshot_$(date "+\%Y.\%m.\%d-\%H:\%M:\%S\%z")?wait_for_completion=true | systemd-cat -t "elasticsearch-snapshot"
+    job: curl -sS -XPUT 192.168.1.125:9200/_snapshot/my_backup/snapshot_$(date "+\%Y.\%m.\%d-\%H:\%M:\%S\%z")?wait_for_completion=true | systemd-cat -t "elasticsearch-snapshot"
   when: ansible_host == "drew-serv"
 
 # for a full backup (~1GB) >4mins to tar.xz, 30mins to upload
@@ -173,5 +173,26 @@
     day: "1"
     # month: */4
     user: root
-    job: rm /mnt/share/bkup/docker-elk.* && for i in $(curl -sS -f http://192.168.1.125:9200/_snapshot/my_backup/* | jq '.[]| .[]| .snapshot' | tr -d '"'); do curl -sS -XDELETE http://192.168.1.125:9200/_snapshot/my_backup/$i | systemd-cat -t es-backup-cleanup; done
+    job: for i in $(curl -sS -f http://192.168.1.125:9200/_snapshot/my_backup/* | jq -r '.[]| .[]| .snapshot'); do curl -sS -XDELETE http://192.168.1.125:9200/_snapshot/my_backup/$i | systemd-cat -t es-backup-cleanup; done
+  when: ansible_host == "drew-serv"
+
+# delete old snapshots tar balls on the first of the month
+- name: cron; delete elasticsearch snapshot tars
+  cron:
+    name: delete elasticsearch snapshot tars
+    hour: "0"
+    day: "1"
+    # month: */4
+    user: root
+    job: if ls /mnt/shar/bkup/docker-elk.* 2>/dev/null; then rm -rv /mnt/share/bkup/docker-elk.*; fi | systemd-cat -t es-backup-cleanup
+  when: ansible_host == "drew-serv"
+
+# delete old snapshots tar balls on the first of the month
+- name: cron; email errors from elasticsearch
+  cron:
+    name: email errors from elasticsearch
+    minute: "30"
+    hour: "18"
+    user: root
+    job: /root/scripts/es_errors.sh drew@invadelabs.com
   when: ansible_host == "drew-serv"
