@@ -8,8 +8,10 @@
     nexus_repo: "https://nexus.invadelabs.com/repository"
     nexus_docker_repo: "docker.invadelabs.com"
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
-    rsyslog_host: "192.168.1.125"
+    elasticsearch_host: "drew-serv.nm1.invadelabs.com"
+    rsyslog_host: "drew-serv.nm1.invadelabs.com"
     rsyslog_port: "10514"
+    mail_relay: "drew-serv.nm1.invadelabs.com"
     docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
     monitor_containers: "pihole \
                          nightscout \
@@ -127,7 +129,7 @@
         - "/srv/nagios4/main.cf:/etc/postfix/main.cf:z"
         - "/srv/nagios4/nagios.conf:/etc/apache2/sites-available/nagios.conf:z"
       env: {
-        "MAIL_RELAY_HOST": "192.168.1.125",
+        "MAIL_RELAY_HOST": "drew-serv.nm1.invadelabs.com",
         "NAGIOS_FQDN": "nagios.invadelabs.com",
         "NAGIOS_TIMEZONE": "America/Denver"
         }
@@ -349,8 +351,8 @@
       # log_options:
       #   max-size: "10m"
       env:
-        IP: "{{ ansible_eth0.ipv4.address }}"
-        MAC: "{{ ansible_eth0.macaddress }}"
+        IP: "{{ ansible_default_ipv4.address }}"
+        MAC: "{{ ansible_default_ipv4.macaddress }}"
         # IP_RANGE: "135,135"
         # DEBUG: "true"
       volumes:
