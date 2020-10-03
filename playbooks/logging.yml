@@ -6,6 +6,7 @@
     owner: root
     group: root
     mode: 0600
+    validate: "filebeat test config -c %s"
   when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.nm1.invadelabs.com" )
   notify: Restart filebeat.service
 
@@ -39,7 +40,7 @@
     owner: root
     group: root
     mode: 0644
-    validate: 'rsyslogd -N1 -f /etc/rsyslog.conf'
+    # validate: 'rsyslogd -N1 -f /etc/rsyslog.conf' # doesn't work due to require %s to verify individual config
   with_items:
     - logstash.conf
     - ignore-audit.conf
