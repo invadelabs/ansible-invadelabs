@@ -6,7 +6,7 @@
     line: "{{selinux_item.key}} = {{selinux_item.value}}"
     state: present
   with_dict: {
-    "smtp_host": "192.168.1.125",
+    "smtp_host": "drew-serv.nm1.invadelabs.com",
     "from_address": "selinux@invadelabs.com" }
   loop_control:
     loop_var: selinux_item
