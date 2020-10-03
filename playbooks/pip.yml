@@ -12,3 +12,8 @@
     name:
       - docker-py
   when: ansible_host == "drew-pine64"
+
+- name: pip; install check-systemd
+  pip:
+    name:
+      - check_systemd

@@ -9,3 +9,5 @@
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p /"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 65 -c 80"
+    - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
+    - check_systemd: "/usr/local/bin/check_systemd"
