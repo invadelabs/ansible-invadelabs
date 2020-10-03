@@ -6,6 +6,15 @@ filebeat.prospectors:
   processors:
   - add_docker_metadata: ~
 
+- type: log
+  tags: [apache_access]
+  paths:
+    - /var/log/httpd/*access*.log
+- type: log
+  tags: [apache_error]
+  paths:
+    - /var/log/httpd/*error*.log
+
 # only logstash was enabled
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
