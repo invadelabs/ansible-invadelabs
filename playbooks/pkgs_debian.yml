@@ -16,7 +16,8 @@
     - mailutils
     - postfix
     - libsasl2-modules # needed for postfix + sendgrid
-    - python-apt # needed for rasbian buster ansible
+    # - python-apt # needed for rasbian buster ansible
+    - python3-pip
 
     #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
     - monitoring-plugins-standard
