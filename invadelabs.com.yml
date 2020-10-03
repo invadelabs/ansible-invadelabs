@@ -4,6 +4,7 @@
   become_method: sudo
   # gather_facts: no
   vars:
+    ansible_python_interpreter: "/usr/bin/python3"
     rsyslog_host: localhost
     rsyslog_port: 11514
     nrpe_allowed_hosts: "nm.invadelabs.com,127.0.0.1,::1"
