@@ -58,7 +58,7 @@
 #     "GRUB_GFXPAYLOAD_LINUX": "1024x768x32" }
 #   loop_control:
 #     loop_var: grub_item
-#   notify: grub2-mkconfig -o /boot/grub2/grub.cfg # XXX removed handler
+#   notify: grub2-mkconfig -o /boot/grub2/grub.cfg
 
 - name: hw; smartd mail root
   lineinfile:
