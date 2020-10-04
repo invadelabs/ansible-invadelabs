@@ -184,7 +184,7 @@
     day: "1"
     # month: */4
     user: root
-    job: if ls /mnt/shar/bkup/docker-elk.* 2>/dev/null; then rm -rv /mnt/share/bkup/docker-elk.*; fi | systemd-cat -t es-backup-cleanup
+    job: if ls /mnt/share/bkup/docker-elk.*; then rm -fv /mnt/share/bkup/docker-elk.*; fi | systemd-cat -t es-backup-cleanup
   when: ansible_host == "drew-serv"
 
 # delete old snapshots tar balls on the first of the month
