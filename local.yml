@@ -7,6 +7,7 @@
     ansible_python_interpreter: "/usr/bin/python3"
     nexus_repo: "https://nexus.invadelabs.com/repository"
     nexus_docker_repo: "docker.invadelabs.com"
+    localnet_cidr: "192.168.1.0/24"
     nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
     elasticsearch_host: "drew-serv.nm1.invadelabs.com"
     rsyslog_host: "drew-serv.nm1.invadelabs.com"
@@ -129,9 +130,12 @@
         - "/srv/nagios4/main.cf:/etc/postfix/main.cf:z"
         - "/srv/nagios4/nagios.conf:/etc/apache2/sites-available/nagios.conf:z"
       env: {
-        "MAIL_RELAY_HOST": "drew-serv.nm1.invadelabs.com",
+        "MAIL_RELAY_HOST": "{{mail_relay}}",
         "NAGIOS_FQDN": "nagios.invadelabs.com",
         "NAGIOS_TIMEZONE": "America/Denver"
+        }
+      sysctls: {
+          "net.ipv6.conf.all.disable_ipv6": 1
         }
       ports:
         - "8080:80/tcp"
@@ -151,15 +155,15 @@
         - "/srv/pihole/etc-pihole:/etc/pihole:z"
         - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
       ports:
-        - "{{ ansible_enp0s25.ipv4.address }}:53:53/tcp"
-        - "{{ ansible_enp0s25.ipv4.address }}:53:53/udp"
+        - "{{ ansible_default_ipv4.address }}:53:53/tcp"
+        - "{{ ansible_default_ipv4.address }}:53:53/udp"
         - "6080:80/tcp"
       env:
         TZ: "America/Denver"
       dns_servers:
         - 127.0.0.1
         - 1.1.1.1
-    when: ansible_host == "drew-serv"
+    when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")
 
   - name: docker; create container nightscout
     docker_container:
@@ -253,7 +257,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.115.2"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.115.6"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -263,6 +267,9 @@
       volumes:
         - "/etc/localtime:/etc/localtime:ro"
         - "/srv/homeassistant:/config:z"
+      sysctls: {
+          "net.ipv6.conf.all.disable_ipv6": 1
+        }
       ports:
         - "8123:8123/tcp"
     when: ansible_host == "drew-serv"
