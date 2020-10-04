@@ -10,10 +10,17 @@ filebeat.prospectors:
   tags: [apache_access]
   paths:
     - /var/log/httpd/*access*.log
+  exclude_files:
+    - '/var/log/httpd/kibana.*access.*.log'
+  recursive_glob.enabled: true
+
 - type: log
   tags: [apache_error]
   paths:
     - /var/log/httpd/*error*.log
+  exclude_files:
+    - '/var/log/httpd/kibana.*error.*.log'
+  recursive_glob.enabled: true
 
 # only logstash was enabled
 filebeat.config.modules:
@@ -24,6 +31,6 @@ setup.template.settings:
 
 output.logstash:
   # The Logstash hosts
-  hosts: ["192.168.1.125:5000"]
+  hosts: ["{{elasticsearch_host}}:5000"]
 
 logging.level: warning
