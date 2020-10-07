@@ -8,12 +8,12 @@
     nexus_repo: "https://nexus.invadelabs.com/repository"
     nexus_docker_repo: "docker.invadelabs.com"
     localnet_cidr: "192.168.1.0/24"
-    nrpe_allowed_hosts: "192.168.1.0/24,172.17.0.0/16,127.0.0.1,::1"
+    docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
+    nrpe_allowed_hosts: "{{localnet_cidr}},172.17.0.0/16,127.0.0.1,::1"
     elasticsearch_host: "drew-serv.nm1.invadelabs.com"
     rsyslog_host: "drew-serv.nm1.invadelabs.com"
     rsyslog_port: "10514"
     mail_relay: "drew-serv.nm1.invadelabs.com"
-    docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
     monitor_containers: "pihole \
                          nightscout \
                          nexus \
@@ -242,7 +242,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.2.0"
+      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.2.1"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
