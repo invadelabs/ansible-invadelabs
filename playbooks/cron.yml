@@ -108,7 +108,7 @@
     name: autossh
     special_time: reboot
     user: root
-    job: autossh -M 0 -f -N -R 11514:{{ ansible_default_ipv4.address }}:10514 -R 5001:{{ ansible_default_ipv4.address }}:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/tunnel_2020.05.17 drew@invadelabs.com
+    job: autossh -M 0 -f -N -R 11514:localhost:10514 -R 5001:localhost:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/tunnel_2020.05.17 drew@invadelabs.com
   when: ansible_host == "drew-serv"
 
 - name: cron; restart autossh tunnel
