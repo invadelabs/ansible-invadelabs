@@ -257,7 +257,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.115.6"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.116.1"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -295,7 +295,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}/grafana/grafana:7.2.0"
+      image: "{{ nexus_docker_repo }}/grafana/grafana:7.2.1"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
