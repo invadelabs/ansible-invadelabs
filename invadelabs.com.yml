@@ -28,7 +28,7 @@
   - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
   - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
   - include: playbooks/cron.yml
-  - include: playbooks/nrpe.yml # sshd_config
+  - include: playbooks/nrpe.yml # nagios nrpe monitoring
 
   handlers:
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
