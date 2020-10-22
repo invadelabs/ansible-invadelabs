@@ -43,7 +43,7 @@
 
   # re-write /wiki/index.php/Main_Page to /index.php/Main_Page
   # used to rewrite any old links
-    RewriteRule ^/wiki/(.*) https://%{SERVER_NAME}/$1 [R,L]
+  RewriteRule ^/wiki/(.*) https://%{SERVER_NAME}/$1 [R,L]
 
   ## Short url for wiki pages
   #RewriteRule ^/?wiki(/.*)?$ %{DOCUMENT_ROOT}/index.php [L]

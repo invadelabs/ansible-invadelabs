@@ -13,7 +13,7 @@
     - check_fail2ban: "/usr/local/bin/check_fail2ban.sh -w 1 -c 2"
     - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
     - check_dns_local1: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.125 -H drew-serv.nm1.invadelabs.com -w 0.5 -c 1"
-    - check_dns_local2: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.120 -H drew-serv.nm1.invadelabs.com -w 0.5 -c 1"    
+    - check_dns_local2: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.120 -H drew-serv.nm1.invadelabs.com -w 0.5 -c 1"
     - check_dns_remote: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.1 -H google.com -w 0.5 -c 1"
     - check_iostat: "/usr/local/bin/check_iostat -d mmcblk0 -i -p"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
