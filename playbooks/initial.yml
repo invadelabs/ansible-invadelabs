@@ -48,11 +48,6 @@
   timezone:
     name: America/Denver
 
-# XXX will be handled by gce firewall list
-- name: initial; disable sshguard invadelabs.com
-  service: name=sshguard state=stopped enabled=no
-  when: ansible_fqdn == "invadelabs.com"
-
 - name: initial; add rpi /etc/apt/sources.list apt proxy
   template:
     src: templates/etc/apt/sources.list.rpi.j2
