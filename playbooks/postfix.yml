@@ -20,7 +20,11 @@
     "smtp_sasl_auth_enable": "yes",
     "smtp_sasl_password_maps": "hash:/etc/postfix/sasl_passwd",
     "header_size_limit": "4096000",
-    "smtp_sasl_security_options": "noanonymous"
+    "smtp_tls_security_level": "encrypt",
+    "smtp_sasl_security_options": "noanonymous",
+    "smtp_sasl_tls_security_options": "noanonymous",
+    "smtpd_tls_cert_file": "/etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem",
+    "smtpd_tls_key_file": "/etc/letsencrypt/live/invadelabs.com-0001/privkey.pem"
     }
   loop_control:
     loop_var: postfix_item
