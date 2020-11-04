@@ -46,7 +46,7 @@
     loop_var: a2enconf_item
   notify: Restart apache2.service
 
-- name: apache2; touch /var/log/apache-first-run.log # XXX delete me to recreate templates
+- name: apache2; touch /var/log/apache-first-run.log # delete me to recreate templates
   copy:
     dest: /var/log/apache-first-run.log
     content: ""
@@ -89,9 +89,9 @@
     mode: 0644
   notify: Restart apache2.service
 
-# # disable default site otherwise breaks some 302 http->https
-# - name: apache2; a2dissite 000-default
-#   file:
-#     path: /etc/apache2/sites-enables/000-default.conf
-#     state: absent
-#   notify: Restart apache2.service
+# disable default site otherwise breaks some 302 http->https
+- name: apache2; a2dissite 000-default
+  file:
+    path: /etc/apache2/sites-enables/000-default.conf
+    state: absent
+  notify: Restart apache2.service
