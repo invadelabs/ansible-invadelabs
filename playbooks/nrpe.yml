@@ -15,32 +15,19 @@
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
 
-- name: nrpe; nrpe_local.cfg generic
-  lineinfile:
-    dest: "/etc/nagios/nrpe_local.cfg"
-    regexp: "^command\\[{{nrpe_gen_item.key}}\\]"
-    line: "command[{{nrpe_gen_item.key}}]={{nrpe_gen_item.value}}"
-    create: yes
-    state: present
-  with_dict: {
-    "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10",
-    "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2",
-    }
-  loop_control:
-    loop_var: nrpe_gen_item
-  notify:
-    - Restart nrpe.service
-    - Restart nagios-nrpe-server.service
-
-- name: nrpe; nrpe_local.cfg host specific
+- name: nrpe; nrpe_local.cfg
   lineinfile:
     dest: "/etc/nagios/nrpe_local.cfg"
     regexp: "^command\\[{{nrpe_spec_item.key}}\\]"
     line: "command[{{nrpe_spec_item.key}}]={{nrpe_spec_item.value}}"
     state: present
-  with_dict: "{{ nrpe_specific }}"
+  with_dict: "{{ nrpe_all + nrpe_specific }}" # see host_vars/host.yml or groups_vars/group.yml
   loop_control:
     loop_var: nrpe_spec_item
+  vars:
+    nrpe_all:
+      - "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10"
+      - "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2"
   notify:
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service

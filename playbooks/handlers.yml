@@ -2,6 +2,7 @@
 ## Start Service Handlers
 - name: Start apache2.service
   service: name=apache2 state=started enabled=yes
+  when: ansible_host == "invadelabs.com"
 - name: Start chronyd.service
   service: name=chronyd state=started enabled=yes
 - name: Start docker.service
@@ -23,10 +24,13 @@
   service: name=ntopng state=started enabled=yes
 - name: Start nut-monitor.service
   service: name=nut-monitor state=started enabled=yes
+  when: ansible_host == "drew-piv3"
 - name: Start nut-driver.service
   service: name=nut-driver state=started enabled=yes
+  when: ansible_host == "drew-piv3"
 - name: Start nut-server.service
   service: name=nut-server state=started enabled=yes
+  when: ansible_host == "drew-piv3"
 - name: Start php7.2-fpm.service
   service: name=php7.2-fpm.service state=started enabled=yes
 - name: Start postfix.service
@@ -91,14 +95,19 @@
 ## Misc Handlers
 - name: Setup lm_sensors
   command: sensors-detect --auto # XXX not when modules have already been inserted
+
 - name: systemd daemon-reload
   systemd: daemon_reload=yes
-- name: resolvconf -u
-  command: resolvconf -u
+
 - name: update-alternatives; editor vim-basic
   alternatives:
     name: editor
     path: /usr/bin/vim.basic
   when: ansible_os_family == "Debian"
+
 - name: Run sysctl
   command: sysctl -p
+
+- name: docker; reload pihole custom.list and flush cache
+  shell: docker exec pihole pihole restartdns reload
+  when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")

@@ -95,6 +95,16 @@
     - docker; create container grafana
     - docker; create container zoneminder
 
+  - name: docker; add pihole custom.list
+    template:
+      src: "templates/srv/pihole/etc-pihole/custom.list.j2"
+      dest: "/srv/pihole/etc-pihole/custom.list.j2"
+      owner: drew
+      group: drew
+      mode: 0644
+    when: "'pihole' in group_names"
+    notify: docker; reload pihole custom.list and flush cache
+
 ## HANDLERS ##
   handlers:
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
@@ -163,7 +173,7 @@
       dns_servers:
         - 127.0.0.1
         - 1.1.1.1
-    when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")
+    when: "'pihole' in group_names"
 
   - name: docker; create container nightscout
     docker_container:
@@ -183,7 +193,7 @@
   - name: docker; create container nexus
     docker_container:
       name: nexus
-      image: "{{ nexus_docker_repo }}/sonatype/nexus3:3.27.0"
+      image: "{{ nexus_docker_repo }}/sonatype/nexus3:3.28.1"
       state: started
       restart_policy: unless-stopped
       hostname: nightscout.invadelabs.com
@@ -220,7 +230,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.15.0"
+      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.16.1"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -257,7 +267,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.117.1"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.117.4"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -271,6 +281,7 @@
           "net.ipv6.conf.all.disable_ipv6": 1
         }
       ports:
+        - "80:80/tcp"
         - "8123:8123/tcp"
     when: ansible_host == "drew-serv"
 
@@ -295,7 +306,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}/grafana/grafana:7.2.2"
+      image: "{{ nexus_docker_repo }}/grafana/grafana:7.3.2"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -314,7 +325,7 @@
   - name: docker; create container zoneminder
     docker_container:
       name: zoneminder
-      image: "{{ nexus_docker_repo }}/dlandon/zoneminder:latest" # 1.34.6 ?
+      image: "{{ nexus_docker_repo }}/dlandon/zoneminder:latest"
       state: started
       restart_policy: unless-stopped
       hostname: zoneminder.invadelabs.com
@@ -350,7 +361,7 @@
   - name: docker; create container diyhue
     docker_container:
       name: diyHue
-      image: "{{ nexus_docker_repo }}/diyhue/core:212" # github actions build id
+      image: "{{ nexus_docker_repo }}/diyhue/core:latest"
       state: started
       restart_policy: unless-stopped
       hostname: diyhue.invadelabs.com
@@ -359,8 +370,8 @@
       #   max-size: "10m"
       env:
         IP: "{{ ansible_default_ipv4.address }}"
-        MAC: "{{ ansible_default_ipv4.macaddress }}"
-        # IP_RANGE: "135,135"
+        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
+        IP_RANGE: "135,135"
         # DEBUG: "true"
       volumes:
         - /srv/hue-emulator:/opt/hue-emulator/export
