@@ -95,6 +95,8 @@
       - php-xml
       - php-curl # for selenium-invadelabs script
       - php-apcu # Alternative PHP Cache (APC)
+      - certbot # letsencrypt
+      - python3-certbot-apache # letsencrypt
     state: present
   notify:
   - Start apache2.service
