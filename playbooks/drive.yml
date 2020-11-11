@@ -7,7 +7,7 @@
     creates: /srv/invadelabs.com-bkup-latest.tar.xz
   when: ansible_fqdn == 'invadelabs.com'
 
-- name: drive; Extract invadelabs.com-bkup-latest.tar.xz
+- name: drive; extract invadelabs.com-bkup-latest.tar.xz
   unarchive:
     src: /srv/invadelabs.com-bkup-latest.tar.xz
     dest: /srv
