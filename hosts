@@ -13,6 +13,10 @@ drew-piv3-05
 drew-piv3
 drew-piv4
 
+[pihole]
+drew-serv
+drew-pine64
+
 [nm1-hosts]
 drew-serv
 #drew-piv1
