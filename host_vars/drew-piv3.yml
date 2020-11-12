@@ -23,3 +23,4 @@
     - nut
     - nut-client
     - nut-server
+    - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]

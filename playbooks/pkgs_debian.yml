@@ -57,14 +57,6 @@
   - Start nut-monitor.service
   - update-alternatives; editor vim-basic
 
-# # XXX misisng in ubuntu # to display a list of critical bugs prior to each APT installation. [CUST-0810]
-- name: pkgs_debian; install apt-listbugs
-  apt:
-    pkg:
-      - apt-listbugs
-    state: present
-  when: ansible_host != "invadelabs.com"
-
 ## no pxz in u20.04, u18.04 pxz works though
 - name: pkgs_debian; download pxz deb
   get_url:
