@@ -87,10 +87,6 @@
     mode: 0644
   when: "'debian-arm' in group_names"
 
-- name: initial; drew-piv3; apt; install fail2ban
-  apt: name=fail2ban state=present
-  when: ansible_hostname == "drew-piv3"
-
 - name: initial; apt; install etckeeper and initial packages
   apt:
     pkg:
