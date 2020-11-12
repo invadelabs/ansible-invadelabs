@@ -20,3 +20,4 @@
   host_pkgs:
     - unclutter
     - synergy
+    - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
