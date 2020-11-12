@@ -12,7 +12,9 @@
 ## base packages to install on every device
 - name: pkgs_debian; install packages
   apt:
-    pkg:
+    pkg: "{{ all_pkgs + host_pkgs }}" # see host_vars/host.yml or groups_vars/group.yml
+  vars:
+    all_pkgs:
     - mailutils
     - postfix
     - libsasl2-modules # needed for postfix + sendgrid
@@ -49,16 +51,11 @@
     state: present
   notify:
   - Start postfix.service
+  - Start apache2.service
+  - Start nut-driver.service
+  - Start nut-server.service
+  - Start nut-monitor.service
   - update-alternatives; editor vim-basic
-
-#
-- name: pkgs_debian; install unclutter
-  apt:
-    pkg:
-      - unclutter
-      - synergy
-    state: present
-  when: ansible_host == "drew-piv4"
 
 # # XXX misisng in ubuntu # to display a list of critical bugs prior to each APT installation. [CUST-0810]
 - name: pkgs_debian; install apt-listbugs
@@ -67,40 +64,6 @@
       - apt-listbugs
     state: present
   when: ansible_host != "invadelabs.com"
-
-## install ntopng AND nut for ups
-- name: pkgs_debian; drew-piv3 NUT for UPS and ntopng
-  apt:
-    pkg:
-      - ntopng
-      - nut
-      - nut-client
-      - nut-server
-    state: present
-  when: ansible_host == "drew-piv3"
-  notify:
-    - Start nut-driver.service
-    - Start nut-server.service
-    - Start nut-monitor.service
-
-## invadelabs.com requirements
-- name: pkgs_debian; invadelabs.com
-  apt:
-    pkg:
-      - rclone
-      - apache2
-      - libapache2-mod-php
-      - php-sqlite3 # for drewwiki
-      - php-mbstring # for drewwiki
-      - php-xml
-      - php-curl # for selenium-invadelabs script
-      - php-apcu # Alternative PHP Cache (APC)
-      - certbot # letsencrypt
-      - python3-certbot-apache # letsencrypt
-    state: present
-  notify:
-  - Start apache2.service
-  when: ansible_fqdn == "invadelabs.com"
 
 ## no pxz in u20.04, u18.04 pxz works though
 - name: pkgs_debian; download pxz deb
