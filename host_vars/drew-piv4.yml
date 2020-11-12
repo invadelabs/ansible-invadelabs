@@ -17,3 +17,6 @@
     - check_dns_remote: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.1 -H google.com -w 0.5 -c 1"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_systemd: "/usr/local/bin/check_systemd"
+  host_pkgs:
+    - unclutter
+    - synergy
