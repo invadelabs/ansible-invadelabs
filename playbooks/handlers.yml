@@ -99,9 +99,6 @@
 - name: systemd daemon-reload
   systemd: daemon_reload=yes
 
-- name: resolvconf -u
-  command: resolvconf -u
-
 - name: update-alternatives; editor vim-basic
   alternatives:
     name: editor

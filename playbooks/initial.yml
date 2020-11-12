@@ -15,21 +15,14 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
-- name: initial; ensure "nrpe" is in sudoers with smartctl # XXX find a better way to do this
+- name: initial; ensure "nrpe" is in sudoers with exact commands # XXX find a better way to do this
   lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^nrpe ALL='
-    line: 'nrpe ALL = NOPASSWD: /usr/sbin/smartctl'
+    line: 'nrpe ALL = NOPASSWD: /usr/sbin/smartctl, /usr/local/bin/check_docker'
     validate: '/usr/sbin/visudo -cf %s'
-
-- name: initial; ensure "nrpe" is in sudoers with check_docker # XXX find a better way to do this
-  lineinfile:
-    path: /etc/sudoers
-    state: present
-    regexp: '^nrpe ALL='
-    line: 'nrpe ALL = NOPASSWD: /usr/local/bin/check_docker'
-    validate: '/usr/sbin/visudo -cf %s'
+  when: ansible_host == "drew-serv"
 
 - name: initial; mkdir /root/installers
   file:
@@ -86,10 +79,6 @@
     group: root
     mode: 0644
   when: "'debian-arm' in group_names"
-
-- name: initial; drew-piv3; apt; install fail2ban
-  apt: name=fail2ban state=present
-  when: ansible_hostname == "drew-piv3"
 
 - name: initial; apt; install etckeeper and initial packages
   apt:
