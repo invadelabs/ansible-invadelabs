@@ -1,13 +1,20 @@
 ---
 ## debconf
-- name: pkgs_debian; debconf; postfix; option type 'Internet with smarthost'
-  debconf: name=postfix question="postfix/main_mailer_type" value="'Internet with smarthost'" vtype="string"
-
-- name: pkgs_debian; debconf; postfix; option type 'System mail name'
-  debconf: name=postifx question="postfix/mailname" value="invadelabs.com" vtype="string"
-
-- name: pkgs_debian; debconf; debsescan; skip daily email
-  debconf: name=postifx question="debsecan/report" value=false vtype="boolean"
+- name: pkgs_debian; debconf
+  debconf:
+    name: "{{ debconf.name }}"
+    question: "{{ debconf.question }}"
+    value: "{{ debconf.value }}"
+    vtype: "{{ debconf.vtype }}"
+  loop:
+    # postfix; option type 'Internet with smarthost'
+    - { name: "postfix", question: "postfix/main_mailer_type", value: "'Internet with smarthost'", vtype: "string"}
+    # debconf; postfix; option type 'System mail name'
+    - { name: "postfix", question: "postfix/mailname", value: "invadelabs.com", vtype: "string"}
+    # debsescan; skip daily email
+    - { name: "postfix", question: "debsecan/report", value: '', vtype: "boolean"} # should be false, trying null
+  loop_control:
+    loop_var: debconf
 
 ## base packages to install on every device
 - name: pkgs_debian; install packages
@@ -19,7 +26,7 @@
     - mailutils
     - postfix
     - libsasl2-modules # needed for postfix + sendgrid
-    # - python-apt # needed for rasbian buster ansible
+    - ansible
     - python3-pip
 
     #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
@@ -30,8 +37,6 @@
     # - debian-keyring # needed for nrpe debian package
     # - debian-archive-keyring # needed for nrpe debian package
     - sysstat # for check_iostat
-
-    - ansible
 
     - vim
     - logwatch
@@ -45,7 +50,7 @@
     - jq
 
     # sec
-    - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
+    # - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
     - debsums # for the verification of installed package files against MD5 checksums. [CUST-0875]
     - needrestart # after upgrades to determine which daemons are using old versions of libraries and need restarting. [CUST-0831]
     - chkrootkit # malware scanner, to perform periodic file system scans [HRDN-7230]

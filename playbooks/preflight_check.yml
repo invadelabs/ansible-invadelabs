@@ -14,11 +14,12 @@
     - /root/apache_env
     - /root/github_token
     - /root/postfix_passwd
-    - /root/slacktee.conf # XXX add check these are 0400
+    - /root/slacktee.conf
   loop_control:
     loop_var: invadelabs_file_item
   register: item
-  failed_when: item.stat.exists == False
+  # failed_when: item.stat.exists == False # mode below implies file exists
+  failed_when: item.stat.mode != '0400'
   when: ansible_host == "invadelabs.com"
 
 - name: preflight_check; ensure tunnel key is in authorized_keys
@@ -39,7 +40,7 @@
   loop_control:
     loop_var: drewserv_file_item
   register: item
-  failed_when: item.stat.exists == False
+  failed_when: item.stat.exists == False # XXX ensure set 0400, figure out *.env as required group 0440
   when: ansible_host == "drew-serv"
 
 - name: preflight_check; /etc/hosts has IP, hostname, and fqdn
@@ -63,23 +64,15 @@
 - debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
 
-- name: preflight_check; docker; ensure /srv/data exists
+- name: preflight_check; ensure folders exist
   stat:
-    path: /srv/data
-  register: elk_data
-  failed_when: elk_data.stat.exists == False
-  when: ansible_host == "drew-serv"
-
-- name: preflight_check; ensure /mnt/share/bkup exists
-  stat:
-    path: /mnt/share/bkup
-  register: elk_data
-  failed_when: elk_data.stat.exists == False
-  when: ansible_host == "drew-serv"
-
-- name: preflight_check; ensure /mnt/share/nexus-backup exists
-  stat:
-    path: /mnt/share/nexus-data
-  register: elk_data
-  failed_when: elk_data.stat.exists == False
+    path: "{{ drewserv_folder_item }}"
+  with_items:
+    - /srv/data
+    - /mnt/share/bkup
+    - /mnt/share/nexus-data
+  loop_control:
+    loop_var: drewserv_folder_item
+  register: item
+  failed_when: item.stat.exists == False
   when: ansible_host == "drew-serv"
