@@ -28,7 +28,7 @@
   when: ansible_host == "drew-serv"
   notify: Restart httpd.service
 
-- name: apache2; add SSLStapling Cache to ssl.conf
+- name: httpd; add SSLStapling Cache to ssl.conf
   blockinfile:
     path: /etc/httpd/conf.d/ssl.conf
     marker: "        # {mark} ANSIBLE MANAGED BLOCK -->"
@@ -36,7 +36,11 @@
     content: "        SSLStaplingCache        shmcb:/var/run/ocsp(128000)"
   notify: Restart httpd.service
 
-- name: httpd; drew-serv docroot
-  template:
-    src: templates/var/www/html/index.html.j2
+# blank /var/www/html/index.html
+- name: httpd; /var/www/html/index.html
+  copy:
     dest: /var/www/html/index.html
+    content: "oops"
+    owner: root
+    group: root
+    mode: 0644
