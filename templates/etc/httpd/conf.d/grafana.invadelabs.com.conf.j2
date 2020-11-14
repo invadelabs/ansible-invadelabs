@@ -8,7 +8,7 @@
   ServerAdmin drew@invadelabs.com
 
   ErrorLog logs/grafana.invadelabs.com.error.log
-  CustomLog logs/grafana.invadelabs.com.access.log vhost_combined
+  CustomLog logs/grafana.invadelabs.com.access.log combined
 
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
@@ -30,7 +30,7 @@
   DocumentRoot /var/www/html
 
   ErrorLog logs/grafana.invadelabs.com.secure.error.log
-  CustomLog logs/grafana.invadelabs.com.secure.access.log vhost_combined
+  CustomLog logs/grafana.invadelabs.com.secure.access.log combined
 
   ProxyPreserveHost On
   ProxyRequests off

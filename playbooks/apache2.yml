@@ -87,7 +87,6 @@
     owner: root
     group: root
     mode: 0644
-  notify: Restart apache2.service
 
 # disable default site otherwise breaks some 302 http->https
 - name: apache2; a2dissite 000-default

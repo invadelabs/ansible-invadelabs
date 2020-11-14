@@ -4,7 +4,7 @@
   ServerAdmin drew@invadelabs.com
 
   ErrorLog logs/ha.invadelabs.com.error.log
-  CustomLog logs/ha.invadelabs.com.access.log vhost_combined
+  CustomLog logs/ha.invadelabs.com.access.log combined
 
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
@@ -21,7 +21,7 @@
   ServerAdmin drew@invadelabs.com
 
   ErrorLog logs/ha.invadelabs.com.secure.error.log
-  CustomLog logs/ha.invadelabs.com.secure.access.log vhost_combined
+  CustomLog logs/ha.invadelabs.com.secure.access.log combined
 
   ProxyPreserveHost On
   ProxyRequests off
