@@ -38,6 +38,7 @@
       - deploy_env
       - email_env
       - slack_env
+      - git_env
     loop_control:
       loop_var: a2env_vars_item
     register: apache_env_vars # XXX fix this for invadelabs.com.conf.j2 temlate
