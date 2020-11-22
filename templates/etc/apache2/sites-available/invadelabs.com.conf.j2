@@ -37,6 +37,7 @@
   SetEnv DEPLOY_ENV {{ apache_env_vars.results[0].stdout }}
   SetEnv EMAIL_ENV {{ apache_env_vars.results[1].stdout }}
   SetEnv SLACK_ENV {{ apache_env_vars.results[2].stdout }}
+  SetEnv GIT_ENV {{ apache_env_vars.results[3].stdout }}
 
   ErrorLog ${APACHE_LOG_DIR}/invadelabs.com.secure.error.log
   CustomLog ${APACHE_LOG_DIR}/invadelabs.com.secure.access.log vhost_combined
