@@ -1,5 +1,5 @@
 ---
-- name: pip; install check-docker on drew-serv
+- name: pip; install pip items on drew-serv
   pip:
     name:
       - check-docker
@@ -7,7 +7,7 @@
       - dnspython # needed for mongodb+srv uri
   when: ansible_host == "drew-serv"
 
-- name: pip; install check-docker on drew-pine64
+- name: pip; install docker-py on drew-pine64
   pip:
     name:
       - docker-py
