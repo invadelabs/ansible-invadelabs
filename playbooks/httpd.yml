@@ -44,3 +44,42 @@
     owner: root
     group: root
     mode: 0644
+
+# apache-ultimate-bad-bot-blocker
+- name: httpd; dl Apache_2.4.tar.gz
+  get_url:
+    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2020.08.1192/Apache_2.4.tar.gz
+    dest: /etc/httpd/bad-bot-blocker.tar.gz
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+    checksum: "sha256:7320e26389219b84188ae938c064c18b2c871b7aa52e034e0f93ea3071d5beaa"
+
+- name: httpd; extract Apache_2.4.tar.gz
+  unarchive:
+    src: /etc/httpd/bad-bot-blocker.tar.gz
+    dest: /etc/httpd
+    remote_src: yes
+    exclude:
+      - README.md
+    owner: root
+    group: root
+    creates: /etc/httpd/custom.d
+    # system_u:object_r:container_file_t
+    setype: container_file_t
+    serole: object_r
+    seuser: system_u
+
+- name: httpd; add bad bot blocker to conf
+  blockinfile:
+    path: /etc/httpd/conf/httpd.conf
+    # marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    content: |
+      <Location "/">
+              # AND-combine with preceding configuration sections
+              AuthMerging And
+              # include black list
+              Include custom.d/globalblacklist.conf
+      </Location>
+  notify: Restart httpd.service

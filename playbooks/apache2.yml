@@ -94,3 +94,38 @@
     path: /etc/apache2/sites-enables/000-default.conf
     state: absent
   notify: Restart apache2.service
+
+# apache-ultimate-bad-bot-blocker
+- name: apache2; dl Apache_2.4.tar.gz
+  get_url:
+    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2020.08.1192/Apache_2.4.tar.gz
+    dest: /etc/apache2/bad-bot-blocker.tar.gz
+    mode: 0755
+    owner: root
+    group: root
+    force: no
+    checksum: "sha256:7320e26389219b84188ae938c064c18b2c871b7aa52e034e0f93ea3071d5beaa"
+
+- name: apache2; extract Apache_2.4.tar.gz
+  unarchive:
+    src: /etc/apache2/bad-bot-blocker.tar.gz
+    dest: /etc/apache2
+    remote_src: yes
+    owner: root
+    group: root
+    exclude:
+      - README.md
+    creates: /etc/apache2/custom.d
+
+- name: apache2; add bad bot blocker to conf
+  blockinfile:
+    path: /etc/apache2/apache2.conf
+    # marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    content: |
+      <Location "/">
+              # AND-combine with preceding configuration sections
+              AuthMerging And
+              # include black list
+              Include custom.d/globalblacklist.conf
+      </Location>
+  notify: Restart apache2.service
