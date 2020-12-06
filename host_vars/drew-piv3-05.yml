@@ -1,0 +1,4 @@
+---
+  host_pkgs:
+    - unclutter
+    - synergy
