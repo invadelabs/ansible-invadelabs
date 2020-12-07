@@ -50,6 +50,7 @@
     regexp: "^{{lightdm_item.key}}"
     line: "{{lightdm_item.key}}={{lightdm_item.value}}"
     state: present
+  when: ansible_host == "drew-piv4"
   with_dict: {
     "disable_overscan": "1",
     "hdmi_enable_4kp60": "1"
