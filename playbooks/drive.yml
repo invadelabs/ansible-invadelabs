@@ -1,7 +1,7 @@
 ---
 - name: drive; get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
-    rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^invadelabs.com.*.tar.xz$' | sort | tail -n 1) /srv/invadelabs.com-bkup-latest.tar.xz
+    rclone copyto googledrive:/Backup/Web/$(rclone lsjson --filter '- */**' --filter '+ invadelabs.com.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1) /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
     creates: /srv/invadelabs.com-bkup-latest.tar.xz
