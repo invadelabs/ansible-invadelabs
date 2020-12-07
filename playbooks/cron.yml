@@ -169,6 +169,7 @@
 - name: cron; cleanup elasticsearch snapshots
   cron:
     name: cleanup elasticsearch snapshot
+    minute: "0"
     hour: "0"
     day: "1"
     # month: */4
@@ -180,6 +181,7 @@
 - name: cron; delete elasticsearch snapshot tars
   cron:
     name: delete elasticsearch snapshot tars
+    minute: "0"
     hour: "0"
     day: "1"
     # month: */4

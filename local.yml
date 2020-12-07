@@ -73,11 +73,11 @@
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
   - include: playbooks/dashboard.yml
-    when: ansible_host == "drew-piv4"
+    when: ( ansible_host == "drew-piv4" ) or ( ansible_host == "drew-piv3-05" )
 
   - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup
     shell: |
-      rclone copyto googledrive:/Backup/Web/$(rclone ls googledrive:/Backup/Web 2>&1 | awk -F" " '{ print $2 }' | grep -E '^drew-serv.*.tar.xz$' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
+      rclone copyto googledrive:/Backup/Web/$(rclone lsjson --filter '- */**' --filter '+ drew-serv.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1) /srv/drew-serv-bkup-latest.tar.xz
     args:
       creates: /srv/drew-serv-bkup-latest.tar.xz
     when: ansible_host == "drew-serv"
@@ -154,7 +154,7 @@
   - name: docker; create container pihole
     docker_container:
       name: pihole
-      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.1.2"
+      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.2.1"
       state: started
       restart_policy: unless-stopped
       hostname: pihole.invadelabs.com
@@ -267,7 +267,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:0.118.3"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:1.0.0b1"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -361,7 +361,7 @@
   - name: docker; create container diyhue
     docker_container:
       name: diyHue
-      image: "{{ nexus_docker_repo }}/diyhue/core:latest"
+      image: "{{ nexus_docker_repo }}/diyhue/core:292"
       state: started
       restart_policy: unless-stopped
       hostname: diyhue.invadelabs.com

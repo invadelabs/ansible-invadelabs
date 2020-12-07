@@ -11,6 +11,6 @@
     - check_apt: "{{nrpe_plugins_dir}}/check_apt -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 70"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
-    - check_systemd: "/usr/local/bin/check_systemd -w 90"
+    - check_systemd: "/usr/local/bin/check_systemd -w 100"
   host_pkgs:
     - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
