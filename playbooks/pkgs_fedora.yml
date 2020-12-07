@@ -114,8 +114,8 @@
   args:
     chdir: /root
     creates: /var/log/gcloud-sdk.touch
-  register: rclone_stat
-  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  register: gcloud_auth_stat
+  failed_when: gcloud_auth_stat.rc != 0 # rc = proccess exit code
   when: ansible_host == "drew-serv"
 
 - debug:
@@ -126,6 +126,6 @@
   args:
     chdir: /root
     creates: /var/log/gcloud-sdk.touch
-  register: rclone_stat
-  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  register: gcloud_config_stat
+  failed_when: gcloud_config_stat.rc != 0 # rc = proccess exit code
   when: ansible_host == "drew-serv"
