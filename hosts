@@ -12,6 +12,7 @@ drew-piv3-05
 #drew-piv1
 drew-piv3
 drew-piv4
+drew-piv4-02
 
 [pihole]
 drew-serv
@@ -23,6 +24,7 @@ drew-serv
 drew-piv3
 drew-piv4
 drew-pine64
+drew-piv4-02
 
 [nm1:children]
 rpi-cluster
