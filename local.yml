@@ -44,11 +44,11 @@
   - include: playbooks/firewall.yml
   - include: playbooks/logging.yml
 
-  - include: playbooks/selinux.yml # hardware specifics
+  - include: playbooks/selinux.yml # selinux settings
     when: ansible_host == "drew-serv"
   - include: playbooks/hw_drew-serv.yml # hardware specifics
     when: ansible_host == "drew-serv"
-  # - include: playbooks/hw_rpi.yml # hardware specifics
+  # - include: playbooks/hw_rpi.yml # raspberry pi specifics
   #   when: "'debian-arm' in group_names"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
@@ -56,10 +56,10 @@
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
-  - include: playbooks/postfix_relay.yml # postfix config for relay
+  - include: playbooks/postfix_relay.yml # postfix relay config
     when: (ansible_host != "drew-serv")
 
-  - include: playbooks/ntop.yml # ntop network monitoring
+  - include: playbooks/ntopng.yml # ntopng network monitoring
     when: ansible_host == "drew-piv3"
 
   - include: playbooks/nut_ups.yml # NUT UPS config
@@ -131,6 +131,7 @@
       log_driver: json-file
       log_options:
         max-size: "10m"
+      # XXX may need `a2enmod remoteip` in container
       volumes:
         - "/srv/nagios4/etc:/opt/nagios/etc:z"
         - "/srv/nagios4/var:/opt/nagios/var:z"
@@ -154,7 +155,7 @@
   - name: docker; create container pihole
     docker_container:
       name: pihole
-      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.2.1"
+      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.3.4"
       state: started
       restart_policy: unless-stopped
       hostname: pihole.invadelabs.com
@@ -267,7 +268,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:1.0.0b5"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2020.12.2"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -281,7 +282,6 @@
           "net.ipv6.conf.all.disable_ipv6": 1
         }
       ports:
-        - "80:80/tcp"
         - "8123:8123/tcp"
     when: ansible_host == "drew-serv"
 
@@ -315,7 +315,7 @@
         max-size: "10m"
       env:
         GF_SECURITY_ALLOW_EMBEDDING: "true"
-        GF_INSTALL_PLUGINS: "natel-discrete-panel"
+        # GF_INSTALL_PLUGINS: "natel-discrete-panel"
       volumes:
         - "/srv/grafana:/var/lib/grafana:z"
       ports:
@@ -358,28 +358,28 @@
         - "9000:9000/tcp"
     when: ansible_host == "drew-serv"
 
-  - name: docker; create container diyhue
-    docker_container:
-      name: diyHue
-      image: "{{ nexus_docker_repo }}/diyhue/core:292"
-      state: started
-      restart_policy: unless-stopped
-      hostname: diyhue.invadelabs.com
-      # log_driver: json-file
-      # log_options:
-      #   max-size: "10m"
-      env:
-        IP: "{{ ansible_default_ipv4.address }}"
-        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
-        IP_RANGE: "135,135"
-        # DEBUG: "true"
-      volumes:
-        - /srv/hue-emulator:/opt/hue-emulator/export
-      # network_mode: host
-      ports:
-        - "80:80/tcp"
-        - "443:443/tcp"
-        - "1900:1900/udp"
-        - "2100:2100/udp"
-        - "1982:1982/udp"
-    when: ansible_host == "drew-pine64"
+#  - name: docker; create container diyhue
+#    docker_container:
+#      name: diyHue
+#      image: "{{ nexus_docker_repo }}/diyhue/core:latest"
+#      state: started
+#      restart_policy: unless-stopped
+#      hostname: diyhue.invadelabs.com
+#      # log_driver: json-file
+#      # log_options:
+#      #   max-size: "10m"
+#      env:
+#        IP: "{{ ansible_default_ipv4.address }}"
+#        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
+#        IP_RANGE: "135,135"
+#        # DEBUG: "true"
+#      volumes:
+#        - /srv/hue-emulator:/opt/hue-emulator/export
+#      # network_mode: host
+#      ports:
+#        - "80:80/tcp"
+#        - "443:443/tcp"
+#        - "1900:1900/udp"
+#        - "2100:2100/udp"
+#        - "1982:1982/udp"
+#    when: ansible_host == "drew-pine64"
