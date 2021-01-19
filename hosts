@@ -2,10 +2,10 @@
 invadelabs.com # var=string
 
 [rpi-cluster]
-drew-piv3-01
-drew-piv3-02
-drew-piv3-03
-drew-piv3-04
+# drew-piv3-01
+# drew-piv3-02
+# drew-piv3-03
+# drew-piv3-04
 drew-piv3-05
 
 [arm]
