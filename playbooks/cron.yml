@@ -32,7 +32,7 @@
     weekday: "6"
     user: root
     job: /usr/sbin/logwatch --output mail
-  when: "'rpi-cluster' not in group_names"
+  # when: "'rpi-cluster' not in group_names"
 
 - name: cron; cron check_letsencrypt.sh
   cron:
