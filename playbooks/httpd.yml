@@ -48,13 +48,13 @@
 # apache-ultimate-bad-bot-blocker
 - name: httpd; dl Apache_2.4.tar.gz
   get_url:
-    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2020.08.1192/Apache_2.4.tar.gz
+    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2021.01.1194/Apache_2.4.tar.gz
     dest: /etc/httpd/bad-bot-blocker.tar.gz
     mode: 0755
     owner: root
     group: root
     force: no
-    checksum: "sha256:7320e26389219b84188ae938c064c18b2c871b7aa52e034e0f93ea3071d5beaa"
+    checksum: "sha256:906f83ed8cebfc808bfb05e76db4598a433050df187a67fd9a7137defbc0ee33"
 
 - name: httpd; extract Apache_2.4.tar.gz
   unarchive:
@@ -70,6 +70,7 @@
     setype: container_file_t
     serole: object_r
     seuser: system_u
+  notify: Restart httpd.service
 
 - name: httpd; add bad bot blocker to conf
   blockinfile:
