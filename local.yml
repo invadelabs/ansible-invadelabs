@@ -231,7 +231,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.16.2"
+      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.18.0"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -240,8 +240,8 @@
         max-size: "10m"
       volumes:
         - "/srv/zigbee2mqtt:/app/data:z"
-        - "/srv/zigbee2mqtt/devices.js:/app/node_modules/zigbee-herdsman-converters/devices.js:z"
-        - "/srv/zigbee2mqtt/homeassistant.js:/app/lib/extension/homeassistant.js:z"
+        #- "/srv/zigbee2mqtt/devices.js:/app/node_modules/zigbee-herdsman-converters/devices.js:z"
+        #- "/srv/zigbee2mqtt/homeassistant.js:/app/lib/extension/homeassistant.js:z"
       devices:
         - /dev/ttyACM0:/dev/ttyACM0
       env:
@@ -306,7 +306,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}/grafana/grafana:7.4.1"
+      image: "{{ nexus_docker_repo }}/grafana/grafana:7.4.2"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
