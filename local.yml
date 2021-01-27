@@ -155,7 +155,7 @@
   - name: docker; create container pihole
     docker_container:
       name: pihole
-      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.3.4"
+      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.5.1"
       state: started
       restart_policy: unless-stopped
       hostname: pihole.invadelabs.com
@@ -268,7 +268,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.1.3"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.1.5"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
