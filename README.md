@@ -5,6 +5,7 @@ Ansible run for invadelabs.
 # Install Ansible on controller machine
 ~~~
 sudo apt-get install -y ansible
+sudo dnf install -y ansible
 ~~~
 
 # Run playbooks:
