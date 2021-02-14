@@ -13,7 +13,7 @@ addons:
 install:
 - pip install ansible-lint
 script:
-- ansible-lint -t '!ANSIBLE0010' *.yml playbooks/*.yml
+- ansible-lint -t '!ANSIBLE0010' *.yml
 # - ansible-galaxy install -r requirements.yml -p roles/
 - ansible-playbook -i hosts --syntax-check $(ls *.yml | grep -v requirements.yml)
 notifications:
