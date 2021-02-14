@@ -1,2 +1,5 @@
+# vi
+*.sw[a-z]
+
 *.retry
 roles/*.*
