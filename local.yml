@@ -60,10 +60,10 @@
     when: (ansible_host != "drew-serv")
 
   - include: playbooks/ntopng.yml # ntopng network monitoring
-    when: ansible_host == "drew-piv3"
+    when: ansible_host == "drew-piv4-02"
 
   - include: playbooks/nut_ups.yml # NUT UPS config
-    when: ansible_host == "drew-piv3"
+    when: ansible_host == "drew-piv4-02"
 
   # - include: playbooks/rpi-cluster.yml
   #   when: "'rpi-cluster' in group_names"
