@@ -237,7 +237,7 @@
     group: root
     force: no
     checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
-  when: ansible_host == "drew-piv3"
+  when: ansible_host == "drew-piv4-02"
 
 - name: initial; nrpe; /var/run/fail2ban/fail2ban.sock perms
   file:
@@ -245,7 +245,7 @@
     mode: 0660
     owner: root
     group: nagios
-  when: ansible_host == "drew-piv3"
+  when: ansible_host == "drew-piv4-02"
 
 ## check_eth
 - name: initial; nrpe; dl check_eth
