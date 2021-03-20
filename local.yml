@@ -253,7 +253,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.3.0"
+      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.4.0"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -268,7 +268,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.2.3"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.3.2"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
