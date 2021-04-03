@@ -98,13 +98,13 @@
 # apache-ultimate-bad-bot-blocker
 - name: apache2; dl Apache_2.4.tar.gz
   get_url:
-    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2021.01.1194/Apache_2.4.tar.gz
+    url: https://github.com/mitchellkrogza/apache-ultimate-bad-bot-blocker/releases/download/V3.2021.02.1200/Apache_2.4.tar.gz
     dest: /etc/apache2/bad-bot-blocker.tar.gz
     mode: 0755
     owner: root
     group: root
     force: no
-    checksum: "sha256:906f83ed8cebfc808bfb05e76db4598a433050df187a67fd9a7137defbc0ee33"
+    checksum: "sha256:eb2e975bae1dd8061602037c77ffcbd1f1592ebd397887b418666f73c97314b9"
 
 - name: apache2; extract Apache_2.4.tar.gz
   unarchive:
