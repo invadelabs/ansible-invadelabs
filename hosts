@@ -6,22 +6,22 @@ invadelabs.com # var=string
 # drew-piv3-02
 # drew-piv3-03
 # drew-piv3-04
-drew-piv3-05
+# drew-piv3-05
 
 [arm]
 #drew-piv1
-drew-piv3
+#drew-piv3
 drew-piv4
 drew-piv4-02
 
 [pihole]
 drew-serv
-drew-pine64
+#drew-pine64
 
 [nm1-hosts]
 drew-serv
 #drew-piv1
-drew-piv3
+#drew-piv3
 drew-piv4
 drew-pine64
 drew-piv4-02

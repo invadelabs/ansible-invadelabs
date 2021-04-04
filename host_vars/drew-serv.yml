@@ -18,7 +18,7 @@
     - check_smart_sdb: "/usr/local/bin/check_smart.pl -d /dev/sdb -i auto"
     - check_smart_sdc: "/usr/local/bin/check_smart.pl -d /dev/sdc -i auto"
     - check_bat: "/usr/local/bin/check_bat"
-    - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers}}"
+    - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers | join(' ')}}"
     - check_mongo_mybg: "/usr/local/bin/check_mongo_mybg.py /etc/default/cgm.env 14400"
     - check_iostat: "/usr/local/bin/check_iostat -d sda -i -p"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
