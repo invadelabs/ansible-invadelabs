@@ -45,6 +45,9 @@
     - upower # /etc/UPower/Upower.conf
     - chkconfig # for `systemctl enable filebeat`
     - nethogs
+    #
+    - avahi # home assistant
+    - avahi-tools # home assistant
     # nagios / nrpe bits
     - nrpe
     - nagios-plugins-nrpe

@@ -10,24 +10,25 @@
     localnet_cidr: "192.168.1.0/24"
     docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
     nrpe_allowed_hosts: "{{localnet_cidr}},172.17.0.0/16,127.0.0.1,::1"
-    elasticsearch_host: "drew-serv.nm1.invadelabs.com"
-    rsyslog_host: "drew-serv.nm1.invadelabs.com"
+    elasticsearch_host: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
+    rsyslog_host: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
     rsyslog_port: "10514"
-    mail_relay: "drew-serv.nm1.invadelabs.com"
-    monitor_containers: "pihole \
-                         nightscout \
-                         nexus \
-                         docker-elk_logstash_1 \
-                         docker-elk_kibana_1 \
-                         docker-elk_elasticsearch_1 \
-                         nightscout \
-                         mosquitto \
-                         zigbee2mqtt \
-                         ring-mqtt \
-                         homeassistant \
-                         influxdb \
-                         grafana \
-                         zoneminder"
+    mail_relay: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
+    monitor_containers:
+      - pihole
+      - nightscout
+      - nexus
+      - docker-elk_logstash_1
+      - docker-elk_kibana_1
+      - docker-elk_elasticsearch_1
+      - nightscout
+      - mosquitto
+      - zigbee2mqtt
+      - ring-mqtt
+      - homeassistant
+      - influxdb
+      - grafana
+      - zoneminder
 
   tasks:
   - include: playbooks/preflight_check.yml # fail if missing secrets
@@ -281,6 +282,7 @@
       sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
         }
+      # network_mode: host
       ports:
         - "8123:8123/tcp"
     when: ansible_host == "drew-serv"
