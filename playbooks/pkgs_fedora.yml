@@ -74,9 +74,11 @@
     # sec
     - chkrootkit
     - needrestart
+    - fail2ban
   notify: # XXX break this into smaller groups for when new packages are needed
   - Start chronyd.service
   - Start docker.service
+  - Start fail2ban.service
   - Start httpd.service
   - Start mcelog.service
   - Start powertop.service
