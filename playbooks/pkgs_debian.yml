@@ -57,9 +57,6 @@
   notify:
   - Start postfix.service
   - Start apache2.service
-  - Start nut-driver.service
-  - Start nut-server.service
-  - Start nut-monitor.service
   - update-alternatives; editor vim-basic
 
 ## no pxz in u20.04, u18.04 pxz works though
