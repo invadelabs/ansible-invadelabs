@@ -29,6 +29,21 @@
   - include: playbooks/cron.yml
   - include: playbooks/nrpe.yml # nagios nrpe monitoring
 
+  - name: docker; create container nightscout
+    docker_container:
+      name: nightscout
+      image: "nightscout/cgm-remote-monitor:14.2.2"
+      state: started
+      restart_policy: unless-stopped
+      hostname: cgm.invadelabs.com
+      #log_driver: none
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      ports:
+        - "1337:1337/tcp"
+      env_file: /etc/default/cgm.env
+
   handlers:
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
 
@@ -54,6 +69,7 @@
       src: templates/etc/apache2/sites-available/{{a2temp_item}}.conf.j2
       dest: /etc/apache2/sites-available/{{a2temp_item}}.conf
     with_items:
+      - cgm.invadelabs.com
       - drew.invadelabs.com
       - invadelabs.com
       - www.invadelabs.com
@@ -69,6 +85,7 @@
     args:
       creates: /etc/apache2/sites-enabled/{{a2ensite_item}}.conf
     with_items:
+      - cgm.invadelabs.com
       - drew.invadelabs.com
       - invadelabs.com
       - www.invadelabs.com

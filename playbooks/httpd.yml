@@ -17,7 +17,6 @@
   with_items:
     - docker.invadelabs.com
     - drew-serv.nm1.invadelabs.com
-    - cgm.invadelabs.com
     - grafana.invadelabs.com
     - ha.invadelabs.com
     - kibana.invadelabs.com
