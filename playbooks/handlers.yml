@@ -24,13 +24,13 @@
   service: name=ntopng state=started enabled=yes
 - name: Start nut-monitor.service
   service: name=nut-monitor state=started enabled=yes
-  when: ansible_host == "drew-piv3"
+  when: ansible_host == "drew-serv"
 - name: Start nut-driver.service
   service: name=nut-driver state=started enabled=yes
-  when: ansible_host == "drew-piv3"
+  when: ansible_host == "drew-serv"
 - name: Start nut-server.service
   service: name=nut-server state=started enabled=yes
-  when: ansible_host == "drew-piv3"
+  when: ansible_host == "drew-serv"
 - name: Start php7.2-fpm.service
   service: name=php7.2-fpm.service state=started enabled=yes
 - name: Start postfix.service

@@ -45,6 +45,8 @@
     - upower # /etc/UPower/Upower.conf
     - chkconfig # for `systemctl enable filebeat`
     - nethogs
+    - nut # ups
+    - nagios-plugins-ups # check_ups for nagios
     #
     - avahi # home assistant
     - avahi-tools # home assistant
@@ -81,6 +83,8 @@
   - Start postfix.service
   - Start nmb.service
   - Start nrpe.service
+  - Start nut-server.service
+  - Start nut-monitor.service
   - Start rsyslog.service
   - Start smb.service
   # - Start libvirtd.service
