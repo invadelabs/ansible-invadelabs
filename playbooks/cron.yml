@@ -189,12 +189,12 @@
     job: if ls /mnt/share/bkup/docker-elk.*; then rm -fv /mnt/share/bkup/docker-elk.*; fi | systemd-cat -t es-backup-cleanup
   when: ansible_host == "drew-serv"
 
-# run cron to email error messages
-- name: cron; email errors from elasticsearch
-  cron:
-    name: email errors from elasticsearch
-    minute: "30"
-    hour: "18"
-    user: root
-    job: /root/scripts/es_errors.sh drew@invadelabs.com
-  when: ansible_host == "drew-serv"
+# # run cron to email error messages
+# - name: cron; email errors from elasticsearch
+#   cron:
+#     name: email errors from elasticsearch
+#     minute: "30"
+#     hour: "18"
+#     user: root
+#     job: /root/scripts/es_errors.sh drew@invadelabs.com
+#   when: ansible_host == "drew-serv"

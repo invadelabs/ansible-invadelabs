@@ -15,6 +15,7 @@
     - /root/github_token
     - /root/postfix_passwd
     - /root/slacktee.conf
+    - /etc/default/cgm.env
   loop_control:
     loop_var: invadelabs_file_item
   register: item
@@ -35,7 +36,6 @@
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /home/drew/.ssh/tunnel_2020.05.17
-    - /etc/default/cgm.env
     - /etc/default/ring-mqtt.env
   loop_control:
     loop_var: drewserv_file_item

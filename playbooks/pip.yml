@@ -7,11 +7,12 @@
       - dnspython # needed for mongodb+srv uri
   when: ansible_host == "drew-serv"
 
-- name: pip; install docker-py on drew-pine64
+- name: pip; install docker-py on debian based hosts running docker
   pip:
     name:
+      - check-docker
       - docker-py
-  when: ansible_host == "drew-pine64"
+  when: ( ansible_host == "drew-pine64" ) or ( ansible_fqdn == "invadelabs.com" )
 
 - name: pip; install check-systemd
   pip:

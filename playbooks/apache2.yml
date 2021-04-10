@@ -32,6 +32,7 @@
     - http2
     - proxy_fcgi
     - setenvif
+    - proxy_http # for cgm
   loop_control:
     loop_var: a2enmod_item
   notify: Restart apache2.service
