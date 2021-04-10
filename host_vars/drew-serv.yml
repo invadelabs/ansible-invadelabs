@@ -1,4 +1,18 @@
 ---
+  monitor_containers:
+    # - pihole
+    # - nightscout
+    - nexus
+    - docker-elk_logstash_1
+    - docker-elk_kibana_1
+    - docker-elk_elasticsearch_1
+    - mosquitto
+    - zigbee2mqtt
+    - ring-mqtt
+    - homeassistant
+    - influxdb
+    - grafana
+    - zoneminder
   nrpe_plugins_dir: "/usr/lib64/nagios/plugins"
   nrpe_specific:
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 10,6,4 -c 20,10,5"
@@ -23,4 +37,5 @@
     - check_iostat: "/usr/local/bin/check_iostat -d sda -i -p"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_systemd: "/usr/local/bin/check_systemd -w 90"
+    - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
   postfix_mynetworks: "172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
