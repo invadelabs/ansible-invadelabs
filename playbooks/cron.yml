@@ -141,8 +141,8 @@
     name: fail2ban socket perms
     special_time: reboot
     user: root
-    job: sleep 30 && chmod 770 /var/run/fail2ban/fail2ban.sock && chown root:nagios /var/run/fail2ban/fail2ban.sock
-  when: ansible_host == "drew-piv4-02"
+    job: sleep 30 && chmod 770 /var/run/fail2ban/fail2ban.sock && chown root:nrpe /var/run/fail2ban/fail2ban.sock
+  when: ansible_host == "drew-serv"
 
 # takes >3 minute to run
 - name: cron; snapshot elasticsearch
