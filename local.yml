@@ -14,21 +14,6 @@
     rsyslog_host: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
     rsyslog_port: "10514"
     mail_relay: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
-    monitor_containers:
-      - pihole
-      - nightscout
-      - nexus
-      - docker-elk_logstash_1
-      - docker-elk_kibana_1
-      - docker-elk_elasticsearch_1
-      - nightscout
-      - mosquitto
-      - zigbee2mqtt
-      - ring-mqtt
-      - homeassistant
-      - influxdb
-      - grafana
-      - zoneminder
 
   tasks:
   - include: playbooks/preflight_check.yml # fail if missing secrets
@@ -64,7 +49,7 @@
     when: ansible_host == "drew-piv4-02"
 
   - include: playbooks/nut_ups.yml # NUT UPS config
-    when: ansible_host == "drew-piv4-02"
+    when: ansible_host == "drew-serv"
 
   # - include: playbooks/rpi-cluster.yml
   #   when: "'rpi-cluster' in group_names"
@@ -85,8 +70,8 @@
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
     - docker; create container nagios4
-    - docker; create container pihole
-    - docker; create container nightscout
+    #- docker; create container pihole
+    #- docker; create container nightscout
     - docker; create container nexus
     - docker; create container mosquitto
     - docker; create container zigbee2mqtt
@@ -96,15 +81,15 @@
     - docker; create container grafana
     - docker; create container zoneminder
 
-  - name: docker; add pihole custom.list
-    template:
-      src: "templates/srv/pihole/etc-pihole/custom.list.j2"
-      dest: "/srv/pihole/etc-pihole/custom.list.j2"
-      owner: drew
-      group: drew
-      mode: 0644
-    when: "'pihole' in group_names"
-    notify: docker; reload pihole custom.list and flush cache
+  # - name: docker; add pihole custom.list
+  #   template:
+  #     src: "templates/srv/pihole/etc-pihole/custom.list.j2"
+  #     dest: "/srv/pihole/etc-pihole/custom.list.j2"
+  #     owner: drew
+  #     group: drew
+  #     mode: 0644
+  #   when: "'pihole' in group_names"
+  #   notify: docker; reload pihole custom.list and flush cache
 
 ## HANDLERS ##
   handlers:
@@ -149,47 +134,12 @@
       sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
         }
+      # temp dns workaround..
+      etc_hosts: {
+        "ha.invadelabs.com drew-serv": "192.168.1.125"
+        }
       ports:
         - "8080:80/tcp"
-    when: ansible_host == "drew-serv"
-
-  - name: docker; create container pihole
-    docker_container:
-      name: pihole
-      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.6"
-      state: started
-      restart_policy: unless-stopped
-      hostname: pihole.invadelabs.com
-      log_driver: json-file
-      log_options:
-        max-size: "10m"
-      volumes:
-        - "/srv/pihole/etc-pihole:/etc/pihole:z"
-        - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
-      ports:
-        - "{{ ansible_default_ipv4.address }}:53:53/tcp"
-        - "{{ ansible_default_ipv4.address }}:53:53/udp"
-        - "6080:80/tcp"
-      env:
-        TZ: "America/Denver"
-      dns_servers:
-        - 127.0.0.1
-        - 1.1.1.1
-    when: "'pihole' in group_names"
-
-  - name: docker; create container nightscout
-    docker_container:
-      name: nightscout
-      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:14.0.1"
-      state: started
-      restart_policy: unless-stopped
-      hostname: nightscout.invadelabs.com
-      log_driver: none
-      log_options:
-        max-size: "10m"
-      ports:
-        - "1337:1337/tcp"
-      env_file: /etc/default/cgm.env
     when: ansible_host == "drew-serv"
 
   - name: docker; create container nexus
@@ -232,7 +182,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.18.0"
+      image: "{{ nexus_docker_repo }}/koenkk/zigbee2mqtt:1.18.2"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -254,7 +204,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.4.0"
+      image: "{{ nexus_docker_repo }}/tsightler/ring-mqtt:4.5.0"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -269,7 +219,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.3.2"
+      image: "{{ nexus_docker_repo }}/homeassistant/home-assistant:2021.4.2"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -308,7 +258,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}/grafana/grafana:7.4.2"
+      image: "{{ nexus_docker_repo }}/grafana/grafana:7.5.3"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -360,6 +310,45 @@
         - "8443:443/tcp"
         - "9000:9000/tcp"
     when: ansible_host == "drew-serv"
+
+#  - name: docker; create container pihole
+#    docker_container:
+#      name: pihole
+#      image: "{{ nexus_docker_repo }}/pihole/pihole:v5.6"
+#      state: started
+#      restart_policy: unless-stopped
+#      hostname: pihole.invadelabs.com
+#      log_driver: json-file
+#      log_options:
+#        max-size: "10m"
+#      volumes:
+#        - "/srv/pihole/etc-pihole:/etc/pihole:z"
+#        - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
+#      ports:
+#        - "{{ ansible_default_ipv4.address }}:53:53/tcp"
+#        - "{{ ansible_default_ipv4.address }}:53:53/udp"
+#        - "6080:80/tcp"
+#      env:
+#        TZ: "America/Denver"
+#      dns_servers:
+#        - 127.0.0.1
+#        - 1.1.1.1
+#    when: "'pihole' in group_names"
+
+#  - name: docker; create container nightscout
+#    docker_container:
+#      name: nightscout
+#      image: "{{ nexus_docker_repo }}/nightscout/cgm-remote-monitor-travis:14.0.1"
+#      state: started
+#      restart_policy: unless-stopped
+#      hostname: nightscout.invadelabs.com
+#      log_driver: none
+#      log_options:
+#        max-size: "10m"
+#      ports:
+#        - "1337:1337/tcp"
+#      env_file: /etc/default/cgm.env
+#    when: ansible_host == "drew-serv"
 
 #  - name: docker; create container diyhue
 #    docker_container:
