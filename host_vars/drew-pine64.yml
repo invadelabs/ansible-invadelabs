@@ -13,4 +13,11 @@
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_systemd: "/usr/local/bin/check_systemd -w 100"
   host_pkgs:
+    - unclutter # hide mouse for dashboard
+    # - synergy # control dashboard remotely, XXX not in armbian
+    #- xorg
+    #- lxde
+    #- lightdm
+    #- chromium
+    #- /tmp/synergy_1.13.1-stable.063519a8_raspios_arm64.deb
     - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
