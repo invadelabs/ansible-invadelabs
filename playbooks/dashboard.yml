@@ -1,7 +1,7 @@
 ---
 - name: dashboard; add /home/drew/dashboard.html
   template:
-    src: "templates/home/drew/dashboard.html.j2"
+    src: "templates/home/drew/dashboard-simple.html.j2"
     dest: "/home/drew/dashboard.html"
     owner: drew
     group: drew
@@ -15,6 +15,27 @@
     group: drew
     mode: 0755
 
+# XXX on armbian (just LXDE)
+- name: dashboard; create dir /home/drew/.config/lxsession/LXDE
+  file:
+    path: /home/drew/.config/lxsession/LXDE-pi
+    state: directory
+    owner: drew
+    group: drew
+    mode: 0755
+    recurse: yes
+
+- name: dashboard; add /home/drew/.config/lxsession/LXDE/autostart
+  template:
+    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart.j2"
+    dest: "/home/drew/.config/lxsession/LXDE/autostart"
+    owner: drew
+    group: drew
+    mode: 0755
+  when: ansible_host == "drew-pine64"
+# on armbian (just LXDE)
+
+# XXX on raspberry pi (LXDE-pi)
 - name: dashboard; create dir /home/drew/.config/lxsession/LXDE-pi
   file:
     path: /home/drew/.config/lxsession/LXDE-pi
@@ -31,6 +52,7 @@
     owner: drew
     group: drew
     mode: 0755
+# XXX on raspberry pi (LXDE-pi)
 
 - name: dashboard; set /etc/lightdm/lightdm.conf
   lineinfile:
@@ -43,6 +65,7 @@
     }
   loop_control:
     loop_var: lightdm_item
+  when: ansible_host == "drew-piv02"
 
 - name: dashboard; set /boot/config.txt
   lineinfile:
@@ -58,6 +81,8 @@
   loop_control:
     loop_var: lightdm_item
 
+# XXX create a mechnism to get this from the host stored in
+# XXX ~/.synergy/SSL/Fingerprints/Local.txt
 - name: dashboard; create /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   shell: mkdir -p /home/drew/.synergy/SSL/Fingerprints && touch /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   args:
