@@ -148,7 +148,7 @@
       image: "{{ nexus_docker_repo }}sonatype/nexus3:3.28.1"
       state: started
       restart_policy: unless-stopped
-      hostname: nightscout.invadelabs.com
+      hostname: nexus.invadelabs.com
       ulimits:
         nofile:65536:65536
       log_driver: json-file
@@ -182,7 +182,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.18.2"
+      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.19.1"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -204,7 +204,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.5.0"
+      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.5.5"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -219,7 +219,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.5.5"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.6.2"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -258,7 +258,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:7.5.3"
+      image: "{{ nexus_docker_repo }}grafana/grafana:7.5.7"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
