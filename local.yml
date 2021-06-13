@@ -219,7 +219,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.6.2"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.6.4"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -229,6 +229,7 @@
       volumes:
         - "/etc/localtime:/etc/localtime:ro"
         - "/srv/homeassistant:/config:z"
+      # not allowed in host mode
       sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
         }
@@ -258,7 +259,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:7.5.7"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.0.1"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -350,28 +351,28 @@
 #      env_file: /etc/default/cgm.env
 #    when: ansible_host == "drew-serv"
 
-#  - name: docker; create container diyhue
-#    docker_container:
-#      name: diyHue
-#      image: "{{ nexus_docker_repo }}diyhue/core:latest"
-#      state: started
-#      restart_policy: unless-stopped
-#      hostname: diyhue.invadelabs.com
-#      # log_driver: json-file
-#      # log_options:
-#      #   max-size: "10m"
-#      env:
-#        IP: "{{ ansible_default_ipv4.address }}"
-#        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
-#        IP_RANGE: "135,135"
-#        # DEBUG: "true"
-#      volumes:
-#        - /srv/hue-emulator:/opt/hue-emulator/export
-#      # network_mode: host
-#      ports:
-#        - "80:80/tcp"
-#        - "443:443/tcp"
-#        - "1900:1900/udp"
-#        - "2100:2100/udp"
-#        - "1982:1982/udp"
-#    when: ansible_host == "drew-pine64"
+  - name: docker; create container diyhue
+    docker_container:
+      name: diyHue
+      image: "{{ nexus_docker_repo }}diyhue/core:latest"
+      state: started
+      restart_policy: unless-stopped
+      hostname: diyhue.invadelabs.com
+      # log_driver: json-file
+      # log_options:
+      #   max-size: "10m"
+      env:
+        IP: "{{ ansible_default_ipv4.address }}"
+        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
+        IP_RANGE: "125,125"
+        # DEBUG: "true"
+      volumes:
+        - /srv/hue-emulator:/opt/hue-emulator/export
+      # network_mode: host
+      ports:
+        - "80:80/tcp"
+        - "443:443/tcp"
+        - "1900:1900/udp"
+        - "2100:2100/udp"
+        - "1982:1982/udp"
+    when: ansible_host == "drew-pine64"
