@@ -6,7 +6,7 @@
   vars:
     ansible_python_interpreter: "/usr/bin/python3"
     nexus_repo: "https://nexus.invadelabs.com/repository"
-    nexus_docker_repo: "" # docker.invadelabs.com/
+    nexus_docker_repo: "docker.invadelabs.com/" # or blank to remove
     localnet_cidr: "192.168.1.0/24"
     docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
     nrpe_allowed_hosts: "{{localnet_cidr}},172.17.0.0/16,127.0.0.1,::1"
@@ -59,7 +59,7 @@
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
   - include: playbooks/dashboard.yml
-    when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv3-05" )
+    when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv4" )
 
   - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup
     shell: |
