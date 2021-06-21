@@ -6,10 +6,21 @@
     owner: drew
     group: drew
     mode: 0644
+  # when: ansible_host == "drew-pine64"
+
+# XXX after switch
+# - name: dashboard; add /home/drew/dashboard.html
+#   template:
+#     src: "templates/home/drew/dashboard-complex.html.j2"
+#     dest: "/home/drew/dashboard.html"
+#     owner: drew
+#     group: drew
+#     mode: 0644
+#   when: ansible_host == "drew-piv4"
 
 - name: dashboard; add /home/drew/dashboard-launch.sh
   template:
-    src: "templates/home/drew/dashboard-launch.sh.j2"
+    src: "templates/home/drew/dashboard-launch-{{ansible_host}}.sh.j2"
     dest: "/home/drew/dashboard-launch.sh"
     owner: drew
     group: drew
@@ -27,7 +38,7 @@
 
 - name: dashboard; add /home/drew/.config/lxsession/LXDE/autostart
   template:
-    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart.j2"
+    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ansible_host}}.j2"
     dest: "/home/drew/.config/lxsession/LXDE/autostart"
     owner: drew
     group: drew
@@ -47,7 +58,7 @@
 
 - name: dashboard; add /home/drew/.config/lxsession/LXDE-pi/autostart
   template:
-    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart.j2"
+    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ansible_host}}.j2"
     dest: "/home/drew/.config/lxsession/LXDE-pi/autostart"
     owner: drew
     group: drew
@@ -65,7 +76,7 @@
     }
   loop_control:
     loop_var: lightdm_item
-  when: ansible_host == "drew-piv02"
+  when: ansible_host == "drew-piv4"
 
 - name: dashboard; set /boot/config.txt
   lineinfile:
@@ -87,3 +98,4 @@
   shell: mkdir -p /home/drew/.synergy/SSL/Fingerprints && touch /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   args:
     creates: /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
+  when: ansible_host == "drew-piv4"

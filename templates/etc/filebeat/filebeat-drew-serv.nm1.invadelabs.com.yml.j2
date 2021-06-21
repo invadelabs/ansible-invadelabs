@@ -14,7 +14,7 @@ filebeat.prospectors:
     - '/var/log/httpd/kibana.*access.*.log'
   # ignore dashboard readonly client access logs
   exclude_lines:
-    - ^192\.168\.1\.120\.*
+    - ^192\.168\.1\.(120|140)\.*
   recursive_glob.enabled: true
 
 - type: log
