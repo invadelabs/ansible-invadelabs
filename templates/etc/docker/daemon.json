@@ -1,4 +1,4 @@
 {
-        "insecure-registries": ["{{nexus_docker_repo}}"],
+        "insecure-registries": ["{{nexus_docker_host}}"],
         "registry-mirrors": ["https://{{nexus_docker_repo}}"]
 }
