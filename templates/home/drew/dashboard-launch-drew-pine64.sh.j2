@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# sleep a bit longer (10 seconds) since this thing is on wifi and takes longer to come up
+
+# sometimes chromium, sometimes binary is chromium-browser
+if [ -x "$(command -v chromium-browser)" ]; then
+  sleep 10 && DISPLAY=:0.0 chromium-browser --kiosk \
+    --window-position="0,0" \
+    --app="file:///home/drew/dashboard.html"
+else
+  sleep 10 && DISPLAY=:0.0 chromium --kiosk \
+    --window-position="0,0" \
+    --app="file:///home/drew/dashboard.html"
+fi
