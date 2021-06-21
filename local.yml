@@ -6,6 +6,7 @@
   vars:
     ansible_python_interpreter: "/usr/bin/python3"
     nexus_repo: "https://nexus.invadelabs.com/repository"
+    nexus_docker_host: "docker.invadelabs.com"
     nexus_docker_repo: "docker.invadelabs.com/" # or blank to remove
     localnet_cidr: "192.168.1.0/24"
     docker_bridge: "172.17.0.0/16" # XXX to-do enforce this
