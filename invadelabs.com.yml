@@ -39,7 +39,7 @@
       #log_driver: none
       log_driver: json-file
       log_options:
-        max-size: "10m"
+        max-size: "1m"
       ports:
         - "1337:1337/tcp"
       env_file: /etc/default/cgm.env
