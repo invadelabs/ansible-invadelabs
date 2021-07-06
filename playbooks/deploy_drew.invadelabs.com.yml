@@ -2,7 +2,7 @@
 - name: drewwiki; extract mediawiki for drew.invadelabs.com
   unarchive:
     remote_src: yes
-    src: https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.8.tar.gz
+    src: https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.15.tar.gz
     dest: /var/www/drew.invadelabs.com
     owner: www-data
     group: www-data
@@ -25,13 +25,14 @@
   loop_control:
     loop_var: med_ext_item
 
-- name: drewwiki; add logo
-  get_url:
-    url: https://s6.gifyu.com/images/omgz_square.gif
-    dest: /var/www/drew.invadelabs.com/omgz_square.gif
-    owner: www-data
-    group: www-data
-    mode: 0644
+# XXX host this locally somewhere
+#- name: drewwiki; add logo
+#  get_url:
+#    url: https://s6.gifyu.com/images/omgz_square.gif
+#    dest: /var/www/drew.invadelabs.com/omgz_square.gif
+#    owner: www-data
+#    group: www-data
+#    mode: 0644
 
 # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
 - name: drewwiki; remove softwareInformation SpecialVersion.php
