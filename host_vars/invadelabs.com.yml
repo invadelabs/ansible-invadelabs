@@ -30,3 +30,6 @@
     - php-apcu # Alternative PHP Cache (APC)
     - certbot # letsencrypt
     - python3-certbot-apache # letsencrypt
+  host_pip:
+    - check-docker
+    - docker-py

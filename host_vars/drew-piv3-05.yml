@@ -2,3 +2,4 @@
   host_pkgs:
     - unclutter
     - synergy
+  host_pip: []

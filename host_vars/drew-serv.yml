@@ -40,3 +40,7 @@
     - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
     - check_fail2ban: "/usr/local/bin/check_fail2ban.sh -w 1 -c 2"
   postfix_mynetworks: "172.17.0.0/16 192.168.1.0/24 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
+  host_pip:
+    - check-docker
+    - pymongo
+    - dnspython # needed for mongodb+srv uri
