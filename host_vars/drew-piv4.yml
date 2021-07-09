@@ -19,3 +19,4 @@
     - check_systemd: "/usr/local/bin/check_systemd"
   host_pkgs:
     - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
+  host_pip: []
