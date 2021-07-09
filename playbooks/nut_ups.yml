@@ -2,7 +2,7 @@
 - name: nut_ups; udev rules
   template:
     src: templates/etc/udev/rules.d/50-ups.rules.j2
-    dest: /etc/udev/rules.d/50-ups.rules.j2
+    dest: /etc/udev/rules.d/50-ups.rules
     owner: root
     group: root
     mode: "0644"

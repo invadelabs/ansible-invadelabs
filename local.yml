@@ -313,67 +313,94 @@
         - "9000:9000/tcp"
     when: ansible_host == "drew-serv"
 
-#  - name: docker; create container pihole
-#    docker_container:
-#      name: pihole
-#      image: "{{ nexus_docker_repo }}pihole/pihole:v5.6"
-#      state: started
-#      restart_policy: unless-stopped
-#      hostname: pihole.invadelabs.com
-#      log_driver: json-file
-#      log_options:
-#        max-size: "10m"
-#      volumes:
-#        - "/srv/pihole/etc-pihole:/etc/pihole:z"
-#        - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
-#      ports:
-#        - "{{ ansible_default_ipv4.address }}:53:53/tcp"
-#        - "{{ ansible_default_ipv4.address }}:53:53/udp"
-#        - "6080:80/tcp"
-#      env:
-#        TZ: "America/Denver"
-#      dns_servers:
-#        - 127.0.0.1
-#        - 1.1.1.1
-#    when: "'pihole' in group_names"
+  #- name: docker; create container pihole
+  #  docker_container:
+  #    name: pihole
+  #    image: "{{ nexus_docker_repo }}pihole/pihole:v5.6"
+  #    state: started
+  #    restart_policy: unless-stopped
+  #    hostname: pihole.invadelabs.com
+  #    log_driver: json-file
+  #    log_options:
+  #      max-size: "10m"
+  #    volumes:
+  #      - "/srv/pihole/etc-pihole:/etc/pihole:z"
+  #      - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
+  #    ports:
+  #      - "{{ ansible_default_ipv4.address }}:53:53/tcp"
+  #      - "{{ ansible_default_ipv4.address }}:53:53/udp"
+  #      - "6080:80/tcp"
+  #    env:
+  #      TZ: "America/Denver"
+  #    dns_servers:
+  #      - 127.0.0.1
+  #      - 1.1.1.1
+  #  when: "'pihole' in group_names"
 
-#  - name: docker; create container nightscout
-#    docker_container:
-#      name: nightscout
-#      image: "{{ nexus_docker_repo }}nightscout/cgm-remote-monitor-travis:14.0.1"
-#      state: started
-#      restart_policy: unless-stopped
-#      hostname: nightscout.invadelabs.com
-#      log_driver: none
-#      log_options:
-#        max-size: "10m"
-#      ports:
-#        - "1337:1337/tcp"
-#      env_file: /etc/default/cgm.env
-#    when: ansible_host == "drew-serv"
+  #- name: docker; create container nightscout
+  #  docker_container:
+  #    name: nightscout
+  #    image: "{{ nexus_docker_repo }}nightscout/cgm-remote-monitor-travis:14.0.1"
+  #    state: started
+  #    restart_policy: unless-stopped
+  #    hostname: nightscout.invadelabs.com
+  #    log_driver: none
+  #    log_options:
+  #      max-size: "10m"
+  #    ports:
+  #      - "1337:1337/tcp"
+  #    env_file: /etc/default/cgm.env
+  #  when: ansible_host == "drew-serv"
 
-  - name: docker; create container diyhue
-    docker_container:
-      name: diyHue
-      image: "{{ nexus_docker_repo }}diyhue/core:latest"
-      state: started
-      restart_policy: unless-stopped
-      hostname: diyhue.invadelabs.com
-      # log_driver: json-file
-      # log_options:
-      #   max-size: "10m"
-      env:
-        IP: "{{ ansible_default_ipv4.address }}"
-        MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
-        IP_RANGE: "125,125"
-        # DEBUG: "true"
-      volumes:
-        - /srv/hue-emulator:/opt/hue-emulator/export
-      # network_mode: host
-      ports:
-        - "80:80/tcp"
-        - "443:443/tcp"
-        - "1900:1900/udp"
-        - "2100:2100/udp"
-        - "1982:1982/udp"
-    when: ansible_host == "drew-pine64"
+  ## XXX needs /srv/nut-upsd
+  #- name: docker; create container nut-upsd # can't find device after power return and requires restart of container
+  #  docker_container:
+  #    name: nut-upsd
+  #    image: "{{ nexus_docker_repo }}instantlinux/nut-upsd:2.7.4-r8"
+  #    state: started
+  #    restart_policy: unless-stopped
+  #    hostname: nut-upsd.invadelabs.com
+  #    log_driver: json-file
+  #    log_options:
+  #      max-size: "10m"
+  #    volumes:
+  #      - "/etc/default/nut-upsd-password:/run/secrets/password:z"
+  #      - "/srv/nut-upsd/upsmon.conf:/etc/nut/upsmon.conf"
+  #      - "/srv/nut-upsd/notifycmd.sh:/etc/nut/notifycmd.sh"
+  #      #- /dev/ups0:/dev/ups0 # symlink to /de/bus/usb/*** changes after disconnect/connect (powerfail)
+  #    devices:
+  #      - /dev/bus/usb:/dev/bus/usb
+  #    env:
+  #      DRIVER: "usbhid-ups"
+  #      DESCRIPTION: "CyberPower EC850LCD"
+  #      #PORT: "/dev/ups0"
+  #    env_file: /etc/default/nut-upsd.env
+  #    ports:
+  #      - "3493:3493/tcp"
+  #  when: ansible_host == "drew-serv"
+
+  #- name: docker; create container diyhue
+  #  docker_container:
+  #    name: diyHue
+  #    image: "{{ nexus_docker_repo }}diyhue/core:latest"
+  #    state: started
+  #    restart_policy: unless-stopped
+  #    hostname: diyhue.invadelabs.com
+  #    # log_driver: json-file
+  #    # log_options:
+  #    #   max-size: "10m"
+  #    env:
+  #      IP: "{{ ansible_default_ipv4.address }}"
+  #      MAC: "{{ ansible_default_ipv4.macaddress | upper }}"
+  #      IP_RANGE: "125,125"
+  #      # DEBUG: "true"
+  #    volumes:
+  #      - /srv/hue-emulator:/opt/hue-emulator/export
+  #    # network_mode: host
+  #    ports:
+  #      - "80:80/tcp"
+  #      - "443:443/tcp"
+  #      - "1900:1900/udp"
+  #      - "2100:2100/udp"
+  #      - "1982:1982/udp"
+  #  when: ansible_host == "drew-pine64"
