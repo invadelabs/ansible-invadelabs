@@ -24,3 +24,4 @@
     - nut-server
     - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
     - fail2ban
+  host_pip: []

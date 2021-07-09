@@ -1,20 +1,7 @@
 ---
-- name: pip; install pip items on drew-serv
+- name: pip; install pip items
   pip:
-    name:
-      - check-docker
-      - pymongo
-      - dnspython # needed for mongodb+srv uri
-  when: ansible_host == "drew-serv"
-
-- name: pip; install docker-py on debian based hosts running docker
-  pip:
-    name:
-      - check-docker
-      - docker-py
-  when: ( ansible_host == "drew-pine64" ) or ( ansible_fqdn == "invadelabs.com" )
-
-- name: pip; install check-systemd
-  pip:
-    name:
-      - check_systemd
+    name: "{{ all_pip + host_pip }}"
+  vars:
+    all_pip:
+    - check_systemd
