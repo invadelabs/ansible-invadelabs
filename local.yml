@@ -192,8 +192,6 @@
         max-size: "10m"
       volumes:
         - "/srv/zigbee2mqtt:/app/data:z"
-        #- "/srv/zigbee2mqtt/devices.js:/app/node_modules/zigbee-herdsman-converters/devices.js:z"
-        #- "/srv/zigbee2mqtt/homeassistant.js:/app/lib/extension/homeassistant.js:z"
       devices:
         - /dev/ttyACM0:/dev/ttyACM0
       env:
@@ -220,7 +218,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.6.6"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.7.1"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -260,7 +258,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:8.0.4"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.0.5"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -269,7 +267,7 @@
         max-size: "10m"
       env:
         GF_SECURITY_ALLOW_EMBEDDING: "true"
-        GF_INSTALL_PLUGINS: "natel-discrete-panel" # works <= 7.4.0
+        GF_INSTALL_PLUGINS: "natel-discrete-panel"
       volumes:
         - "/srv/grafana:/var/lib/grafana:z"
       ports:
