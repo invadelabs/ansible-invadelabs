@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-  Protocols h2 http/1.1
+  Protocols h2
   ServerName cgm.invadelabs.com
   ServerAdmin drew@invadelabs.com
 
@@ -16,7 +16,7 @@
 <IfModule mod_ssl.c>
 
 <VirtualHost *:443>
-  Protocols h2 http/1.1
+  Protocols h2
   ServerName cgm.invadelabs.com
   ServerAdmin drew@invadelabs.com
   DocumentRoot /var/www/html
