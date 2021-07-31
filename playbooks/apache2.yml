@@ -34,6 +34,7 @@
     - proxy_fcgi
     - setenvif
     - proxy_http # for cgm
+    - remoteip
   loop_control:
     loop_var: a2enmod_item
   notify: Restart apache2.service
@@ -123,7 +124,7 @@
 - name: apache2; add bad bot blocker to conf
   blockinfile:
     path: /etc/apache2/apache2.conf
-    # marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK  - bad-bots -->"
     content: |
       <Location "/">
               # AND-combine with preceding configuration sections
@@ -131,4 +132,14 @@
               # include black list
               Include custom.d/globalblacklist.conf
       </Location>
+
+  notify: Restart apache2.service
+
+- name: apache2; add RemoteIPHeader
+  blockinfile:
+    path: /etc/apache2/apache2.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - RemoteIPHeader  -->"
+    content: |
+      RemoteIPHeader X-Forwarded-For
+
   notify: Restart apache2.service

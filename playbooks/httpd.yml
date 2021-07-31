@@ -74,7 +74,7 @@
 - name: httpd; add bad bot blocker to conf
   blockinfile:
     path: /etc/httpd/conf/httpd.conf
-    # marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - bad-bots"
     content: |
       <Location "/">
               # AND-combine with preceding configuration sections
@@ -82,4 +82,12 @@
               # include black list
               Include custom.d/globalblacklist.conf
       </Location>
+  notify: Restart httpd.service
+
+- name: httpd; add RemoteIPHeader
+  blockinfile:
+    path: /etc/httpd/conf/httpd.conf
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - RemoteIPHeader"
+    content: |
+      RemoteIPHeader X-Forwarded-For
   notify: Restart httpd.service
