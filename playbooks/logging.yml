@@ -1,4 +1,10 @@
 ---
+- name: logging; get home_ip contents and set to var
+  ansible.builtin.slurp:
+    src: /home/drew/home_ip
+  when: ansible_fqdn == "invadelabs.com"
+  register: home_ip
+
 - name: logging; add /etc/filebeat/filebeat.yml
   template:
     src: templates/etc/filebeat/filebeat-{{ansible_fqdn}}.yml.j2
