@@ -16,6 +16,7 @@
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /etc/default/cgm.env
+    - /home/drew/home_ip
   loop_control:
     loop_var: invadelabs_file_item
   register: item
@@ -32,7 +33,8 @@
   stat:
     path: "{{drewserv_file_item}}"
   with_items:
-    - /root/check_ddns.cred
+    #- /root/google_ddns.cred
+    - /root/cloudflare_ddns.cred
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /home/drew/.ssh/tunnel_2020.05.17
