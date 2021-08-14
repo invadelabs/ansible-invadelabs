@@ -44,3 +44,4 @@
     - check-docker
     - pymongo
     - dnspython # needed for mongodb+srv uri
+    - cloudflare-ddns

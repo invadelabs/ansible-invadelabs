@@ -183,7 +183,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.20.0"
+      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.21.0"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -218,7 +218,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.7.4"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.8.6"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
