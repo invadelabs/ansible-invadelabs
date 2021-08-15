@@ -29,8 +29,6 @@
     - php-curl # for selenium-invadelabs script
     - php-apcu # Alternative PHP Cache (APC)
     - php7.4-fpm
-    - certbot # letsencrypt
-    - python3-certbot-apache # letsencrypt
   host_pip:
     - check-docker
     - docker-py

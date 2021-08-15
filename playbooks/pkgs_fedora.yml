@@ -109,6 +109,12 @@
   when: ansible_os_family == "RedHat"
   notify: Start filebeat.service
 
+# install certbot
+- name: pkgs_fedora; install certbot-dns-cloudflare snap
+  command: snap install certbot-dns-cloudflare --classic
+  args:
+    creates: /usr/local/bin/certbot
+
 # google cloud sdk
 - name: pkgs_fedora; install google-cloud-sdk snap
   command: snap install google-cloud-sdk --classic
