@@ -22,7 +22,7 @@
     minute: "30"
     hour: "*/2"
     user: root
-    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C master -i hosts -l {{ansible_host}} | systemd-cat -t ansible-pull
+    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C main -i hosts -l {{ansible_host}} | systemd-cat -t ansible-pull
 
 - name: cron; logwatch weekly
   cron:
