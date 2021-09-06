@@ -54,6 +54,8 @@
 - name: Restart httpd.service
   service: name=httpd state=restarted
   when: ansible_os_family == "RedHat"
+- name: Restart logrotate
+  service: name=logrotate state=restarted
 - name: Restart nagios-nrpe-server.service
   service: name=nagios-nrpe-server state=restarted
   when: ansible_os_family == "Debian"
@@ -111,3 +113,7 @@
 - name: docker; reload pihole custom.list and flush cache
   shell: docker exec pihole pihole restartdns reload
   when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")
+
+- name: docker; reload nginx
+  shell: /usr/bin/docker exec nginx /bin/sh -c '/usr/sbin/nginx -s reopen > /dev/null 2>/dev/null'
+  when: ansible_host == "drew-serv"

@@ -18,6 +18,8 @@
     firewall-cmd --permanent --zone=FedoraServer --add-port=1883/tcp
     # 8123 needed for home-assistant so other containers may connect to it on bridge network
     firewall-cmd --permanent --zone=FedoraServer --add-port=8123/tcp
+    # 3000 needed for grafana so nginx may connect to it on bridge network
+    firewall-cmd --permanent --zone=FedoraServer --add-port=3000/tcp
     firewall-cmd --reload
     touch /var/log/firewall-first.touch
   args:
