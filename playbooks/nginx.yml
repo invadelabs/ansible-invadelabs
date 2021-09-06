@@ -1,0 +1,38 @@
+---
+# install certs
+- name: nginx; initial letsencrypt
+  shell: /root/scripts/check_letsencrypt.sh
+  args:
+    creates: /etc/letsencrypt
+  register: rclone_stat
+  failed_when: rclone_stat.rc != 0 # rc = proccess exit code
+  when: ansible_host == "drew-serv"
+  notify: docker; reload nginx
+
+# log rotator for nginx docker container volume logs
+- name: nginx; nginx logrotation
+  template:
+    src: templates/etc/logrotate.d/nginx.j2
+    dest: /etc/logrotate.d/nginx
+  when: ansible_host == "drew-serv"
+  notify: Restart logrotate
+
+# nginx config
+- name: nginx; add site templates
+  template:
+    src: templates/etc/nginx/{{nginx_template_item}}.conf.j2
+    dest: /srv/nginx/{{nginx_template_item}}.conf
+  with_items:
+    - nginx
+    - conf.d/default
+    - conf.d/docker.invadelabs.com
+    - conf.d/drew-serv.nm1.invadelabs.com
+    - conf.d/grafana.invadelabs.com
+    - conf.d/ha.invadelabs.com
+    - conf.d/kibana.invadelabs.com
+    - conf.d/nexus.invadelabs.com
+    - conf.d/zm.invadelabs.com
+  loop_control:
+    loop_var: nginx_template_item
+  when: ansible_host == "drew-serv"
+  notify: docker; reload nginx

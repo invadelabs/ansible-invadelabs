@@ -1,0 +1,11 @@
+# Note that logs are not compressed unless "compress" is configured,
+# which can be done either here or globally in /etc/logrotate.conf.
+/var/log/nginx/*log {
+    missingok
+    notifempty
+    sharedscripts
+    delaycompress
+    postrotate
+        /usr/bin/docker exec nginx /bin/sh -c '/usr/sbin/nginx -s reopen > /dev/null 2>/dev/null'
+    endscript
+}
