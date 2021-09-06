@@ -39,7 +39,7 @@
   #   when: "'debian-arm' in group_names"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
-  - include: playbooks/httpd.yml # reverse https proxy for nagios/cgm/ha
+  - include: playbooks/nginx.yml # reverse https proxy for nagios/cgm/ha
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
@@ -70,6 +70,7 @@
     when: ansible_host == "drew-serv"
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
+    - docker; create container nginx
     - docker; create container nagios4
     #- docker; create container pihole
     #- docker; create container nightscout
@@ -97,6 +98,26 @@
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
 
   ## Docker Handlers
+  - name: docker; create container nginx
+    docker_container:
+      name: nginx
+      image: "{{ nexus_docker_repo }}nginx:1.20.1-alpine"
+      state: started
+      restart_policy: unless-stopped
+      hostname: nginx.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - "/etc/letsencrypt:/etc/letsencrypt:ro,z"
+        - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro,z"
+        - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z"
+        - "/var/log/nginx:/var/log/nginx:rw,z"
+      ports:
+        - "80:80/tcp"
+        - "443:443/tcp"
+    when: ansible_host == "drew-serv"
+
   - name: docker; extract drew-serv-bkup-latest.tar.xz
     unarchive:
       src: /srv/drew-serv-bkup-latest.tar.xz
@@ -106,6 +127,26 @@
       setype: container_file_t
       serole: object_r
       seuser: system_u
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container nginx
+    docker_container:
+      name: nginx
+      image: "{{ nexus_docker_repo }}nginx:1.20.1-alpine"
+      state: started
+      restart_policy: unless-stopped
+      hostname: nginx.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - "/etc/letsencrypt:/etc/letsencrypt:ro,z"
+        - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro,z"
+        - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z"
+        - "/var/log/nginx:/var/log/nginx:rw,z"
+      ports:
+        - "80:80/tcp"
+        - "443:443/tcp"
     when: ansible_host == "drew-serv"
 
   - name: docker; create container nagios4

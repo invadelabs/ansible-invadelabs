@@ -2,16 +2,17 @@
   monitor_containers:
     # - pihole
     # - nightscout
-    - nexus
-    - docker-elk_logstash_1
-    - docker-elk_kibana_1
     - docker-elk_elasticsearch_1
-    - mosquitto
-    - zigbee2mqtt
-    - ring-mqtt
+    - docker-elk_kibana_1
+    - docker-elk_logstash_1
+    - grafana
     - homeassistant
     - influxdb
-    - grafana
+    - mosquitto
+    - nexus
+    - nginx
+    - ring-mqtt
+    - zigbee2mqtt
     - zoneminder
   nrpe_plugins_dir: "/usr/lib64/nagios/plugins"
   nrpe_specific:

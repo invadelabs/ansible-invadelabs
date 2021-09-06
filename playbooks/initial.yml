@@ -133,10 +133,11 @@
   loop_control:
     loop_var: forward_item
 
-- name: initial; git clone --depth 1 invadelabs.com/cron-invadelabs
+- name: initial; git clone --depth 1 invadelabs.com/cron-invadelabs main
   git:
     repo: https://github.com/invadelabs/cron-invadelabs.git
     dest: /root/scripts
+    refspec: refs/heads/main
     depth: 1
 
 - name: initial; nrpe; dl check_memory.pl
