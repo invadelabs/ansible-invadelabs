@@ -29,7 +29,6 @@
       - "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10"
       - "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2"
   notify:
-    - Restart nrpe.service
     - Restart nagios-nrpe-server.service
 
 # pine64 buster needs something like
