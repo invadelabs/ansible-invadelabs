@@ -15,12 +15,12 @@
     line: 'drew ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
-- name: initial; ensure "nrpe" is in sudoers with exact commands # XXX find a better way to do this
+- name: initial; ensure "nagios" is in sudoers with exact commands # XXX find a better way to do this
   lineinfile:
     path: /etc/sudoers
     state: present
-    regexp: '^nrpe ALL='
-    line: 'nrpe ALL = NOPASSWD: /usr/sbin/smartctl, /usr/local/bin/check_docker'
+    regexp: '^nagios ALL='
+    line: 'nagios ALL = NOPASSWD: /usr/sbin/smartctl, /usr/local/bin/check_docker'
     validate: '/usr/sbin/visudo -cf %s'
   when: ansible_host == "drew-serv"
 
@@ -89,18 +89,18 @@
     state: present
   when: ansible_os_family == "Debian"
 
-- name: initial; fedora needs link /var/lib/snapd/snap to /snap
-  file:
-    src: /var/lib/snapd/snap
-    dest: /snap
-    owner: root
-    group: root
-    state: link
-  when: ansible_host == "drew-serv"
+# - name: initial; fedora needs link /var/lib/snapd/snap to /snap
+#   file:
+#     src: /var/lib/snapd/snap
+#     dest: /snap
+#     owner: root
+#     group: root
+#     state: link
+#   when: ansible_host == "drew-serv"
 
-- name: initial; dnf; install etckeeper
-  dnf: name=etckeeper state=present
-  when: ansible_distribution == "Fedora"
+# - name: initial; dnf; install etckeeper
+#   dnf: name=etckeeper state=present
+#   when: ansible_distribution == "Fedora"
 
 - name: initial; gitconfig
   git_config:
@@ -114,11 +114,11 @@
   loop_control:
     loop_var: git_item
 
-- name: initial; set SELinux to permissive
-  selinux:
-    policy: targeted
-    state: permissive
-  when: ansible_distribution == 'Fedora'
+# - name: initial; set SELinux to permissive
+#   selinux:
+#     policy: targeted
+#     state: permissive
+#   when: ansible_distribution == 'Fedora'
 
 - name: initial; add .forward
   copy:

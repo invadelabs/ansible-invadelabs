@@ -69,7 +69,7 @@
     group: root
     mode: 0644
     checksum: "sha256:b9534ca34263b8fa9c12f700855f07de1797e43de3f9f157ffd07ffadfc28185"
-  when: ansible_fqdn == "invadelabs.com"
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
 
 - name: pkgs_debian; install pxz deb
   apt:
@@ -103,10 +103,10 @@
     group: root
     mode: 0644
     checksum: "sha256:003c3a49450c30f3c92543226108a99dfaf70f8eca5869b30d0f31859a23e010"
-  when: ansible_fqdn == "invadelabs.com"
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
 
 - name: pkgs_debian; install filebeat deb
   apt:
     deb: /root/installers/filebeat-6.2.4-amd64.deb
-  when: ansible_fqdn == "invadelabs.com"
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
   notify: Start filebeat.service

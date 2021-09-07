@@ -16,8 +16,8 @@
   service: name=libvirtd state=started enabled=yes
 - name: Start mcelog.service
   service: name=mcelog state=started enabled=yes
-- name: Start nmb.service
-  service: name=nmb state=started enabled=yes
+- name: Start nmbd.service
+  service: name=nmbd state=started enabled=yes
 - name: Start nrpe.service
   service: name=nrpe state=started enabled=yes
 - name: Start ntopng.service
@@ -39,8 +39,8 @@
   service: name=powertop state=started enabled=yes
 - name: Start rsyslog.service
   service: name=rsyslog state=started enabled=yes
-- name: Start smb.service
-  service: name=smb state=started enabled=yes
+- name: Start smbd.service
+  service: name=smbd state=started enabled=yes
 
 ## Restart Service Handlers
 - name: Restart apache2.service
@@ -89,8 +89,8 @@
   when: ansible_os_family == "Debian"
 - name: Restart systemd-journald.service
   service: name=systemd-journald state=restarted
-- name: Restart smb.service
-  service: name=smb state=restarted
+- name: Restart smbd.service
+  service: name=smbd state=restarted
 - name: Restart systemd-logind.service
   service: name=systemd-logind state=restarted
 

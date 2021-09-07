@@ -38,10 +38,10 @@
   notify:
     - Restart systemd-logind.service
 
-- name: hw; grubby remove rhgb quiet and disable cgroupsv2
-  shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" --args="systemd.unified_cgroup_hierarchy=0" && touch /var/log/grubby.touch
-  args:
-    creates: /var/log/grubby.touch
+# - name: hw; grubby remove rhgb quiet and disable cgroupsv2
+#   shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" --args="systemd.unified_cgroup_hierarchy=0" && touch /var/log/grubby.touch
+#   args:
+#     creates: /var/log/grubby.touch
 
 # - name: hw; set /etc/default/grub nomodeset
 #   shell: grubby --update-kernel=ALL --args="nomodeset"
@@ -62,7 +62,7 @@
 
 - name: hw; smartd mail root
   lineinfile:
-    dest: /etc/sysconfig/smartmontools
+    dest: /etc/default/smartmontools
     regexp: "^smartd_conf_opts="
     line: 'smartd_conf_opts="-H -m root"'
     state: present
