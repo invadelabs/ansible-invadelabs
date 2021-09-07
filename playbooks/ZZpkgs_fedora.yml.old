@@ -29,9 +29,9 @@
     - wget
     - chrony
     - samba
-    - httpd
-    - mod_ssl
-    - mod_http2
+    #- httpd
+    #- mod_ssl
+    #- mod_http2
     - postfix
     - cyrus-sasl-plain # needed for postfix + sendgrid
     - rsyslog # for elasticsearch
@@ -40,7 +40,7 @@
     - smartmontools
     - lm_sensors
     - lynis
-    - fuse-encfs
+    #- fuse-encfs
     - powertop
     - upower # /etc/UPower/Upower.conf
     - chkconfig # for `systemctl enable filebeat`
@@ -79,7 +79,7 @@
   - Start chronyd.service
   - Start docker.service
   - Start fail2ban.service
-  - Start httpd.service
+  #- Start httpd.service
   - Start mcelog.service
   - Start powertop.service
   - Start postfix.service

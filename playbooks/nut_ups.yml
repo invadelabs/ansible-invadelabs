@@ -1,16 +1,17 @@
 ---
-- name: nut_ups; udev rules
-  template:
-    src: templates/etc/udev/rules.d/50-ups.rules.j2
-    dest: /etc/udev/rules.d/50-ups.rules
-    owner: root
-    group: root
-    mode: "0644"
+# works out of the box u20.04
+# - name: nut_ups; udev rules
+#   template:
+#     src: templates/etc/udev/rules.d/50-ups.rules.j2
+#     dest: /etc/udev/rules.d/50-ups.rules
+#     owner: root
+#     group: root
+#     mode: "0644"
 
 - name: nut_ups; configs
   template:
-    src: templates/etc/ups/{{nut_item.key}}.j2
-    dest: /etc/ups/{{nut_item.key}}
+    src: templates/etc/nut/{{nut_item.key}}.j2
+    dest: /etc/nut/{{nut_item.key}}
     owner: root
     group: nut
     mode: "{{nut_item.value}}"
