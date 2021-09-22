@@ -33,3 +33,7 @@ nm1-hosts
 [debian-arm:children]
 rpi-cluster
 arm
+
+[debian-nm1:children]
+arm
+drew-serv

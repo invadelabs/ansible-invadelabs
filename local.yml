@@ -40,7 +40,7 @@
   #   when: "'debian-arm' in group_names"
   - include: playbooks/samba.yml # samba
     when: ansible_host == "drew-serv"
-  - include: playbooks/nginx.yml # reverse https proxy for nagios/cgm/ha
+  - include: playbooks/nginx.yml # reverse https proxy for nagios/ha/kibana/grafana/nexus/zm
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix.yml # postfix server
     when: ansible_host == "drew-serv"
@@ -71,16 +71,16 @@
     when: ansible_host == "drew-serv"
     notify:
     - docker; extract drew-serv-bkup-latest.tar.xz
+    - docker; create container nexus
     - docker; create container nginx
     - docker; create container nagios4
     #- docker; create container pihole
     #- docker; create container nightscout
-    - docker; create container nexus
     - docker; create container mosquitto
     - docker; create container zigbee2mqtt
     - docker; create container ring-mqtt
-    - docker; create container homeassistant
     - docker; create container influxdb
+    - docker; create container homeassistant
     - docker; create container grafana
     - docker; create container zoneminder
 
@@ -113,7 +113,7 @@
   - name: docker; create container nexus
     docker_container:
       name: nexus
-      image: "sonatype/nexus3:3.28.1"
+      image: "sonatype/nexus3:3.34.0"
       state: started
       restart_policy: unless-stopped
       hostname: nexus.invadelabs.com
@@ -123,7 +123,7 @@
       log_options:
         max-size: "10m"
       volumes:
-        - "/mnt/share/nexus-data:/nexus-data:z"
+        - "/mnt/share/nexus-data:/nexus-data"
       ports:
         - "8081:8081/tcp"
         - "8181:8181/tcp" # docker-all group
@@ -140,10 +140,10 @@
       log_options:
         max-size: "10m"
       volumes:
-        - "/etc/letsencrypt:/etc/letsencrypt:ro,z"
-        - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro,z"
-        - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z"
-        - "/var/log/nginx:/var/log/nginx:rw,z"
+        - "/etc/letsencrypt:/etc/letsencrypt:ro"
+        - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro"
+        - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+        - "/var/log/nginx:/var/log/nginx:rw"
       ports:
         - "80:80/tcp"
         - "443:443/tcp"
@@ -152,7 +152,7 @@
   - name: docker; create container nagios4
     docker_container:
       name: nagios4
-      image: "{{ nexus_docker_repo }}jasonrivers/nagios:latest" # 4.4.4
+      image: "{{ nexus_docker_repo }}jasonrivers/nagios:4.4.6" # 4.4.5
       state: started
       restart_policy: unless-stopped
       hostname: nagios.invadelabs.com
@@ -160,14 +160,15 @@
       log_options:
         max-size: "10m"
       # XXX may need `a2enmod remoteip` in container
+      # XXX unlink /etc/service/nsca
       volumes:
-        - "/srv/nagios4/etc:/opt/nagios/etc:z"
-        - "/srv/nagios4/var:/opt/nagios/var:z"
-        - "/srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins:z"
-        - "/srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var:z"
-        - "/srv/nagios4/nagiosgraph/etc:/opt/nagiosgraph/etc:z"
-        - "/srv/nagios4/main.cf:/etc/postfix/main.cf:z"
-        - "/srv/nagios4/nagios.conf:/etc/apache2/sites-available/nagios.conf:z"
+        - "/srv/nagios4/etc:/opt/nagios/etc"
+        - "/srv/nagios4/var:/opt/nagios/var"
+        - "/srv/nagios4/Custom-Nagios-Plugins:/opt/Custom-Nagios-Plugins"
+        - "/srv/nagios4/nagiosgraph/var:/opt/nagiosgraph/var"
+        - "/srv/nagios4/nagiosgraph/etc:/opt/nagiosgraph/etc"
+        - "/srv/nagios4/main.cf:/etc/postfix/main.cf"
+        - "/srv/nagios4/nagios.conf:/etc/apache2/sites-available/nagios.conf"
       env: {
         "MAIL_RELAY_HOST": "{{mail_relay}}",
         "NAGIOS_FQDN": "nagios.invadelabs.com",
@@ -195,8 +196,8 @@
       log_options:
         max-size: "10m"
       volumes:
-        - "/srv/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:z"
-        - "/srv/mosquitto/data:/mosquitto/data:z"
+        - "/srv/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+        - "/srv/mosquitto/data:/mosquitto/data"
       ports:
         - "1883:1883/tcp"
         - "9001:9001/tcp"
@@ -213,7 +214,7 @@
       log_options:
         max-size: "10m"
       volumes:
-        - "/srv/zigbee2mqtt:/app/data:z"
+        - "/srv/zigbee2mqtt:/app/data"
       devices:
         - /dev/ttyACM0:/dev/ttyACM0
       env:
@@ -225,7 +226,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.7.2"
+      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.8.1"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -248,8 +249,8 @@
       log_options:
         max-size: "10m"
       volumes:
-        - "/srv/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro,z"
-        - "/srv/influxdb/db:/var/lib/influxdb:z"
+        - "/srv/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro"
+        - "/srv/influxdb/db:/var/lib/influxdb"
       ports:
         - "8083:8083/tcp"
         - "8086:8086/tcp"
@@ -258,7 +259,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.9.3"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.9.5"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -267,7 +268,7 @@
         max-size: "10m"
       volumes:
         - "/etc/localtime:/etc/localtime:ro"
-        - "/srv/homeassistant:/config:z"
+        - "/srv/homeassistant:/config"
       # not allowed in host mode
       sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
@@ -280,7 +281,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:8.1.2"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.1.3"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -291,7 +292,7 @@
         GF_SECURITY_ALLOW_EMBEDDING: "true"
         GF_INSTALL_PLUGINS: "natel-discrete-panel"
       volumes:
-        - "/srv/grafana:/var/lib/grafana:z"
+        - "/srv/grafana:/var/lib/grafana"
       ports:
         - "3000:3000/tcp"
     when: ansible_host == "drew-serv"
@@ -325,8 +326,8 @@
         MULTI_PORT_END: "0"
         ADVANCED_SCRIPT: "1"
       volumes:
-        - "/srv/zoneminder:/config:z"
-        - "/mnt/share/zoneminder/data:/var/cache/zoneminder:z"
+        - "/srv/zoneminder:/config"
+        - "/mnt/share/zoneminder/data:/var/cache/zoneminder"
       ports:
         - "7080:80/tcp"
         - "8443:443/tcp"
@@ -344,8 +345,8 @@
   #    log_options:
   #      max-size: "10m"
   #    volumes:
-  #      - "/srv/pihole/etc-pihole:/etc/pihole:z"
-  #      - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d:z"
+  #      - "/srv/pihole/etc-pihole:/etc/pihole"
+  #      - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
   #    ports:
   #      - "{{ ansible_default_ipv4.address }}:53:53/tcp"
   #      - "{{ ansible_default_ipv4.address }}:53:53/udp"
@@ -384,7 +385,7 @@
   #    log_options:
   #      max-size: "10m"
   #    volumes:
-  #      - "/etc/default/nut-upsd-password:/run/secrets/password:z"
+  #      - "/etc/default/nut-upsd-password:/run/secrets/password"
   #      - "/srv/nut-upsd/upsmon.conf:/etc/nut/upsmon.conf"
   #      - "/srv/nut-upsd/notifycmd.sh:/etc/nut/notifycmd.sh"
   #      #- /dev/ups0:/dev/ups0 # symlink to /de/bus/usb/*** changes after disconnect/connect (powerfail)

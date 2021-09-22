@@ -59,6 +59,9 @@
     - nut-server
     - nut-client
     - fail2ban
+    - lm-sensors
+    # - powertop # energy management
+    - python3-certbot-dns-cloudflare
   host_pip:
     - check-docker
     - pymongo
