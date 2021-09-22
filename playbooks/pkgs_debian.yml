@@ -74,7 +74,7 @@
 - name: pkgs_debian; install pxz deb
   apt:
     deb: /root/installers/pxz_4.999.99~beta5+gitfcfea93-2_amd64.deb
-  when: ansible_fqdn == "invadelabs.com"
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
 
 ## mod_pagespeed
 - name: pkgs_debian; download mod_pagespeed
