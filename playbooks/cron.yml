@@ -120,28 +120,28 @@
     job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
   when: ansible_host == "drew-serv"
 
-- name: cron; disable wifi # XXX temp workaround
-  cron:
-    name: disable wifi
-    special_time: reboot
-    user: root
-    job: sleep 30 && nmcli dev set wlo1 managed no && /usr/sbin/rfkill block 0
-  when: ansible_host == "drew-serv"
+# - name: cron; disable wifi # XXX temp workaround
+#   cron:
+#     name: disable wifi
+#     special_time: reboot
+#     user: root
+#     job: sleep 30 && nmcli dev set wlo1 managed no && /usr/sbin/rfkill block 0
+#   when: ansible_host == "drew-serv"
 
-- name: cron; docker start pihole # XXX temp workaround
-  cron:
-    name: docker start pihole
-    special_time: reboot
-    user: root
-    job: sleep 30; docker start pihole >/dev/null
-  when: ansible_host == "drew-serv"
+# - name: cron; docker start pihole # XXX temp workaround
+#   cron:
+#     name: docker start pihole
+#     special_time: reboot
+#     user: root
+#     job: sleep 30; docker start pihole >/dev/null
+#   when: ansible_host == "drew-serv"
 
 - name: cron; fail2ban socket perms # XXX temp workaround
   cron:
     name: fail2ban socket perms
     special_time: reboot
     user: root
-    job: sleep 30 && chmod 770 /var/run/fail2ban/fail2ban.sock && chown root:nrpe /var/run/fail2ban/fail2ban.sock
+    job: sleep 30 && chmod 660 /run/fail2ban/fail2ban.sock && chown root:nagios /run/fail2ban/fail2ban.sock
   when: ansible_host == "drew-serv"
 
 # takes >3 minute to run
