@@ -18,48 +18,30 @@
 
   tasks:
   - include: playbooks/preflight_check.yml # fail if missing secrets
-
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
-
-  # - include: playbooks/pkgs_fedora.yml # dnf / rpm install items
-  #   when: ansible_os_family == "RedHat"
   - include: playbooks/pkgs_debian.yml # apt / dpkg install items
-    when: ansible_os_family == "Debian"
-
   - include: playbooks/pip.yml
-
-  # XXX migrate from firewalld in fedora to iptables ubuntu 20.04
-  #- include: playbooks/firewall.yml
+  - include: playbooks/iptables.yml
   - include: playbooks/logging.yml
-
-  # - include: playbooks/selinux.yml # selinux settings
-  #   when: ansible_host == "drew-serv"
-  - include: playbooks/hw_drew-serv.yml # hardware specifics
-    when: ansible_host == "drew-serv"
-  # - include: playbooks/hw_rpi.yml # raspberry pi specifics
-  #   when: "'debian-arm' in group_names"
-  - include: playbooks/samba.yml # samba
-    when: ansible_host == "drew-serv"
-  - include: playbooks/nginx.yml # reverse https proxy for nagios/ha/kibana/grafana/nexus/zm
-    when: ansible_host == "drew-serv"
-  - include: playbooks/postfix.yml # postfix server
+  - name: drew-serv tasks
+    include: "{{ drew_serv_item }}"
+    loop:
+      - playbooks/hw_drew-serv.yml # hardware specifics
+      - playbooks/samba.yml # samba
+      - playbooks/nginx.yml # reverse https proxy
+      - playbooks/nut_ups.yml # NUT UPS config
+      - playbooks/postfix.yml # postfix server
+    loop_control:
+      loop_var: drew_serv_item
     when: ansible_host == "drew-serv"
   - include: playbooks/postfix_relay.yml # postfix relay config
     when: (ansible_host != "drew-serv")
-
-  - include: playbooks/ntopng.yml # ntopng network monitoring
-    when: ansible_host == "drew-piv4-02"
-
-  - include: playbooks/nut_ups.yml # NUT UPS config
-    when: ansible_host == "drew-serv"
-
-  # - include: playbooks/rpi-cluster.yml
-  #   when: "'rpi-cluster' in group_names"
-
   - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
   - include: playbooks/nrpe.yml
   - include: playbooks/cron.yml
+  - include: playbooks/ntopng.yml # ntopng network monitoring
+    when: ansible_host == "drew-piv4-02"
   - include: playbooks/dashboard.yml
     when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv4" )
 
@@ -74,8 +56,6 @@
     - docker; create container nexus
     - docker; create container nginx
     - docker; create container nagios4
-    #- docker; create container pihole
-    #- docker; create container nightscout
     - docker; create container mosquitto
     - docker; create container zigbee2mqtt
     - docker; create container ring-mqtt
@@ -83,16 +63,6 @@
     - docker; create container homeassistant
     - docker; create container grafana
     - docker; create container zoneminder
-
-  # - name: docker; add pihole custom.list
-  #   template:
-  #     src: "templates/srv/pihole/etc-pihole/custom.list.j2"
-  #     dest: "/srv/pihole/etc-pihole/custom.list.j2"
-  #     owner: drew
-  #     group: drew
-  #     mode: 0644
-  #   when: "'pihole' in group_names"
-  #   notify: docker; reload pihole custom.list and flush cache
 
 ## HANDLERS ##
   handlers:
@@ -104,10 +74,6 @@
       src: /srv/drew-serv-bkup-latest.tar.xz
       dest: /srv
       remote_src: yes
-      # system_u:object_r:container_file_t
-      setype: container_file_t
-      serole: object_r
-      seuser: system_u
     when: ansible_host == "drew-serv"
 
   - name: docker; create container nexus
@@ -230,12 +196,10 @@
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
-      log_driver: json-file
+      log_driver: none # json-file
       log_options:
         max-size: "10m"
       env_file: /etc/default/ring-mqtt.env
-      #env:
-      #  DEBUG: ring-mqtt
     when: ansible_host == "drew-serv"
 
   - name: docker; create container influxdb

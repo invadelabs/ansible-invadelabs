@@ -89,19 +89,6 @@
     state: present
   when: ansible_os_family == "Debian"
 
-# - name: initial; fedora needs link /var/lib/snapd/snap to /snap
-#   file:
-#     src: /var/lib/snapd/snap
-#     dest: /snap
-#     owner: root
-#     group: root
-#     state: link
-#   when: ansible_host == "drew-serv"
-
-# - name: initial; dnf; install etckeeper
-#   dnf: name=etckeeper state=present
-#   when: ansible_distribution == "Fedora"
-
 - name: initial; gitconfig
   git_config:
     name: "{{git_item.key}}"
@@ -113,12 +100,6 @@
     }
   loop_control:
     loop_var: git_item
-
-# - name: initial; set SELinux to permissive
-#   selinux:
-#     policy: targeted
-#     state: permissive
-#   when: ansible_distribution == 'Fedora'
 
 - name: initial; add .forward
   copy:
@@ -220,13 +201,13 @@
 ## check_bat
 - name: initial; nrpe; dl check_bat
   get_url:
-    url: https://github.com/drew-holt/nagios-plugins/raw/master/check_bat
+    url: https://raw.githubusercontent.com/drew-holt/nagios-plugins/master/check_bat
     dest: /usr/local/bin/check_bat
     mode: 0755
     owner: root
     group: root
     force: no
-    checksum: "sha256:50bafe42bfbf9cde2c34daaf56b64f940f2502ceeb9ae5ea71dd5b936837e345"
+    checksum: "sha256:153c141744e91c4eadea1e600b253af58b81c315186d7ea2e8a1deeca9096454"
   when: ansible_host == "drew-serv"
 
 ## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm
