@@ -20,9 +20,9 @@
   - include: playbooks/preflight_check.yml # fail if missing secrets
   - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
   - include: playbooks/pkgs_debian.yml # apt / dpkg install items
-  - include: playbooks/pip.yml
-  - include: playbooks/iptables.yml
-  - include: playbooks/logging.yml
+  - include: playbooks/pip.yml # python pip packages to install
+  - include: playbooks/iptables.yml # firewall
+  - include: playbooks/logging.yml # rsyslog to logstash
   - name: drew-serv tasks
     include: "{{ drew_serv_item }}"
     loop:
@@ -30,19 +30,19 @@
       - playbooks/samba.yml # samba
       - playbooks/nginx.yml # reverse https proxy
       - playbooks/nut_ups.yml # NUT UPS config
-      - playbooks/postfix.yml # postfix server
+      - playbooks/postfix.yml # postfix _server_ config
     loop_control:
       loop_var: drew_serv_item
     when: ansible_host == "drew-serv"
-  - include: playbooks/postfix_relay.yml # postfix relay config
+  - include: playbooks/postfix_relay.yml # postfix _relay_ config
     when: (ansible_host != "drew-serv")
   - include: playbooks/docker.yml
   - include: playbooks/sshd_config.yml
-  - include: playbooks/nrpe.yml
+  - include: playbooks/nrpe.yml # nagios nrpe agent config
   - include: playbooks/cron.yml
   - include: playbooks/ntopng.yml # ntopng network monitoring
     when: ansible_host == "drew-piv4-02"
-  - include: playbooks/dashboard.yml
+  - include: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
     when: ( ansible_host == "drew-pine64" ) or ( ansible_host == "drew-piv4" )
 
   - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup
@@ -172,7 +172,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.21.1"
+      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.21.2"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -223,7 +223,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.9.5"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.10.0"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
@@ -245,7 +245,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:8.1.3"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.1.7"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
@@ -322,23 +322,9 @@
   #      - 1.1.1.1
   #  when: "'pihole' in group_names"
 
-  #- name: docker; create container nightscout
-  #  docker_container:
-  #    name: nightscout
-  #    image: "{{ nexus_docker_repo }}nightscout/cgm-remote-monitor-travis:14.0.1"
-  #    state: started
-  #    restart_policy: unless-stopped
-  #    hostname: nightscout.invadelabs.com
-  #    log_driver: none
-  #    log_options:
-  #      max-size: "10m"
-  #    ports:
-  #      - "1337:1337/tcp"
-  #    env_file: /etc/default/cgm.env
-  #  when: ansible_host == "drew-serv"
-
   ## XXX needs /srv/nut-upsd
-  #- name: docker; create container nut-upsd # can't find device after power return and requires restart of container
+  ## can't find device after power return and requires restart of container
+  #- name: docker; create container nut-upsd
   #  docker_container:
   #    name: nut-upsd
   #    image: "{{ nexus_docker_repo }}instantlinux/nut-upsd:2.7.4-r8"
@@ -352,7 +338,8 @@
   #      - "/etc/default/nut-upsd-password:/run/secrets/password"
   #      - "/srv/nut-upsd/upsmon.conf:/etc/nut/upsmon.conf"
   #      - "/srv/nut-upsd/notifycmd.sh:/etc/nut/notifycmd.sh"
-  #      #- /dev/ups0:/dev/ups0 # symlink to /de/bus/usb/*** changes after disconnect/connect (powerfail)
+  #      #- /dev/ups0:/dev/ups0
+  #      # symlink to /de/bus/usb/*** changes after disconnect/connect (powerfail)
   #    devices:
   #      - /dev/bus/usb:/dev/bus/usb
   #    env:
