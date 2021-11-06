@@ -15,6 +15,13 @@
     - Restart nrpe.service
     - Restart nagios-nrpe-server.service
 
+# this passes to nrpe_local.cfg host_vars/drew-serv.yml in next step
+- name: nrpe; get healtchecks.io endpoint
+  ansible.builtin.slurp:
+    src: /root/healthchecks.io
+  when: ansible_host == "drew-serv"
+  register: healthchecks_endpoint
+
 - name: nrpe; nrpe_local.cfg
   lineinfile:
     dest: "/etc/nagios/nrpe_local.cfg"
@@ -28,6 +35,7 @@
     nrpe_all:
       - "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10"
       - "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2"
+      - "check_apt": "{{nrpe_plugins_dir}}/check_apt -l -t 60"
   notify:
     - Restart nagios-nrpe-server.service
 

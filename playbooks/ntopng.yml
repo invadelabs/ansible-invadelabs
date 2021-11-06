@@ -42,7 +42,10 @@
    #  '-F "es;flows;ntopng-%Y.%m;http://192.168.1.125:9200/_bulk;"': ''}
    with_dict: {
      '-n=1': '',
-     '-q': ''}
+     '-q': '',
+     '-i=eth0': '',
+     '-m=192.168.1.0/24': '',
+     '-S=local': ''}
    loop_control:
      loop_var: ntop_item
    notify:
