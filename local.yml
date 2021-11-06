@@ -63,28 +63,6 @@
     - docker; create container grafana
     - docker; create container zoneminder
 
-  - name: docker; create container homeassistant
-    docker_container:
-      name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.11.1"
-      state: started
-      restart_policy: unless-stopped
-      hostname: homeassistant.invadelabs.com
-      log_driver: json-file
-      log_options:
-        max-size: "10m"
-      volumes:
-        - "/etc/localtime:/etc/localtime:ro"
-        - "/srv/homeassistant:/config"
-      # not allowed in host mode
-      sysctls: {
-          "net.ipv6.conf.all.disable_ipv6": 1
-        }
-      # network_mode: host
-      ports:
-        - "8123:8123/tcp"
-    when: ansible_host == "drew-serv"
-
 ## HANDLERS ##
   handlers:
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
