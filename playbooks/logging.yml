@@ -1,4 +1,5 @@
 ---
+# this passes to filebeat.yml in next step
 - name: logging; get home_ip contents and set to var
   ansible.builtin.slurp:
     src: /home/drew/home_ip

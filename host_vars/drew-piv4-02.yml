@@ -8,7 +8,6 @@
     - check_memory: "{{nrpe_plugins_dir}}/check_memory -u M -w 20% -c 10%"
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
-    - check_apt: "{{nrpe_plugins_dir}}/check_apt -l -t 60"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 50 -c 55"
     # - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
     - check_dns_local1: "{{nrpe_plugins_dir}}/check_dns -s 192.168.1.125 -H drew-serv.nm1.invadelabs.com -w 0.5 -c 1"
@@ -24,5 +23,6 @@
     #- nut-server
     - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
     - fail2ban
+    - arpwatch
   host_pip:
     - ansible==2.9.6 # apt installs 2.7.7, but need this for ansible.slurp
