@@ -39,6 +39,7 @@
     - /root/slacktee.conf
     - /home/drew/.ssh/tunnel_2020.05.17
     - /etc/default/ring-mqtt.env
+    - /root/healthchecks.io
   loop_control:
     loop_var: drewserv_file_item
   register: item
