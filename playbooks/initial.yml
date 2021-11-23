@@ -72,6 +72,14 @@
     dest: /etc/apt/sources.list.d/lynis.list
   when: "'debian-nm1' in group_names"
 
+- name: initial; add /etc/lynis/custom.prf
+  template:
+    src: templates/etc/lynis/custom.prf
+    dest: /etc/lynis/custom.prf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: initial; add /etc/apt/apt.conf.d/10periodic
   template:
     src: templates/etc/apt/apt.conf.d/10periodic.j2
