@@ -48,7 +48,7 @@
     owner: root
     group: root
     mode: 0644
-  when: "'debian-arm' in group_names"
+  when: "'raspberrypi' in group_names"
 
 - name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
   template:
@@ -57,20 +57,18 @@
     owner: root
     group: root
     mode: 0644
-  when: "'debian-arm' in group_names"
+  when: "'raspberrypi' in group_names"
 
 #  sudo wget -O - https://packages.cisofy.com/keys/cisofy-software-public.key | sudo apt-key add -
 - name: initial; add lynis gpg key
   apt_key:
     keyserver: hkp://keyserver.ubuntu.com:80
     id: 013baa07180c50a7101097ef9de922f1c2fde6c4
-  when: "'debian-nm1' in group_names"
 
 - name: initial; add /etc/apt/sources.list.d/lynis.list apt proxy
   template:
     src: templates/etc/apt/sources.list.d/lynis.list.rpi.j2
     dest: /etc/apt/sources.list.d/lynis.list
-  when: "'debian-nm1' in group_names"
 
 - name: initial; add /etc/lynis/custom.prf
   template:

@@ -1,16 +1,7 @@
 [web]
 invadelabs.com ansible_host=srv.invadelabs.com
 
-[rpi-cluster]
-# drew-piv3-01
-# drew-piv3-02
-# drew-piv3-03
-# drew-piv3-04
-# drew-piv3-05
-
-[arm]
-#drew-piv1
-#drew-piv3
+[raspberrypi]
 drew-piv4
 drew-piv4-02
 
@@ -20,20 +11,14 @@ drew-serv
 
 [nm1-hosts]
 drew-serv
-#drew-piv1
-#drew-piv3
 drew-piv4
 drew-pine64
 drew-piv4-02
 
 [nm1:children]
-rpi-cluster
 nm1-hosts
 
-[debian-arm:children]
-rpi-cluster
-arm
-
 [debian-nm1:children]
-arm
+raspberrypi
+drew-pine64
 drew-serv
