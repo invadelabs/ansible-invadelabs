@@ -63,6 +63,7 @@
     - lm-sensors
     # - powertop # energy management
     - python3-certbot-dns-cloudflare
+    - apt-show-versions # Lynis PKGS-7394
   host_pip:
     - check-docker
     - pymongo
