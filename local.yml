@@ -222,7 +222,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.12.0"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2021.12.4"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
