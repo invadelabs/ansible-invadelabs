@@ -32,7 +32,7 @@
   - name: docker; create container nightscout
     docker_container:
       name: nightscout
-      image: "nightscout/cgm-remote-monitor:14.2.2"
+      image: "nightscout/cgm-remote-monitor:14.2.5"
       state: started
       restart_policy: unless-stopped
       hostname: cgm.invadelabs.com
