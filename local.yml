@@ -244,7 +244,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:8.3.2"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.3.3"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
