@@ -1,14 +1,18 @@
 #!/bin/bash
 
-# sleep a bit longer (10 seconds) since this thing is on wifi and takes longer to come up
+# sleep a bit longer (10 seconds if on wifi)
+
+DISPLAY=:0 xset s off # don't activate screensaver
+DISPLAY=:0 xset -dpms # dispable DPMS (Energy Star)
+DISPLAY=:0 xset s noblank # don't blank the video device
 
 # sometimes chromium, sometimes binary is chromium-browser
 if [ -x "$(command -v chromium-browser)" ]; then
-  sleep 10 && DISPLAY=:0.0 chromium-browser --kiosk \
+  sleep 2 && DISPLAY=:0.0 chromium-browser --kiosk \
     --window-position="0,0" \
     --app="file:///home/drew/dashboard.html"
 else
-  sleep 10 && DISPLAY=:0.0 chromium --kiosk \
+  sleep 2 && DISPLAY=:0.0 chromium --kiosk \
     --window-position="0,0" \
     --app="file:///home/drew/dashboard.html"
 fi
