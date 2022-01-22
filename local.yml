@@ -63,6 +63,25 @@
     - docker; create container grafana
     - docker; create container zoneminder
 
+  - name: docker; create container grafana
+    docker_container:
+      name: grafana
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.3.4"
+      state: started
+      restart_policy: unless-stopped
+      hostname: grafana.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      env:
+        GF_SECURITY_ALLOW_EMBEDDING: "true"
+        GF_INSTALL_PLUGINS: "natel-discrete-panel"
+      volumes:
+        - "/srv/grafana:/var/lib/grafana"
+      ports:
+        - "3000:3000/tcp"
+    when: ansible_host == "drew-serv"
+
 ## HANDLERS ##
   handlers:
   - include: playbooks/handlers.yml # start / restart systemd stuff, other things
@@ -244,7 +263,7 @@
   - name: docker; create container grafana
     docker_container:
       name: grafana
-      image: "{{ nexus_docker_repo }}grafana/grafana:8.3.3"
+      image: "{{ nexus_docker_repo }}grafana/grafana:8.3.4"
       state: started
       restart_policy: unless-stopped
       hostname: grafana.invadelabs.com
