@@ -171,7 +171,7 @@
   - name: docker; create container zigbee2mqtt
     docker_container:
       name: zigbee2mqtt
-      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.22.2"
+      image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.23.0"
       state: started
       restart_policy: unless-stopped
       hostname: zigbee2mqtt.invadelabs.com
@@ -191,7 +191,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.8.4"
+      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.9.1"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
