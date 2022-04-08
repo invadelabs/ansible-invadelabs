@@ -15,6 +15,7 @@ filebeat.prospectors:
   # ignore dashboard readonly client access logs
   exclude_lines:
     - ^192\.168\.1\.(120|140)\.*
+    - ^172\.17\.0\.1\.*
   recursive_glob.enabled: true
 
 - type: log
