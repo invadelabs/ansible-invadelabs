@@ -21,6 +21,7 @@
   - include: playbooks/pkgs_debian.yml # apt / dpkg install items
   - include: playbooks/pip.yml # python pip packages to install
   - include: playbooks/iptables.yml # firewall
+  - include: playbooks/lynis.yml # security auditing
   - include: playbooks/logging.yml # rsyslog to logstash
   - name: drew-serv tasks
     include: "{{ drew_serv_item }}"

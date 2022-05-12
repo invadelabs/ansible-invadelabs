@@ -1,0 +1,8 @@
+---
+- name: lynis; add /etc/lynis/custom.prf
+  template:
+    src: templates/etc/lynis/custom.prf
+    dest: /etc/lynis/custom.prf
+    owner: root
+    group: root
+    mode: 0644
