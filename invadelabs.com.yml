@@ -20,6 +20,7 @@
   - include: playbooks/pkgs_debian.yml # all apt / dpkg software bits needed
   - include: playbooks/pip.yml # anything pip here
   - include: playbooks/sshd_config.yml # sshd_config
+  - include: playbooks/lynis.yml # security auditing
   - include: playbooks/logging.yml # rsyslog / filebeat
   - include: playbooks/postfix.yml # sendgrid relay config
   - include: playbooks/drive.yml # initalize rclone, configures letsencrypt

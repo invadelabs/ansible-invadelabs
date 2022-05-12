@@ -7,4 +7,4 @@
     group: root
     mode: 0644
     validate: /usr/bin/testparm -s %s
-  notify: Restart smb.service
+  notify: Restart smbd.service
