@@ -192,7 +192,7 @@
   - name: docker; create container ring-mqtt
     docker_container:
       name: ring-mqtt
-      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:4.9.1"
+      image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.0.1"
       state: started
       restart_policy: unless-stopped
       hostname: ring-mqtt.invadelabs.com
@@ -200,6 +200,8 @@
       log_options:
         max-size: "10m"
       env_file: /etc/default/ring-mqtt.env
+      volumes:
+        - "/srv/ring-mqtt:/data"
     when: ansible_host == "drew-serv"
 
   - name: docker; create container influxdb
@@ -223,7 +225,7 @@
   - name: docker; create container homeassistant
     docker_container:
       name: homeassistant
-      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2022.4.7"
+      image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2022.5.3"
       state: started
       restart_policy: unless-stopped
       hostname: homeassistant.invadelabs.com
