@@ -55,6 +55,30 @@
   failed_when: hosts_rc.rc != 0 # rc = proccess exit code
   when: ansible_host != "invadelabs.com"
 
+- name: preflight_check; gcloud cli is installed
+  shell: which gcloud
+  register: gcloud_rc
+  failed_when: gcloud_rc.rc != 0 # rc = proccess exit code
+  when: ansible_host = "drew-serv"
+
+- name: preflight_check; gcloud has authorized user
+  shell: gcloud auth list | grep drew
+  register: gcloud_auth_rc
+  failed_when: gcloud_auth_rc.rc != 0 # rc = proccess exit code
+  when: ansible_host = "drew-serv"
+
+- name: preflight_check; gcloud project is set
+  shell: gcloud config get project | grep invadelabs
+  register: gcloud_project_rc
+  failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
+  when: ansible_host = "drew-serv"
+
+- name: preflight_check; gcloud project is set
+  shell: gcloud config get project | grep invadelabs
+  register: gcloud_project_rc
+  failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
+  when: ansible_host = "drew-serv"
+
 - name: preflight_check; if rclone initalized
   shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
   args:
