@@ -30,6 +30,6 @@ jobs:
     - name: Display Python version
       run: python -c "import sys; print(sys.version)"
     - name: Ansible Lint
-      run: ansible-lint -t '!ANSIBLE0010' *.yml
+      run: ansible-lint -t '!ANSIBLE0010' $(ls *.yml | grep -vE 'requirements.yml|inventory.yml')
     - name: Ansible Syntax Check
       run: ansible-playbook -i hosts --syntax-check $(ls *.yml | grep -vE 'requirements.yml|inventory.yml')
