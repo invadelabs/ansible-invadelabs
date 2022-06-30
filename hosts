@@ -1,24 +1,33 @@
 [web]
 invadelabs.com ansible_host=srv.invadelabs.com
 
+[nm1-hosts]
+drew-serv
+drew-piv4
+#drew-pine64
+drew-rockpi4
+drew-piv4-02
+
+###
 [raspberrypi]
 drew-piv4
 drew-piv4-02
 
 [pihole]
 drew-serv
-#drew-pine64
 
-[nm1-hosts]
+[docker]
 drew-serv
+
+[dashboard]
 drew-piv4
-drew-pine64
-drew-piv4-02
+drew-rockpi4
+###
 
 [nm1:children]
 nm1-hosts
 
 [debian-nm1:children]
 raspberrypi
-drew-pine64
+#drew-pine64
 drew-serv

@@ -2,21 +2,11 @@
 - name: dashboard; add /home/drew/dashboard.html
   template:
     src: "templates/home/drew/dashboard-simple.html.j2"
+    #  src: "templates/home/drew/dashboard-complex.html.j2"
     dest: "/home/drew/dashboard.html"
     owner: drew
     group: drew
     mode: 0644
-  # when: ansible_host == "drew-pine64"
-
-# XXX after switch
-# - name: dashboard; add /home/drew/dashboard.html
-#   template:
-#     src: "templates/home/drew/dashboard-complex.html.j2"
-#     dest: "/home/drew/dashboard.html"
-#     owner: drew
-#     group: drew
-#     mode: 0644
-#   when: ansible_host == "drew-piv4"
 
 - name: dashboard; add /home/drew/dashboard-launch.sh
   template:
@@ -26,27 +16,26 @@
     group: drew
     mode: 0755
 
-# XXX on armbian (just LXDE)
-- name: dashboard; create dir /home/drew/.config/lxsession/LXDE
-  file:
-    path: /home/drew/.config/lxsession/LXDE-pi
-    state: directory
-    owner: drew
-    group: drew
-    mode: 0755
-    recurse: yes
+### BEGIN CONFIG FOR RASPBERRY PI
+# - name: dashboard; create dir /home/drew/.config/lxsession/LXDE
+#   file:
+#     path: /home/drew/.config/lxsession/LXDE-pi
+#     state: directory
+#     owner: drew
+#     group: drew
+#     mode: 0755
+#     recurse: yes
+#   when: ansible_host == "drew-pine64"
 
-- name: dashboard; add /home/drew/.config/lxsession/LXDE/autostart
-  template:
-    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ansible_host}}.j2"
-    dest: "/home/drew/.config/lxsession/LXDE/autostart"
-    owner: drew
-    group: drew
-    mode: 0755
-  when: ansible_host == "drew-pine64"
-# on armbian (just LXDE)
+# - name: dashboard; add /home/drew/.config/lxsession/LXDE/autostart
+#   template:
+#     src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ansible_host}}.j2"
+#     dest: "/home/drew/.config/lxsession/LXDE/autostart"
+#     owner: drew
+#     group: drew
+#     mode: 0755
+#   when: ansible_host == "drew-pine64"
 
-# XXX on raspberry pi (LXDE-pi)
 - name: dashboard; create dir /home/drew/.config/lxsession/LXDE-pi
   file:
     path: /home/drew/.config/lxsession/LXDE-pi
@@ -55,6 +44,7 @@
     group: drew
     mode: 0755
     recurse: yes
+  when: ansible_host == "drew-piv4"
 
 - name: dashboard; add /home/drew/.config/lxsession/LXDE-pi/autostart
   template:
@@ -63,7 +53,7 @@
     owner: drew
     group: drew
     mode: 0755
-# XXX on raspberry pi (LXDE-pi)
+  when: ansible_host == "drew-piv4"
 
 - name: dashboard; set /etc/lightdm/lightdm.conf
   lineinfile:
@@ -84,18 +74,30 @@
     regexp: "^{{lightdm_item.key}}"
     line: "{{lightdm_item.key}}={{lightdm_item.value}}"
     state: present
-  when: ansible_host == "drew-piv4"
   with_dict: {
     "disable_overscan": "1",
     "hdmi_enable_4kp60": "1"
     }
   loop_control:
     loop_var: lightdm_item
+  when: ansible_host == "drew-piv4"
 
-# XXX create a mechnism to get this from the host stored in
-# XXX ~/.synergy/SSL/Fingerprints/Local.txt
+# host fingerprint stored in  ~/.synergy/SSL/Fingerprints/Local.txt
 - name: dashboard; create /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   shell: mkdir -p /home/drew/.synergy/SSL/Fingerprints && touch /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   args:
     creates: /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   when: ansible_host == "drew-piv4"
+### END CONFIG FOR RASPBERRY PI
+
+
+### BEGIN CONFIG FOR ROCK PI
+- name: dashboard; add /home/drew/.config/autostart/program.desktop
+  template:
+    src: "templates/home/drew/.config/autostart/program.desktop.j2"
+    dest: "/home/drew/.config/autostart/program.desktop"
+    owner: drew
+    group: drew
+    mode: 0644
+  when: ansible_host == "drew-rockpi4"
+### END CONFIG FOR RASPBERRY PI

@@ -1,0 +1,22 @@
+#!/bin/bash
+DISPLAY=:0 xset s off # don't activate screensaver
+DISPLAY=:0 xset -dpms # dispable DPMS (Energy Star)
+DISPLAY=:0 xset s noblank # don't blank the video device
+
+# start unclutter to hide mouse cursor
+DISPLAY=:0 unclutter -idle 0 &
+
+# sometimes chromium, sometimes binary is chromium-browser
+if [ -x "$(command -v chromium-browser)" ]; then
+  BROWSER=/usr/lib/chromium-browser/chromium-browser
+else
+  BROWSER=chromium
+fi
+
+while [[ $(hostname -i) != '192.168.1.147' ]]; do 
+  sleep 1
+done
+
+sleep 10 && DISPLAY=:0 $BROWSER --kiosk \
+  --window-position="0,0" \
+  --app="file:///home/drew/dashboard.html"
