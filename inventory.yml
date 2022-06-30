@@ -1,0 +1,27 @@
+all:
+  hosts:
+  children:
+    nm1:
+      hosts:
+        drew-serv:
+        drew-piv4:
+        drew-piv4-02:
+        #drew-pine64:
+        drew-rockpi4:
+    raspberrypi:
+      hosts:
+        drew-piv4:
+        drew-piv4-02:
+    piohole:
+      hosts:
+        drew-serv:
+    docker:
+      hosts:
+        drew-serv:
+    dashboard:
+      hosts:
+        drew-piv4:
+        drew-rockpi4:
+    debian:
+      children:
+        raspberrypi:

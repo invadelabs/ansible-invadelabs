@@ -223,7 +223,7 @@
 - name: initial; nrpe; /var/run/fail2ban/fail2ban.sock perms
   file:
     dest: /var/run/fail2ban/fail2ban.sock
-    mode: 0660
+    mode: 0770
     owner: root
     group: nagios
   when: ansible_host == "drew-piv4-02"
