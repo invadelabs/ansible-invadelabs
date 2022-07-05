@@ -9,6 +9,21 @@
     extra_opts: ['--strip-components=1']
     creates: /var/www/drew.invadelabs.com/index.php
 
+- name: deploy drewwiki; add mediawiki extensions
+  unarchive:
+    remote_src: yes
+    src: "{{ med_ext_item.value }}"
+    dest: /var/www/drew.invadelabs.com/extensions
+    owner: www-data
+    group: www-data
+    creates: "/var/www/drew.invadelabs.com/extensions/{{ med_ext_item.key }}"
+  with_dict: {
+    "SyntaxHighlight_GeSHi": "https://extdist.wmflabs.org/dist/extensions/SyntaxHighlight_GeSHi-REL1_38-79031cd.tar.gz",
+    "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_38-e844ca8.tar.gz"
+    }
+  loop_control:
+    loop_var: med_ext_item
+
 # XXX host this locally somewhere
 #- name: drewwiki; add logo
 #  get_url:

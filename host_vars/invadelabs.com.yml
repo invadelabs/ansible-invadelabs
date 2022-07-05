@@ -14,7 +14,7 @@
     - check_tcp11514: "{{nrpe_plugins_dir}}/check_tcp -H localhost -p 11514"
     - check_iostat: "/usr/local/bin/check_iostat -d sda -i -p"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
-    - check_systemd: "/usr/local/bin/check_systemd"
+    - check_systemd: "/usr/local/bin/check_systemd -w 70"
     - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers | join(' ')}}"
   postfix_mynetworks: "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
   host_pkgs:
