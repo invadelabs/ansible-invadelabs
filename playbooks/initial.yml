@@ -69,6 +69,7 @@
   template:
     src: templates/etc/apt/sources.list.d/lynis.list.rpi.j2
     dest: /etc/apt/sources.list.d/lynis.list
+  when: "'debian-nm1' in group_names"
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
   template:
@@ -161,6 +162,7 @@
     owner: root
     group: root
     remote_src: yes
+  when: "'debian-nm1' in group_names"
 
 # check_temp.sh
 - name: initial; nrpe; download check_mongo_mybg.py
@@ -171,6 +173,7 @@
     owner: root
     group: root
     remote_src: yes
+  when: "'debian-nm1' in group_names"
 
 ## check_es_system.sh
 - name: initial; check_es_system.sh

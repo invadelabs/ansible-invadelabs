@@ -7,7 +7,7 @@
     - check_total_procs: "{{nrpe_plugins_dir}}/check_procs -w 200 -c 250"
     - check_zombie_procs: "{{nrpe_plugins_dir}}/check_procs -w 1 -c 2 -s Z"
     # - check_rsyslogd_procs: "{{nrpe_plugins_dir}}/check_procs -C 'rsyslogd' -c 1"
-    - check_memory: "{{nrpe_plugins_dir}}/check_memory -u M -w 20% -c 10%"
+    - check_memory: "{{nrpe_plugins_dir}}/check_memory -w 80% -c 90%"
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_fail2ban: "{{nrpe_plugins_dir}}/check_fail2ban.sh -w 1 -c 2"
@@ -27,7 +27,8 @@
     - php-xml
     - php-curl # for selenium-invadelabs script
     - php-apcu # Alternative PHP Cache (APC)
-    - php7.4-fpm
+    - php-fpm
+    - php-intl
   host_pip:
     - check-docker
     - docker-py

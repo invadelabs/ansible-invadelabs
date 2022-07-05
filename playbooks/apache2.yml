@@ -14,8 +14,8 @@
     state: absent
     name: "{{a2dismod_item}}"
   with_items:
-    - php7.4
-    - mpm_prefork
+    - php8.1
+    - pagespeed
   loop_control:
     loop_var: a2dismod_item
   notify: Restart apache2.service
@@ -29,12 +29,12 @@
     - ssl
     - rewrite
     - headers
-    #- pagespeed
     - http2
     - proxy_fcgi
     - setenvif
     - proxy_http # for cgm
     - remoteip
+    - proxy_wstunnel
   loop_control:
     loop_var: a2enmod_item
   notify: Restart apache2.service
@@ -44,7 +44,7 @@
   args:
     creates: /etc/apache2/conf-enabled/{{a2enconf_item}}.conf
   with_items:
-    - php7.4-fpm
+    - php8.1-fpm
   loop_control:
     loop_var: a2enconf_item
   notify: Restart apache2.service

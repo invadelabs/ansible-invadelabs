@@ -2,28 +2,12 @@
 - name: deploy drewwiki; extract mediawiki for drew.invadelabs.com
   unarchive:
     remote_src: yes
-    src: https://releases.wikimedia.org/mediawiki/1.31/mediawiki-1.31.15.tar.gz
+    src: https://releases.wikimedia.org/mediawiki/1.38/mediawiki-1.38.2.tar.gz
     dest: /var/www/drew.invadelabs.com
     owner: www-data
     group: www-data
     extra_opts: ['--strip-components=1']
     creates: /var/www/drew.invadelabs.com/index.php
-
-- name: deploy drewwiki; add mediawiki extensions
-  unarchive:
-    remote_src: yes
-    src: "{{ med_ext_item.value }}"
-    dest: /var/www/drew.invadelabs.com/extensions
-    owner: www-data
-    group: www-data
-    creates: "/var/www/drew.invadelabs.com/extensions/{{ med_ext_item.key }}"
-  with_dict: {
-    "googleAnalytics": "https://extdist.wmflabs.org/dist/extensions/googleAnalytics-REL1_31-4205ccd.tar.gz",
-    "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_31-b43d965.tar.gz",
-    "Description2": "https://extdist.wmflabs.org/dist/extensions/Description2-REL1_31-ffb198b.tar.gz"
-    }
-  loop_control:
-    loop_var: med_ext_item
 
 # XXX host this locally somewhere
 #- name: drewwiki; add logo
@@ -35,12 +19,12 @@
 #    mode: 0644
 
 # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
-- name: deploy drewwiki; remove softwareInformation SpecialVersion.php
-  lineinfile:
-    dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
-    regexp: '\$this\-\>softwareInformation\(\) \.'
-    line: '//$this->softwareInformation() .'
-    state: present
+#- name: deploy drewwiki; remove softwareInformation SpecialVersion.php
+#  lineinfile:
+#    dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
+#    regexp: '\$this\-\>softwareInformation\(\) \.'
+#    line: '//$this->softwareInformation() .'
+#    state: present
 
 - name: deploy drewwiki; wiki_to_md.sh; git clone --depth 1 https://github.com/drew-holt/mediawiki_to_git_md.git
   git:

@@ -76,22 +76,22 @@
     deb: /root/installers/pxz_4.999.99~beta5+gitfcfea93-2_amd64.deb
   when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
 
-## mod_pagespeed
-- name: pkgs_debian; download mod_pagespeed
-  get_url:
-    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
-    dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
-    force: no
-    owner: root
-    group: root
-    mode: 0644
-    checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
-  when: ansible_fqdn == "invadelabs.com"
-
-- name: pkgs_debian; install mod_pagespeed
-  apt:
-    deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
-  when: ansible_fqdn == "invadelabs.com"
+### mod_pagespeed
+#- name: pkgs_debian; download mod_pagespeed
+#  get_url:
+#    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+#    dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
+#    force: no
+#    owner: root
+#    group: root
+#    mode: 0644
+#    checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
+#  when: ansible_fqdn == "invadelabs.com"
+#
+#- name: pkgs_debian; install mod_pagespeed
+#  apt:
+#    deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
+#  when: ansible_fqdn == "invadelabs.com"
 
 ## filebeat (for apache logs)
 - name: pkgs_debian; download filebeat deb

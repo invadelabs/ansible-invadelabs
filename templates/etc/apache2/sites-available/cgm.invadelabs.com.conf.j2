@@ -29,6 +29,14 @@
   ProxyPass / http://127.0.0.1:1337
   ProxyPassReverse / http://127.0.0.1:1337
 
+  <Location /socket.io>
+      RewriteEngine On
+      RewriteCond %{QUERY_STRING} transport=websocket    [NC]
+      RewriteRule /(.*) ws://localhost:1337/socket.io/$1 [P,L]
+      ProxyPass http://localhost:1337/socket.io retry=0 timeout=30
+      ProxyPassReverse http://localhost:1337/socket.io
+  </Location>
+
   RewriteEngine on
   RewriteRule /(.*)  http://127.0.0.1:1337/$1 [P,L]
 
