@@ -1,7 +1,7 @@
 ---
 - name: deploy drewwiki; extract mediawiki for drew.invadelabs.com
   unarchive:
-    remote_src: yes
+    remote_src: true
     src: https://releases.wikimedia.org/mediawiki/1.38/mediawiki-1.38.2.tar.gz
     dest: /var/www/drew.invadelabs.com
     owner: www-data
@@ -11,7 +11,7 @@
 
 - name: deploy drewwiki; add mediawiki extensions
   unarchive:
-    remote_src: yes
+    remote_src: true
     src: "{{ med_ext_item.value }}"
     dest: /var/www/drew.invadelabs.com/extensions
     owner: www-data
@@ -20,29 +20,30 @@
   with_dict: {
     "SyntaxHighlight_GeSHi": "https://extdist.wmflabs.org/dist/extensions/SyntaxHighlight_GeSHi-REL1_38-79031cd.tar.gz",
     "OpenGraphMeta": "https://extdist.wmflabs.org/dist/extensions/OpenGraphMeta-REL1_38-e844ca8.tar.gz"
-    }
+  }
   loop_control:
     loop_var: med_ext_item
 
 # XXX host this locally somewhere
-#- name: drewwiki; add logo
-#  get_url:
-#    url: https://s6.gifyu.com/images/omgz_square.gif
-#    dest: /var/www/drew.invadelabs.com/omgz_square.gif
-#    owner: www-data
-#    group: www-data
-#    mode: 0644
+# - name: drewwiki; add logo
+#   get_url:
+#     url: https://s6.gifyu.com/images/omgz_square.gif
+#     dest: /var/www/drew.invadelabs.com/omgz_square.gif
+#     owner: www-data
+#     group: www-data
+#     mode: 0644
 
 # https://notepad.patheticcockroach.com/273/preventing-mediawiki-from-revealing-your-server-versions/
-#- name: deploy drewwiki; remove softwareInformation SpecialVersion.php
-#  lineinfile:
-#    dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
-#    regexp: '\$this\-\>softwareInformation\(\) \.'
-#    line: '//$this->softwareInformation() .'
-#    state: present
+# - name: deploy drewwiki; remove softwareInformation SpecialVersion.php
+#   lineinfile:
+#     dest: /var/www/drew.invadelabs.com/includes/specials/SpecialVersion.php
+#     regexp: '\$this\-\>softwareInformation\(\) \.'
+#     line: '//$this->softwareInformation() .'
+#     state: present
 
 - name: deploy drewwiki; wiki_to_md.sh; git clone --depth 1 https://github.com/drew-holt/mediawiki_to_git_md.git
   git:
     repo: https://github.com/drew-holt/mediawiki_to_git_md.git
     dest: /root/mediawiki_to_git_md
+    version: HEAD
     depth: 1

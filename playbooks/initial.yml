@@ -28,6 +28,9 @@
   file:
     path: /root/installers
     state: directory
+    owner: root
+    group: root
+    mode: 0755
 
 - name: initial; add /etc/motd
   template:
@@ -69,6 +72,9 @@
   template:
     src: templates/etc/apt/sources.list.d/lynis.list.rpi.j2
     dest: /etc/apt/sources.list.d/lynis.list
+    owner: root
+    group: root
+    mode: 0644
   when: "'debian-nm1' in group_names"
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
@@ -83,33 +89,34 @@
 - name: initial; apt; install etckeeper and initial packages
   apt:
     pkg:
-    - etckeeper
-    - python3-apt # for ansible
+      - etckeeper
+      - python3-apt # for ansible
     state: present
   when: ansible_os_family == "Debian"
 
 - name: initial; gitconfig
   git_config:
-    name: "{{git_item.key}}"
+    name: "{{ git_item.key }}"
     scope: global
-    value: "{{git_item.value}}"
+    value: "{{ git_item.value }}"
   with_dict: {
     "user.email": "drew@invadelabs.com",
     "user.name": "Drew Holt"
-    }
+  }
   loop_control:
     loop_var: git_item
 
 - name: initial; add .forward
   copy:
-    dest: "{{forward_item.value}}/.forward"
-    owner: "{{forward_item.key}}"
-    group: "{{forward_item.key}}"
+    dest: "{{ forward_item.value }}/.forward"
+    owner: "{{ forward_item.key }}"
+    group: "{{ forward_item.key }}"
+    mode: 0644
     content: "drewderivative@gmail.com"
   with_dict: {
     "drew": "/home/drew",
     "root": "/root"
-    }
+  }
   loop_control:
     loop_var: forward_item
 
@@ -117,7 +124,7 @@
   git:
     repo: https://github.com/invadelabs/cron-invadelabs.git
     dest: /root/scripts
-    refspec: refs/heads/main
+    version: HEAD
     depth: 1
 
 - name: initial; nrpe; dl check_memory.pl
@@ -127,7 +134,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
   when: ansible_host == "drew-serv"
 
@@ -139,7 +146,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:6bff734f83234046cb94de6bff001f0038104462c5336769f09b6f0df9cc6d2e"
 
 ## slacktee.sh
@@ -150,7 +157,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:f17b39737c5fe1926c354890ac6e9e5cf11afd09d8351e9b498fe9a608cf2e95"
 
 # check_temp.sh
@@ -161,7 +168,7 @@
     mode: 0755
     owner: root
     group: root
-    remote_src: yes
+    remote_src: true
   when: "'debian-nm1' in group_names"
 
 # check_temp.sh
@@ -172,7 +179,7 @@
     mode: 0755
     owner: root
     group: root
-    remote_src: yes
+    remote_src: true
   when: "'debian-nm1' in group_names"
 
 ## check_es_system.sh
@@ -183,7 +190,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:7cc84d9136bf31ae021bc48997167375ddbbe701c2886f74fa4d7b00abaa0242"
   when: ansible_host == "drew-serv"
 
@@ -195,7 +202,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
   when: ansible_host == "drew-serv"
 
@@ -207,7 +214,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:153c141744e91c4eadea1e600b253af58b81c315186d7ea2e8a1deeca9096454"
   when: ansible_host == "drew-serv"
 
@@ -219,7 +226,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:d51f1fbdc7ffb70a3f89dce99a54eed11c1f9b7d1605557681b80bfb407ad25d"
   when: ansible_host == "drew-serv"
 
@@ -239,7 +246,7 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:b48de915ce7c9b91d5a118c21bca5df79c6983fe01ab512ab628f07808918fde"
 
 ## check_iostat
@@ -250,5 +257,5 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:24edbf321e8ee092eabd0c54f00c9568fdadf902b97dc9efbaffedc8b5c6da05"

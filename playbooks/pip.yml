@@ -4,4 +4,4 @@
     name: "{{ all_pip + host_pip }}"
   vars:
     all_pip:
-    - check_systemd
+      - check_systemd

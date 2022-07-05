@@ -1,7 +1,9 @@
 ---
 - name: drive; get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
-    rclone copyto googledrive:/Backup/Web/$(rclone lsjson --filter '- */**' --filter '+ invadelabs.com.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1) /srv/invadelabs.com-bkup-latest.tar.xz
+    set -o pipefail
+    FILE=$(rclone lsjson --filter '- */**' --filter '+ invadelabs.com.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1)
+    rclone copyto googledrive:/Backup/Web/$FILE /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
     creates: /srv/invadelabs.com-bkup-latest.tar.xz
@@ -11,11 +13,11 @@
   unarchive:
     src: /srv/invadelabs.com-bkup-latest.tar.xz
     dest: /srv
-    remote_src: yes
+    remote_src: true
     creates: /var/www/data/drew_wiki.sqlite
   when: ansible_fqdn == 'invadelabs.com'
 
-- name: drive; copy /home/drew/letsencrypt /etc/letsencrypt
+- name: drive; copy /home/drew/letsencrypt /etc/letsencrypt  # noqa deprecated-command-syntax
   shell: |
     rm -rf /etc/letsencrypt
     mv /srv/letsencrypt /etc

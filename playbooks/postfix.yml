@@ -2,13 +2,13 @@
 - name: postfix; /etc/postfix/main.cf
   lineinfile:
     dest: /etc/postfix/main.cf
-    regexp: "^{{postfix_item.key}}"
-    line: "{{postfix_item.key}} = {{postfix_item.value}}"
+    regexp: "^{{ postfix_item.key }}"
+    line: "{{ postfix_item.key }} = {{ postfix_item.value }}"
     state: present
   with_dict: {
     "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
-    "myhostname": "{{ansible_fqdn}}",
-    "mynetworks ": "{{postfix_mynetworks}}",
+    "myhostname": "{{ ansible_fqdn }}",
+    "mynetworks ": "{{ postfix_mynetworks }}",
     "alias_maps": "hash:/etc/aliases",
     "alias_database": "hash:/etc/aliases",
     "mydestination": "$myhostname, localhost",
@@ -25,7 +25,7 @@
     "smtp_sasl_tls_security_options": "noanonymous",
     "smtpd_tls_cert_file": "/etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem",
     "smtpd_tls_key_file": "/etc/letsencrypt/live/invadelabs.com-0001/privkey.pem"
-    }
+  }
   loop_control:
     loop_var: postfix_item
   notify: Restart postfix.service
@@ -36,13 +36,13 @@
   register: stat_sasl_passwd
   no_log: true
 
-- name: postfix; set sasl_passwd
+- name: postfix; set sasl_passwd  # noqa literal-compare command-instead-of-shell
   shell: cat /root/postfix_passwd
   register: sasl_passwd
   when: stat_sasl_passwd.stat.exists == False
   no_log: true
 
-- name: postfix; create /etc/postfix/sasl_passwd
+- name: postfix; create /etc/postfix/sasl_passwd  # noqa literal-compare
   copy:
     dest: /etc/postfix/sasl_passwd
     content: "{{ sasl_passwd.stdout }}"
@@ -50,7 +50,7 @@
   when: stat_sasl_passwd.stat.exists == False
   no_log: true
 
-- name: postfix; postmap /etc/postfix/sasl_passwd
+- name: postfix; postmap /etc/postfix/sasl_passwd  # noqa literal-compare
   shell: |
     postmap /etc/postfix/sasl_passwd
     rm /etc/postfix/sasl_passwd

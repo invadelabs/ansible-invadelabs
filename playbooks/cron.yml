@@ -2,7 +2,7 @@
 - name: cron; create "PATH=/usr/local/bin:/usr/bin:/bin" on top of crontab
   cron:
     name: PATH
-    env: yes
+    env: true
     user: root
     job: /usr/local/bin:/usr/bin:/bin
 
@@ -22,7 +22,9 @@
     minute: "30"
     hour: "*/2"
     user: root
-    job: ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git -o -C main -i hosts -l {{ansible_host}} | systemd-cat -t ansible-pull
+    job: >-
+      ansible-pull -U https://github.com/invadelabs/ansible-invadelabs.git
+      -o -C main -i hosts -l {{ ansible_host }} | systemd-cat -t ansible-pull
 
 - name: cron; logwatch weekly
   cron:
@@ -75,7 +77,9 @@
     minute: "0"
     hour: "23"
     user: root
-    job: /root/scripts/gdrive_backup.sh -a drew-serv -f googledrive:/Backup/Web -l /root/scripts/gdrive_drewserv.txt -s
+    job: >-
+      /root/scripts/gdrive_backup.sh -a drew-serv -f googledrive:/Backup/Web
+      -l /root/scripts/gdrive_drewserv.txt -s
   when: ansible_host == "drew-serv"
 
 - name: cron; gdrive_backup.sh invadelabs.com
@@ -84,7 +88,9 @@
     minute: "0"
     hour: "23"
     user: root
-    job: /root/scripts/gdrive_backup.sh -a invadelabs.com -f googledrive:/Backup/Web -l /root/scripts/gdrive_invadelabs.com.txt -s
+    job: >-
+      /root/scripts/gdrive_backup.sh -a invadelabs.com -f googledrive:/Backup/Web
+      -l /root/scripts/gdrive_invadelabs.com.txt -s
   when: ansible_fqdn == 'invadelabs.com'
 
 # - name: cron; Add cron certbot
@@ -108,7 +114,11 @@
     name: autossh
     special_time: reboot
     user: root
-    job: autossh -M 0 -f -N -R 11514:localhost:10514 -R 5001:localhost:5000 -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes" -o "PasswordAuthentication=no" -i /home/drew/.ssh/tunnel_2020.05.17 drew@srv.invadelabs.com
+    job: >-
+      autossh -M 0 -f -N -R 11514:localhost:10514 -R 5001:localhost:5000
+      -o "StrictHostKeyChecking=no" -o "PubkeyAuthentication=yes"
+      -o "PasswordAuthentication=no"
+      -i /home/drew/.ssh/tunnel_2020.05.17 drew@srv.invadelabs.com
   when: ansible_host == "drew-serv"
 
 - name: cron; restart autossh tunnel
@@ -117,7 +127,8 @@
     minute: "30"
     hour: "*/6"
     user: root
-    job: kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
+    job: >-
+      kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
   when: ansible_host == "drew-serv"
 
 # - name: cron; disable wifi # XXX temp workaround
@@ -141,7 +152,9 @@
     name: fail2ban socket perms
     special_time: reboot
     user: root
-    job: sleep 30 && chmod 660 /run/fail2ban/fail2ban.sock && chown root:nagios /run/fail2ban/fail2ban.sock
+    job: >-
+      sleep 30 && chmod 660 /run/fail2ban/fail2ban.sock
+      && chown root:nagios /run/fail2ban/fail2ban.sock
   when: ansible_host == "drew-serv"
 
 # takes >3 minute to run
@@ -151,7 +164,10 @@
     minute: "45"
     hour: "0"
     user: root
-    job: curl -sS -XPUT {{elasticsearch_host}}:9200/_snapshot/my_backup/snapshot_$(date "+\%Y.\%m.\%d-\%H:\%M:\%S\%z")?wait_for_completion=true | systemd-cat -t "elasticsearch-snapshot"
+    job: >-
+      D=$(date '+\%Y\%m\%d\%H\%M\%S\%z')
+      curl -sS -XPUT {{ elasticsearch_host }}:9200/_snapshot/my_backup/snapshot_$D?wait_for_completion=true |
+      systemd-cat -t "elasticsearch-snapshot"
   when: ansible_host == "drew-serv"
 
 # for a full backup (~1GB) >4mins to tar.xz, 30mins to upload
@@ -161,7 +177,13 @@
     minute: "50"
     hour: "0"
     user: root
-    job: D=$(date '+\%Y\%m\%d\%H\%M\%S\%z'); cd /mnt/share/bkup && tar -I "pxz -T 0" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ && rclone copy -v --bwlimit 400k --filter "+ docker-elk.*.tar.xz" --filter "- *" . googledrive:/Backup/elasticsearch 2>&1 | systemd-cat -t "elasticsearch-upload"
+    job: >-
+      D=$(date '+\%Y\%m\%d\%H\%M\%S\%z');
+      cd /mnt/share/bkup &&
+      tar -I "pxz -T 0" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ &&
+      rclone copy -v --bwlimit 400k
+      --filter "+ docker-elk.*.tar.xz"
+      --filter "- *" . googledrive:/Backup/elasticsearch 2>&1 | systemd-cat -t "elasticsearch-upload"
   when: ansible_host == "drew-serv"
 
 # cleanup snapshots on the first of the month
@@ -174,7 +196,10 @@
     day: "1"
     # month: */4
     user: root
-    job: for i in $(curl -sS -f {{elasticsearch_host}}:9200/_snapshot/my_backup/* | jq -r '.[]| .[]| .snapshot'); do curl -sS -XDELETE {{elasticsearch_host}}:9200/_snapshot/my_backup/$i | systemd-cat -t es-backup-cleanup; done
+    job: >-
+      for i in $(curl -sS -f {{ elasticsearch_host }}:9200/_snapshot/my_backup/* | jq -r '.[]| .[]| .snapshot'); do
+      curl -sS -XDELETE {{ elasticsearch_host }}:9200/_snapshot/my_backup/$i |
+      systemd-cat -t es-backup-cleanup; done
   when: ansible_host == "drew-serv"
 
 # delete old snapshots tar balls on the first of the month
@@ -186,7 +211,10 @@
     day: "1"
     # month: */4
     user: root
-    job: if ls /mnt/share/bkup/docker-elk.*; then rm -fv /mnt/share/bkup/docker-elk.*; fi | systemd-cat -t es-backup-cleanup
+    job: >-
+      if ls /mnt/share/bkup/docker-elk.*; then
+      rm -fv /mnt/share/bkup/docker-elk.*; fi |
+      systemd-cat -t es-backup-cleanup
   when: ansible_host == "drew-serv"
 
 # # run cron to email error messages

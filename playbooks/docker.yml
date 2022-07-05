@@ -8,7 +8,7 @@
   user:
     name: drew
     groups: docker
-    append: yes
+    append: true
 
 - name: docker; add mirrors in /etc/docker/daemon.json
   template:
@@ -21,15 +21,17 @@
   when: ansible_host == "drew-serv"
 
 # /etc/sysconfig/docker
-#+#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
-#+OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
+# +#OPTIONS='--selinux-enabled --log-driver=journald --live-restore'
+# +OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
 
 - name: docker; git clone drew-holt/docker-elk
   git:
     repo: https://github.com/drew-holt/docker-elk.git
     dest: /srv/docker-elk
-    update: no # note; setting this for initial ansible run
+    update: false #  note; setting this for initial ansible run
+    version: HEAD
   when: ansible_host == "drew-serv"
 
-- debug:
+- name: docker; note to run docker compose
+  debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."

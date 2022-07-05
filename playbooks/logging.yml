@@ -8,7 +8,7 @@
 
 - name: logging; add /etc/filebeat/filebeat.yml
   template:
-    src: templates/etc/filebeat/filebeat-{{ansible_fqdn}}.yml.j2
+    src: templates/etc/filebeat/filebeat-{{ ansible_fqdn }}.yml.j2
     dest: /etc/filebeat/filebeat.yml
     owner: root
     group: root
@@ -20,12 +20,12 @@
 - name: logging; /etc/systemd/journald.conf
   lineinfile:
     dest: /etc/systemd/journald.conf
-    regexp: "^{{journald_item.key}}"
-    line: "{{journald_item.key}}={{journald_item.value}}"
+    regexp: "^{{ journald_item.key }}"
+    line: "{{ journald_item.key }}={{ journald_item.value }}"
     state: present
   with_dict: {
     "ForwardToSyslog": "yes"
-    }
+  }
   loop_control:
     loop_var: journald_item
   notify: Restart systemd-journald.service
@@ -42,12 +42,13 @@
 
 - name: logging; add /etc/rsyslog.d entries
   template:
-    src: "templates/etc/rsyslog.d/{{rsyslog_item}}.j2"
-    dest: "/etc/rsyslog.d/{{rsyslog_item}}"
+    src: "templates/etc/rsyslog.d/{{ rsyslog_item }}.j2"
+    dest: "/etc/rsyslog.d/{{ rsyslog_item }}"
     owner: root
     group: root
     mode: 0644
-    # validate: 'rsyslogd -N1 -f /etc/rsyslog.conf' # doesn't work due to require %s to verify individual config
+    # doesn't work due to require %s to verify individual config
+    # validate: 'rsyslogd -N1 -f /etc/rsyslog.conf'
   with_items:
     - logstash.conf
     - ignore-audit.conf
@@ -62,7 +63,7 @@
 
 - name: logging; remove logwatch daily
   file:
-    path: '{{logwatch_item}}'
+    path: '{{ logwatch_item }}'
     state: absent
   with_items:
     - /etc/cron.daily/00logwatch
@@ -70,16 +71,16 @@
   loop_control:
     loop_var: logwatch_item
 
-- name: logging; logwatch.conf
+- name: logging; logwatch.conf  # noqa risky-file-permissions
   lineinfile:
     path: /etc/logwatch/conf/logwatch.conf
     state: present
-    create: yes
-    regexp: '^{{logwatchconf_item.key}}'
-    line: '{{logwatchconf_item.key}} = {{logwatchconf_item.value}}'
+    create: true
+    regexp: '^{{ logwatchconf_item.key }}'
+    line: '{{ logwatchconf_item.key }} = {{ logwatchconf_item.value }}'
   with_dict: {
     "Range": "between -7 days and -1 days",
     "Archives": "yes"
-    }
+  }
   loop_control:
     loop_var: logwatchconf_item
