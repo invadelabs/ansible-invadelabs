@@ -30,6 +30,11 @@
   - include: playbooks/cron.yml
   - include: playbooks/nrpe.yml # nagios nrpe monitoring
 
+  - name: pkgs; snap install certbot-dns-cloudflare
+    snap:
+      name:
+        - certbot-dns-cloudflare
+
   - name: docker; create container nightscout
     docker_container:
       name: nightscout
