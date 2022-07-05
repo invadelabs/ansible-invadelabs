@@ -63,6 +63,7 @@
     - docker; create container homeassistant
     - docker; create container grafana
     - docker; create container zoneminder
+    - docker; create container prometheus
 
 ## HANDLERS ##
   handlers:
@@ -297,6 +298,30 @@
         - "7080:80/tcp"
         - "8443:443/tcp"
         - "9000:9000/tcp"
+    when: ansible_host == "drew-serv"
+
+  - name: docker; create container prometheus
+    docker_container:
+      name: prometheus
+      image: "{{ nexus_docker_repo }}prom/prometheus:v2.36.2"
+      command: [
+        "--config.file=/etc/prometheus/prometheus.yml",
+        "--storage.tsdb.path=/prometheus",
+        "--web.console.libraries=/usr/share/prometheus/console_libraries",
+        "--web.console.templates=/usr/share/prometheus/consoles",
+        "--storage.tsdb.retention.time=5y"
+      ]
+      state: started
+      restart_policy: unless-stopped
+      hostname: prometheus.invadelabs.com
+      log_driver: json-file
+      log_options:
+        max-size: "10m"
+      volumes:
+        - "/srv/prometheus:/etc/prometheus"
+        - "/srv/prometheus-data:/prometheus"
+      ports:
+        - "9090:9090/tcp"
     when: ansible_host == "drew-serv"
 
   #- name: docker; create container pihole

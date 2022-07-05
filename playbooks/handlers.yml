@@ -101,12 +101,6 @@
 - name: systemd daemon-reload
   systemd: daemon_reload=yes
 
-- name: update-alternatives; editor vim-basic
-  alternatives:
-    name: editor
-    path: /usr/bin/vim.basic
-  when: ansible_os_family == "Debian"
-
 - name: Run sysctl
   command: sysctl -p
 

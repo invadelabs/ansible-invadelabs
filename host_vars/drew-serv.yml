@@ -11,6 +11,7 @@
     - mosquitto
     - nexus
     - nginx
+    - prometheus
     - ring-mqtt
     - zigbee2mqtt
     - zoneminder

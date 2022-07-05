@@ -38,6 +38,9 @@
     # - debian-archive-keyring # needed for nrpe debian package
     - sysstat # for check_iostat
 
+    # prometheus
+    - prometheus-node-exporter
+
     - vim
     - logwatch
     - curl # for invadelabs/cron-invadelabs
@@ -57,7 +60,12 @@
   notify:
   - Start postfix.service
   - Start apache2.service
-  - update-alternatives; editor vim-basic
+
+- name: update-alternatives; editor vim-basic
+  alternatives:
+    name: editor
+    path: /usr/bin/vim.basic
+  when: ansible_os_family == "Debian"
 
 ## no pxz in u20.04, u18.04 pxz works though
 - name: pkgs_debian; download pxz deb
