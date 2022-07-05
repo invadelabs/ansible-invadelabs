@@ -1,18 +1,8 @@
 ---
-## apahce2.conf
-#- name: apache2; use /dev/shm for mod_pagespeed
-#  lineinfile:
-#    dest: /etc/apache2/mods-available/pagespeed.conf
-#    regexp: "^.*ModPagespeedFileCachePath"
-#    line: '    ModPagespeedFileCachePath "/dev/shm/mod_pagespeed/"'
-#    state: present
-#  notify: Restart apache2.service
-
-# apahce2 mods
 - name: apache2; a2dismod
   apache2_module:
     state: absent
-    name: "{{a2dismod_item}}"
+    name: "{{ a2dismod_item }}"
   with_items:
     - php8.1
     - pagespeed
@@ -23,7 +13,7 @@
 - name: apache2; a2enmod
   apache2_module:
     state: present
-    name: "{{a2enmod_item}}"
+    name: "{{ a2enmod_item }}"
   with_items:
     - mpm_event
     - ssl
@@ -40,9 +30,9 @@
   notify: Restart apache2.service
 
 - name: apache2; a2enconf
-  command: a2enconf {{a2enconf_item}}
+  command: a2enconf {{ a2enconf_item }}
   args:
-    creates: /etc/apache2/conf-enabled/{{a2enconf_item}}.conf
+    creates: /etc/apache2/conf-enabled/{{ a2enconf_item }}.conf
   with_items:
     - php8.1-fpm
   loop_control:
@@ -62,14 +52,14 @@
 - name: apache2; apache2.conf updates
   lineinfile:
     dest: /etc/apache2/apache2.conf
-    regexp: "^{{a2conf_item.key}}"
-    line: "{{a2conf_item.key}} {{a2conf_item.value}}"
+    regexp: "^{{ a2conf_item.key }}"
+    line: "{{ a2conf_item.key }} {{ a2conf_item.value }}"
     state: present
     validate: "/usr/sbin/apachectl -t -f %s"
   with_dict: {
     'ServerTokens': 'Prod',
     'ServerSignature': 'Off'
-    }
+  }
   loop_control:
     loop_var: a2conf_item
   notify: Restart apache2.service
@@ -106,14 +96,14 @@
     mode: 0755
     owner: root
     group: root
-    force: no
+    force: false
     checksum: "sha256:eb2e975bae1dd8061602037c77ffcbd1f1592ebd397887b418666f73c97314b9"
 
 - name: apache2; extract Apache_2.4.tar.gz
   unarchive:
     src: /etc/apache2/bad-bot-blocker.tar.gz
     dest: /etc/apache2
-    remote_src: yes
+    remote_src: true
     owner: root
     group: root
     exclude:

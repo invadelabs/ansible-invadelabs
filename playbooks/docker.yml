@@ -29,7 +29,7 @@
     repo: https://github.com/drew-holt/docker-elk.git
     dest: /srv/docker-elk
     update: false #  note; setting this for initial ansible run
-    version: main
+    version: HEAD
   when: ansible_host == "drew-serv"
 
 - name: docker; note to run docker compose
