@@ -1,15 +1,19 @@
 ---
-- debug:
-    msg: "preflight_check; passwd pi; useradd -m -k drew; passwd drew; sudo visudo; sudo vi /etc/hosts 192.168... drew-piv4; sudo hostnamectl set-hostname drew-piv4.blabla;"
+- name: preflight_check; verify sudoers
+  debug:
+    msg: >-
+      preflight_check; passwd pi; useradd -m -k drew;
+      passwd drew; sudo visudo; sudo vi /etc/hosts 192.168... drew-piv4;
+      sudo hostnamectl set-hostname drew-piv4.blabla;
 
 - name: preflight_check; fail if hostname not set
   fail:
-    msg: "Host name {{ansible_fqdn}} is not set. Run; hostnamectl set-hostname invadelabs.com"
+    msg: "Host name {{ ansible_fqdn }} is not set. Run; hostnamectl set-hostname invadelabs.com"
   when: ( ansible_fqdn == "localhost" ) or ( ansible_fqdn == "raspberrypi" ) or ( ansible_fqdn == "pine64" )
 
 - name: preflight_check; invadelabs.com stat required files in /root
   stat:
-    path: "{{invadelabs_file_item}}"
+    path: "{{ invadelabs_file_item }}"
   with_items:
     - /root/apache_env
     - /root/github_token
@@ -26,16 +30,15 @@
   failed_when: item.stat.mode != '0400'
   when: ansible_host == "invadelabs.com"
 
-- name: preflight_check; ensure tunnel key is in authorized_keys
+- name: preflight_check; ensure tunnel key is in authorized_keys  # noqa command-instead-of-shell
   shell: grep tunnel_2020.05.17 /home/drew/.ssh/authorized_keys
   when: ansible_host == "invadelabs.com"
   changed_when: false
 
 - name: preflight_check; drew-serv stat required files in /root
   stat:
-    path: "{{drewserv_file_item}}"
+    path: "{{ drewserv_file_item }}"
   with_items:
-    #- /root/google_ddns.cred
     - /root/cloudflare_ddns.cred
     - /root/postfix_passwd
     - /root/slacktee.conf
@@ -49,7 +52,12 @@
   when: ansible_host == "drew-serv"
 
 - name: preflight_check; /etc/hosts has IP, hostname, and fqdn
-  shell: grep {{ansible_default_ipv4.address}} /etc/hosts | grep {{ansible_host}} | grep {{ansible_fqdn}} && touch /var/log/hosts-init.touch
+  shell: |
+    set -o pipefail
+    grep {{ ansible_default_ipv4.address }} /etc/hosts |
+    grep {{ ansible_host }} |
+    grep {{ ansible_fqdn }} &&
+    touch /var/log/hosts-init.touch
   args:
     chdir: /root
     creates: /var/log/hosts-init.touch
@@ -57,40 +65,44 @@
   failed_when: hosts_rc.rc != 0 # rc = proccess exit code
   when: ansible_fqdn != "invadelabs.com"
 
-#- name: preflight_check; gcloud cli is installed
-#  shell: which gcloud
-#  register: gcloud_rc
-#  failed_when: gcloud_rc.rc != 0 # rc = proccess exit code
-#  when: ansible_host = "drew-serv"
+# XXX
+# - name: preflight_check; gcloud cli is installed
+#   shell: which gcloud
+#   register: gcloud_rc
+#   failed_when: gcloud_rc.rc != 0 # rc = proccess exit code
+#   when: ansible_host = "drew-serv"
 #
-#- name: preflight_check; gcloud has authorized user
-#  shell: gcloud auth list | grep drew
-#  register: gcloud_auth_rc
-#  failed_when: gcloud_auth_rc.rc != 0 # rc = proccess exit code
-#  when: ansible_host = "drew-serv"
+# - name: preflight_check; gcloud has authorized user
+#   shell: gcloud auth list | grep drew
+#   register: gcloud_auth_rc
+#   failed_when: gcloud_auth_rc.rc != 0 # rc = proccess exit code
+#   when: ansible_host = "drew-serv"
 #
-#- name: preflight_check; gcloud project is set
-#  shell: gcloud config get project | grep invadelabs
-#  register: gcloud_project_rc
-#  failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
-#  when: ansible_host = "drew-serv"
+# - name: preflight_check; gcloud project is set
+#   shell: gcloud config get project | grep invadelabs
+#   register: gcloud_project_rc
+#   failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
+#   when: ansible_host = "drew-serv"
 #
-#- name: preflight_check; gcloud project is set
-#  shell: gcloud config get project | grep invadelabs
-#  register: gcloud_project_rc
-#  failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
-#  when: ansible_host = "drew-serv"
+# - name: preflight_check; gcloud project is set
+#   shell: gcloud config get project | grep invadelabs
+#   register: gcloud_project_rc
+#   failed_when: gcloud_project_rc.rc != 0 # rc = proccess exit code
+#   when: ansible_host = "drew-serv"
 
 - name: preflight_check; if rclone initalized
-  shell: rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
+  shell: |
+    set -o pipefail
+    rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
   args:
     chdir: /root
     creates: /var/log/rclone-init.touch
   register: rclone_stat
   failed_when: rclone_stat.rc != 0 # rc = proccess exit code
-  when: (ansible_host == "drew-serv") or (ansible_host == "invadelabs.com")
+  when: ( ansible_host == "drew-serv" ) or ( ansible_host == "invadelabs.com" )
 
-- debug:
+- name: pre_flightcheck; debug message to docker compose
+  debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
 
 - name: preflight_check; ensure folders exist

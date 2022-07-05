@@ -104,7 +104,7 @@
 - name: Run sysctl
   command: sysctl -p
 
-- name: docker; reload pihole custom.list and flush cache
+- name: docker; reload pihole custom.list and flush cache # noqa command-instead-of-shell
   shell: docker exec pihole pihole restartdns reload
   when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")
 

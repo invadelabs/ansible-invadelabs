@@ -8,58 +8,58 @@
     vtype: "{{ debconf.vtype }}"
   loop:
     # postfix; option type 'Internet with smarthost'
-    - { name: "postfix", question: "postfix/main_mailer_type", value: "'Internet with smarthost'", vtype: "string"}
+    - {name: "postfix", question: "postfix/main_mailer_type", value: "'Internet with smarthost'", vtype: "string"}
     # debconf; postfix; option type 'System mail name'
-    - { name: "postfix", question: "postfix/mailname", value: "invadelabs.com", vtype: "string"}
+    - {name: "postfix", question: "postfix/mailname", value: "invadelabs.com", vtype: "string"}
     # debsescan; skip daily email
-    - { name: "postfix", question: "debsecan/report", value: '', vtype: "boolean"} # should be false, trying null
+    - {name: "postfix", question: "debsecan/report", value: '', vtype: "boolean"} # should be false, trying null
   loop_control:
     loop_var: debconf
 
 ## base packages to install on every device
 - name: pkgs_debian; install packages
   apt:
-    pkg: "{{ all_pkgs + host_pkgs }}" # see host_vars/host.yml or groups_vars/group.yml
+    pkg: "{{ all_pkgs + host_pkgs }}"  # see host_vars/host.yml or groups_vars/group.yml
     state: present
   vars:
     all_pkgs:
-    - mailutils
-    - postfix
-    - libsasl2-modules # needed for postfix + sendgrid
-    - ansible
-    - python3-pip
+      - mailutils
+      - postfix
+      - libsasl2-modules  # needed for postfix + sendgrid
+      - ansible
+      - python3-pip
 
-    #- libnagios-plugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
-    - monitoring-plugins-standard
-    - nagios-nrpe-server
-    - monitoring-plugins-basic
-    - nagios-plugins-contrib # XXX installs ~112 pkg deps for check_memory / check_uptime, work around?
-    # - debian-keyring # needed for nrpe debian package
-    # - debian-archive-keyring # needed for nrpe debian package
-    - sysstat # for check_iostat
+      # - libnagios-p  lugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
+      - monitoring-plugins-standard
+      - nagios-nrpe-server
+      - monitoring-plugins-basic
+      - nagios-plugins-contrib # XXX installs ~112 pkg deps for check_memory / check_uptime, work around?
+      # - debian-keyring # needed for nrpe debian package
+      # - debian-archive-keyring # needed for nrpe debian package
+      - sysstat # for check_iostat
 
-    # prometheus
-    - prometheus-node-exporter
+      # prometheus
+      - prometheus-node-exporter
 
-    - vim
-    - logwatch
-    - curl # for invadelabs/cron-invadelabs
-    - highlight # for invadelabs/cron-invadelabs
-    - lynis # for invadelabs/cron-invadelabs/check_lynis.sh
-    - bc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-    - pandoc # for invadelabs/cron-invadelabs/wiki_to_md.sh
-    - gawk # for lynis and ansi2html
-    - dbus # for lynis and ansi2html
-    - jq
+      - vim
+      - logwatch
+      - curl  # for invadelabs/cron-invadelabs
+      - highlight  # for invadelabs/cron-invadelabs
+      - lynis  # for invadelabs/cron-invadelabs/check_lynis.sh
+      - bc  # for invadelabs/cron-invadelabs/wiki_to_md.sh
+      - pandoc  # for invadelabs/cron-invadelabs/wiki_to_md.sh
+      - gawk  # for lynis and ansi2html
+      - dbus  # for lynis and ansi2html
+      - jq
 
-    # sec
-    # - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
-    - debsums # for the verification of installed package files against MD5 checksums. [CUST-0875]
-    - needrestart # after upgrades to determine which daemons are using old versions of libraries and need restarting. [CUST-0831]
-    - chkrootkit # malware scanner, to perform periodic file system scans [HRDN-7230]
+      # sec
+      # - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
+      - debsums  # for the verification of installed package files against MD5 checksums. [CUST-0875]
+      - needrestart  # after upgrades to determine which daemons are using old versions of libraries and need restarting. [CUST-0831]
+      - chkrootkit  # malware scanner, to perform periodic file system scans [HRDN-7230]
   notify:
-  - Start postfix.service
-  - Start apache2.service
+    - Start postfix.service
+    - Start apache2.service
 
 - name: update-alternatives; editor vim-basic
   alternatives:
@@ -72,7 +72,7 @@
   get_url:
     url: https://launchpad.net/ubuntu/+archive/primary/+files/pxz_4.999.99~beta5+gitfcfea93-2_amd64.deb
     dest: /root/installers/pxz_4.999.99~beta5+gitfcfea93-2_amd64.deb
-    force: no
+    force: false
     owner: root
     group: root
     mode: 0644
@@ -85,28 +85,28 @@
   when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
 
 ### mod_pagespeed
-#- name: pkgs_debian; download mod_pagespeed
-#  get_url:
-#    url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
-#    dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
-#    force: no
-#    owner: root
-#    group: root
-#    mode: 0644
-#    checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
-#  when: ansible_fqdn == "invadelabs.com"
+# - name: pkgs_debian; download mod_pagespeed
+#   get_url:
+#     url: https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+#     dest: /root/installers/mod-pagespeed-stable_current_amd64.deb
+#     force: no
+#     owner: root
+#     group: root
+#     mode: 0644
+#     checksum: "sha256:14de0b868f4da98bdfdf9cd8e2c12e3abc2a93029168ea27bfb3eb5ea158e3a5"
+#   when: ansible_fqdn == "invadelabs.com"
 #
-#- name: pkgs_debian; install mod_pagespeed
-#  apt:
-#    deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
-#  when: ansible_fqdn == "invadelabs.com"
+# - name: pkgs_debian; install mod_pagespeed
+#   apt:
+#     deb: /root/installers/mod-pagespeed-stable_current_amd64.deb
+#   when: ansible_fqdn == "invadelabs.com"
 
 ## filebeat (for apache logs)
 - name: pkgs_debian; download filebeat deb
   get_url:
     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-amd64.deb
     dest: /root/installers/filebeat-6.2.4-amd64.deb
-    force: no
+    force: false
     owner: root
     group: root
     mode: 0644

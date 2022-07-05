@@ -2,13 +2,13 @@
 - name: nrpe; nrpe.cfg
   lineinfile:
     dest: /etc/nagios/nrpe.cfg
-    regexp: "^{{nrpecfg_item.key}}="
-    line: "{{nrpecfg_item.key}}={{nrpecfg_item.value}}"
+    regexp: "^{{ nrpecfg_item.key }}="
+    line: "{{ nrpecfg_item.key }}={{ nrpecfg_item.value }}"
     state: present
   with_dict: {
-    "allowed_hosts": "{{nrpe_allowed_hosts}}",
+    "allowed_hosts": "{{ nrpe_allowed_hosts }}",
     "include": "/etc/nagios/nrpe_local.cfg"
-    }
+  }
   loop_control:
     loop_var: nrpecfg_item
   notify:
@@ -25,17 +25,17 @@
 - name: nrpe; nrpe_local.cfg
   lineinfile:
     dest: "/etc/nagios/nrpe_local.cfg"
-    regexp: "^command\\[{{nrpe_spec_item.key}}\\]"
-    line: "command[{{nrpe_spec_item.key}}]={{nrpe_spec_item.value}}"
+    regexp: "^command\\[{{ nrpe_spec_item.key }}\\]"
+    line: "command[{{ nrpe_spec_item.key }}]={{ nrpe_spec_item.value }}"
     state: present
   with_dict: "{{ nrpe_all + nrpe_specific }}" # see host_vars/host.yml or groups_vars/group.yml
   loop_control:
     loop_var: nrpe_spec_item
   vars:
     nrpe_all:
-      - "check_users": "{{nrpe_plugins_dir}}/check_users -w 5 -c 10"
-      - "check_mailq": "{{nrpe_plugins_dir}}/check_mailq -w 1 -c 2"
-      - "check_apt": "{{nrpe_plugins_dir}}/check_apt -l -t 60"
+      - "check_users": "{{ nrpe_plugins_dir }}/check_users -w 5 -c 10"
+      - "check_mailq": "{{ nrpe_plugins_dir }}/check_mailq -w 1 -c 2"
+      - "check_apt": "{{ nrpe_plugins_dir }}/check_apt -l -t 60"
   notify:
     - Restart nagios-nrpe-server.service
 
