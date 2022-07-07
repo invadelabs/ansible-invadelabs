@@ -92,6 +92,15 @@
 
 
 ### BEGIN CONFIG FOR ROCK PI
+- name: dashboard; add /etc/lightdm/lightdm.conf.d/99 autologin.conf
+  template:
+    src: "templates/etc/lightdm/lightdm.conf.d/99-autologin.conf.j2"
+    dest: "/etc/lightdm/lightdm.conf.d/99-autologin.conf"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_host == "drew-rockpi4"
+
 - name: dashboard; add /home/drew/.config/autostart/program.desktop
   template:
     src: "templates/home/drew/.config/autostart/program.desktop.j2"
