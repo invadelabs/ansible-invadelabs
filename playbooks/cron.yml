@@ -147,6 +147,15 @@
 #     job: sleep 30; docker start pihole >/dev/null
 #   when: ansible_host == "drew-serv"
 
+# XXX wireless-crda / crda package missing in jammy armbian?
+- name: cron; set wifi region u22.04 pine64
+  cron:
+    name: set wifi region u22.04 pine64
+    special_time: reboot
+    user: root
+    job: iw reg set US
+  when: ansible_host == "drew-pine64"
+
 - name: cron; fail2ban socket perms # XXX temp workaround
   cron:
     name: fail2ban socket perms

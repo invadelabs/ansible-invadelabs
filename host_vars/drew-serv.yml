@@ -65,8 +65,10 @@
     # - powertop # energy management
     - python3-certbot-dns-cloudflare
     - apt-show-versions # Lynis PKGS-7394
+    #
+    - podman
   host_pip:
     - check-docker
+    - podman-compose
     - pymongo
     - dnspython # needed for mongodb+srv uri
-    - cloudflare-ddns
