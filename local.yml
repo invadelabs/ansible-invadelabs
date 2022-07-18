@@ -252,7 +252,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_repo }}grafana/grafana:9.0.2"
+        image: "{{ nexus_docker_repo }}grafana/grafana:9.0.3"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -308,7 +308,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_repo }}prom/prometheus:v2.36.2"
+        image: "{{ nexus_docker_repo }}prom/prometheus:v2.37.0"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
@@ -406,4 +406,21 @@
     #       - "1900:1900/udp"
     #       - "2100:2100/udp"
     #       - "1982:1982/udp"
+    #   when: ansible_host == "drew-serv"
+
+    # - name: docker; create container elasticsearch-exporter
+    #   docker_container:
+    #     name: elasticsearch-exporter
+    #     image: "{{ nexus_docker_repo }}prometheuscommunity/elasticsearch-exporter:v1.3.0"
+    #     command: [
+    #       "--es.uri={{ elasticsearch_host }}:9200"
+    #     ]
+    #     state: started
+    #     restart_policy: unless-stopped
+    #     hostname: elasticsearch-exporter.invadelabs.com
+    #     log_driver: json-file
+    #     log_options:
+    #       max-size: "10m"
+    #     ports:
+    #       - "9114:9114/tcp"
     #   when: ansible_host == "drew-serv"

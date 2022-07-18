@@ -5,20 +5,17 @@
     - check_total_procs: "{{nrpe_plugins_dir}}/check_procs -w 200 -c 250"
     - check_zombie_procs: "{{nrpe_plugins_dir}}/check_procs -w 1 -c 2 -s Z"
     # - check_rsyslogd_procs: "{{nrpe_plugins_dir}}/check_procs -C 'rsyslogd' -c 1"
-    - check_memory: "{{nrpe_plugins_dir}}/check_memory -u M -w 7% -c 5%"
+    - check_memory: "{{nrpe_plugins_dir}}/check_memory -a -w 90% -c 95"
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -f -c 10"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 75 -c 76"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_systemd: "/usr/local/bin/check_systemd -w 100"
-  host_pkgs:
-    - unclutter # hide mouse for dashboard
-    # - synergy # control dashboard remotely, XXX not in armbian
+  host_pkgs: []
+    #- unclutter # hide mouse for dashboard
+    #- synergy # control dashboard remotely, XXX not in armbian
     #- xorg
     #- lxde
     #- lightdm
     #- chromium
-    #- /tmp/synergy_1.13.1-stable.063519a8_raspios_arm64.deb
-    - apt-listbugs # missing in ubuntu, used to display a list of critical bugs [CUST-0810]
-  host_pip:
-    - ansible==2.9.6 # apt installs 2.7.7, but need this for ansible.slurp
+  host_pip: []
