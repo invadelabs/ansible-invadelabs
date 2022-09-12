@@ -160,7 +160,7 @@
     - name: docker; create container mosquitto
       docker_container:
         name: mosquitto
-        image: "{{ nexus_docker_repo }}eclipse-mosquitto:1.6.12"
+        image: "{{ nexus_docker_repo }}eclipse-mosquitto:2.0.15"
         state: started
         restart_policy: unless-stopped
         hostname: mosquitto.invadelabs.com
@@ -178,7 +178,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.27.0"
+        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.27.2"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -230,7 +230,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2022.8.6"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2022.9.2"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -252,7 +252,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_repo }}grafana/grafana:9.1.1"
+        image: "{{ nexus_docker_repo }}grafana/grafana:9.1.2"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
