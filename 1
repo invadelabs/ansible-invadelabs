@@ -95,15 +95,14 @@
   when: ansible_os_family == "Debian"
 
 - name: initial; gitconfig
-  community.general.git_config:
-    name: "{{ git_item.key }}"
-    scope: global
+  git_config:
+    name: "{{ git_item.name }}"
+    scope: "{{ git_item.scope }}"
     value: "{{ git_item.value }}"
-  with_dict: {
-    "user.email": "drew@invadelabs.com",
-    "user.name": "Drew Holt",
-    "safe.directory": "*"
-  }
+  loop:
+    - scope: { "global", name: "user.email": value: "drew@invadelabs.com" }
+    - scope: { "global", name: "user.name": value: "Drew Holt" }
+    - scope: { "safe", name: "directory": value: "*" }
   loop_control:
     loop_var: git_item
 
@@ -122,10 +121,10 @@
     loop_var: forward_item
 
 - name: initial; git clone --depth 1 invadelabs.com/cron-invadelabs main
-  ansible.builtin.git:
+  git:
     repo: https://github.com/invadelabs/cron-invadelabs.git
     dest: /root/scripts
-    version: main
+    version: HEAD
     depth: 1
 
 - name: initial; nrpe; dl check_memory.pl

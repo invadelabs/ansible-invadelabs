@@ -25,11 +25,11 @@
 # +OPTIONS='--selinux-enabled --log-driver=json-file --live-restore'
 
 - name: docker; git clone drew-holt/docker-elk
-  git:
+  ansible.builtin.git:
     repo: https://github.com/drew-holt/docker-elk.git
     dest: /srv/docker-elk
     update: false #  note; setting this for initial ansible run
-    version: HEAD
+    version: main
   when: ansible_host == "drew-serv"
 
 - name: docker; note to run docker compose
