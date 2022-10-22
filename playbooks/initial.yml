@@ -95,13 +95,14 @@
   when: ansible_os_family == "Debian"
 
 - name: initial; gitconfig
-  git_config:
+  community.general.git_config:
     name: "{{ git_item.key }}"
     scope: global
     value: "{{ git_item.value }}"
   with_dict: {
     "user.email": "drew@invadelabs.com",
-    "user.name": "Drew Holt"
+    "user.name": "Drew Holt",
+    "safe.directory": "*"
   }
   loop_control:
     loop_var: git_item
