@@ -11,6 +11,7 @@
     - mosquitto
     - nexus
     - nginx
+    - nut_exporter
     - prometheus
     - ring-mqtt
     - zigbee2mqtt
@@ -24,7 +25,7 @@
     - check_memory: "/usr/local/bin/check_memory.pl -u M -w 20% -c 10%"
     - check_uptime: "{{nrpe_plugins_dir}}/check_uptime -w 10:"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker -p /mnt/share -p /srv"
-    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 90 -c 99"
+    - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone2/temp -w 90 -c 99"
     - check_es_mem: "/usr/local/bin/check_es_system.sh -H localhost -t mem -d 4"
     - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 20"
     - check_es_readonly: "/usr/local/bin/check_es_system.sh -H localhost -t readonly"
@@ -63,7 +64,6 @@
     - fail2ban
     - lm-sensors
     # - powertop # energy management
-    - python3-certbot-dns-cloudflare
     - apt-show-versions # Lynis PKGS-7394
     #
     - podman

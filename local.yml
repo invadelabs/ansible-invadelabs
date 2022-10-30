@@ -69,6 +69,7 @@
         - docker; create container grafana
         - docker; create container zoneminder
         - docker; create container prometheus
+        - docker; create container nut_exporter
 
 ## HANDLERS ##
   handlers:
@@ -329,6 +330,21 @@
           - "9090:9090/tcp"
       when: ansible_host == "drew-serv"
 
+    - name: docker; create container nut_exporter
+      docker_container:
+        name: nut_exporter
+        image: "{{ nexus_docker_repo }}druggeri/nut_exporter:2.4.2"
+        state: started
+        restart_policy: unless-stopped
+        hostname: nut_exporter.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        ports:
+          - "9199:9199/tcp"
+        env:
+          NUT_EXPORTER_SERVER: "{{ ansible_default_ipv4.address }}"
+      when: ansible_host == "drew-serv"
     # - name: docker; create container pihole
     #   docker_container:
     #     name: pihole
