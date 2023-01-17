@@ -13,6 +13,7 @@
     - check_systemd: "/usr/local/bin/check_systemd -w 100"
   host_pkgs:
     - unclutter # hide mouse for dashboard
+    - cec-utils
     #- xorg
     #- lxde
     #- lightdm
