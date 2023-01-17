@@ -7,7 +7,7 @@ POWERDOWNFLAG /etc/killpower
 RBWARNTIME 43200
 NOCOMMWARNTIME 300
 FINALDELAY 5
-MONITOR cyberpower1@localhost 1 upsmon_local password master
+MONITOR apc2@localhost 1 upsmon_local password master
 NOTIFYCMD /etc/nut/notifycmd.sh
 NOTIFYFLAG ONLINE     SYSLOG+WALL+EXEC
 NOTIFYFLAG ONBATT     SYSLOG+WALL+EXEC
