@@ -231,7 +231,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.4.1"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.4.6"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -263,6 +263,7 @@
         env:
           GF_SECURITY_ALLOW_EMBEDDING: "true"
           GF_INSTALL_PLUGINS: "natel-discrete-panel"
+          GF_ALLOW_LOADING_UNSIGNED_PLUGINS: "natel-discrete-panel"
         volumes:
           - "/srv/grafana:/var/lib/grafana"
         ports:
