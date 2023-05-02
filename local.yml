@@ -70,6 +70,7 @@
         - docker; create container zoneminder
         - docker; create container prometheus
         - docker; create container nut_exporter
+        - docker; create container plex
 
 ## HANDLERS ##
   handlers:
@@ -231,7 +232,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.4.6"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.5.0b6"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -345,6 +346,41 @@
           - "9199:9199/tcp"
         env:
           NUT_EXPORTER_SERVER: "{{ ansible_default_ipv4.address }}"
+      when: ansible_host == "drew-serv"
+
+    - name: docker; create container plex
+      docker_container:
+        name: plex
+        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.0"
+        state: started
+        restart_policy: unless-stopped
+        hostname: plex.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        env_file: /etc/default/plex.env
+        env:
+          PUID: "1000"
+          PGID: "1000"
+          TZ: "America/Denver"
+          VERSION: "docker"
+        volumes:
+          - "/mnt/share/plex/library:/config"
+          - "/mnt/share/plex/tvseries:/tv"
+          - "/mnt/share/plex/movies:/movies"
+        devices:
+          - /dev/dri:/dev/dri
+        ports:
+          - "32400:32400/tcp"
+          - "1900:1900/udp"
+          - "3005:3005/tcp"
+          - "5353:5353/udp"
+          - "8324:8324/tcp"
+          - "32410:32410/udp"
+          - "32412:32412/udp"
+          - "32413:32413/udp"
+          - "32414:32414/udp"
+          - "32469:32469/tcp"
       when: ansible_host == "drew-serv"
     # - name: docker; create container pihole
     #   docker_container:
