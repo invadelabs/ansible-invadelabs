@@ -12,6 +12,7 @@
     - nexus
     - nginx
     - nut_exporter
+    - plex
     - prometheus
     - ring-mqtt
     - zigbee2mqtt

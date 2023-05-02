@@ -1,0 +1,87 @@
+server {
+        listen 80;
+        server_name plex.invadelabs.com;
+        return 301 https://$http_host$request_uri;
+    }
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name plex.invadelabs.com;
+
+    access_log /var/log/nginx/plex.invadelabs.com.secure.access.log main;
+    error_log /var/log/nginx/plex.invadelabs.com.secure.error.log error;
+
+    allow  192.168.1.0/24;
+    deny   all;
+
+    set $plex https://192.168.1.125:32400;
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1000;
+    gzip_proxied any;
+    gzip_types text/plain text/css text/xml application/xml text/javascript application/x-javascript image/svg+xml;
+    gzip_disable "MSIE [1-6]\.";
+
+    # Forward real ip and host to Plex
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    #When using ngx_http_realip_module change $proxy_add_x_forwarded_for to '$http_x_forwarded_for,$realip_remote_addr'
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Sec-WebSocket-Extensions $http_sec_websocket_extensions;
+    proxy_set_header Sec-WebSocket-Key $http_sec_websocket_key;
+    proxy_set_header Sec-WebSocket-Version $http_sec_websocket_version;
+
+    # Websockets
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+
+    # Buffering off send to the client as soon as the data is received from Plex.
+    proxy_redirect off;
+    proxy_buffering off;
+
+    location / {
+        proxy_pass $plex;
+    }
+
+    ssl_certificate /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/invadelabs.com-0001/privkey.pem;
+
+    # Improve HTTPS performance with session resumption
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    # Enable server-side protection against BEAST attacks
+    ssl_protocols TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384";
+
+    # XXX
+    ## RFC-7919 recommended: https://wiki.mozilla.org/Security/Server_Side_TLS#ffdhe4096
+    #ssl_dhparam /etc/ssl/ffdhe4096.pem;
+    #ssl_ecdh_curve secp521r1:secp384r1;
+
+    # Aditional Security Headers
+    # ref: https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+
+    ## ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+    #add_header X-Frame-Options DENY always;
+
+    # ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+    add_header X-Content-Type-Options nosniff always;
+
+    # ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    add_header X-Xss-Protection "1; mode=block" always;
+
+    # Enable OCSP stapling
+    # ref. http://blog.mozilla.org/security/2013/07/29/ocsp-stapling-in-firefox
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem;
+    # XXX fix
+    resolver 1.1.1.1 1.0.0.1 valid=300s; # Cloudflare
+    resolver_timeout 5s;
+}
