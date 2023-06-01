@@ -180,7 +180,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.30.3"
+        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.30.4"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -232,7 +232,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.5.0b6"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.5.3"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -245,6 +245,10 @@
         # not allowed in host mode
         sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
+        }
+        # temp dns workaround..
+        etc_hosts: {
+          "plex.invadelabs.com": "{{ ansible_default_ipv4.address }}"
         }
         # network_mode: host
         ports:
@@ -311,7 +315,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_repo }}prom/prometheus:v2.42.0"
+        image: "{{ nexus_docker_repo }}prom/prometheus:v2.44.0"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
@@ -351,7 +355,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.0"
+        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.2"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
