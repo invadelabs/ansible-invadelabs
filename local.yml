@@ -200,7 +200,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.4.1"
+        image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.5.1"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -258,7 +258,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_repo }}grafana/grafana:9.5.5"
+        image: "{{ nexus_docker_repo }}grafana/grafana:10.0.2"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -355,7 +355,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.4"
+        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.5"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
@@ -372,6 +372,7 @@
           - "/mnt/share/plex/library:/config"
           - "/mnt/share/plex/tvseries:/tv"
           - "/mnt/share/plex/movies:/movies"
+          - "/mnt/share/music-youtube-dl:/music-youtube-dl:rw"
         devices:
           - /dev/dri:/dev/dri
         ports:
