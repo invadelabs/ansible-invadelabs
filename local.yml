@@ -87,7 +87,7 @@
     - name: docker; create container nexus
       docker_container:
         name: nexus
-        image: "sonatype/nexus3:3.41.0"
+        image: "sonatype/nexus3:3.60.0"
         state: started
         restart_policy: unless-stopped
         hostname: nexus.invadelabs.com
@@ -232,7 +232,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.9.1"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.9.2"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com

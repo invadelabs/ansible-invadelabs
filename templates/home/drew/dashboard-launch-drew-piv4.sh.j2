@@ -4,7 +4,7 @@
 if [ -x "$(command -v chromium-browser)" ]; then
   sleep 2 && DISPLAY=:0.0 chromium-browser --kiosk \
     --window-position="0,0" \
-    --app="file:///home/drew/dashboard.html"
+    file:///home/drew/dashboard.html
 else
   sleep 2 && DISPLAY=:0.0 chromium --kiosk \
     --window-position="0,0" \
