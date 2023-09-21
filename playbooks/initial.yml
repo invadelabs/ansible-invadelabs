@@ -77,6 +77,24 @@
     mode: 0644
   when: "'debian-nm1' in group_names"
 
+- name: initial; add azlux log2ram gpg key
+  template:
+    src: templates/usr/share/keyrings/azlux-archive-keyring.gp.list.rpi.j2
+    dest: /usr/share/keyrings/azlux-archive-keyring.gpg
+    owner: root
+    group: root
+    mode: 0644
+  when: "'raspberrypi' in group_names"
+
+- name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
+  template:
+    src: templates/etc/apt/sources.list.d/azlux.list.rpi.j2
+    dest: /etc/apt/sources.list.d/azlux.list
+    owner: root
+    group: root
+    mode: 0644
+  when: "'raspberrypi' in group_names"
+
 - name: initial; add /etc/apt/apt.conf.d/10periodic
   template:
     src: templates/etc/apt/apt.conf.d/10periodic.j2

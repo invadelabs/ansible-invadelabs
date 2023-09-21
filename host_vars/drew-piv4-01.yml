@@ -13,5 +13,6 @@
     - check_ups: "{{nrpe_plugins_dir}}/check_ups -H localhost -u cyberpower1"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_systemd: "/usr/local/bin/check_systemd"
-  host_pkgs: []
+  host_pkgs:
+    - unclutter
   host_pip: []
