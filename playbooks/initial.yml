@@ -62,11 +62,15 @@
     mode: 0644
   when: "'raspberrypi' in group_names"
 
-#  sudo wget -O - https://packages.cisofy.com/keys/cisofy-software-public.key | sudo apt-key add -
 - name: initial; add lynis gpg key
-  apt_key:
-    keyserver: hkp://keyserver.ubuntu.com:80
-    id: 013baa07180c50a7101097ef9de922f1c2fde6c4
+  ansible.builtin.copy:
+    src: templates/usr/share/keyrings/cisofy-software-public.gpg
+    dest: /usr/share/keyrings/cisofy-software-public.gpg
+    owner: root
+    group: root
+    mode: 0644
+    # checksum: "sha256:667be03f4860ef77c8cfb470661a89a0a7178594fc0808e45a1f39e6792f1e40"
+  when: "'raspberrypi' in group_names"
 
 - name: initial; add /etc/apt/sources.list.d/lynis.list apt proxy
   template:
@@ -78,13 +82,13 @@
   when: "'debian-nm1' in group_names"
 
 - name: initial; add azlux log2ram gpg key
-  template:
-    src: templates/usr/share/keyrings/azlux-archive-keyring.gp.list.rpi.j2
+  ansible.builtin.copy:
+    src: templates/usr/share/keyrings/azlux-archive-keyring.gpg.rpi
     dest: /usr/share/keyrings/azlux-archive-keyring.gpg
     owner: root
     group: root
     mode: 0644
-    creates: /usr/share/keyrings/azlux-archive-keyring.gpg
+    # checksum: "sha256:9767f7060fe0bedf00964813a843c10f5b5d566b5deaf369c18454b8926bf243" XXX
   when: "'raspberrypi' in group_names"
 
 - name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
@@ -97,12 +101,13 @@
   when: "'raspberrypi' in group_names"
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
-  template:
+  ansible.builtin.copy:
     src: templates/etc/apt/apt.conf.d/10periodic.j2
     dest: /etc/apt/apt.conf.d/10periodic
     owner: root
     group: root
     mode: 0644
+    # checksum: 82d9ce0d3f5d2c66945d8a1267445e9955409d1ef3cb9934107adccb46bf5f6a
   when: "'debian-nm1' in group_names"
 
 - name: initial; apt; install etckeeper and initial packages
