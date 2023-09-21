@@ -2,7 +2,7 @@
 
 # sometimes chromium, sometimes binary is chromium-browser
 if [ -x "$(command -v chromium-browser)" ]; then
-  sleep 2 && DISPLAY=:0.0 chromium-browser --kiosk \
+  sleep 5 && DISPLAY=:0.0 chromium-browser --kiosk \
     --window-position="0,0" \
     file:///home/drew/dashboard.html
 else

@@ -4,14 +4,15 @@ all:
     nm1:
       hosts:
         drew-serv:
-        drew-piv4:
+        drew-piv4-01:
         drew-piv4-02:
-        #drew-pine64:
+        drew-piv4-03:
         drew-rockpi4:
     raspberrypi:
       hosts:
-        drew-piv4:
+        drew-piv4-01:
         drew-piv4-02:
+        drew-piv4-03:
     piohole:
       hosts:
         drew-serv:
@@ -19,9 +20,8 @@ all:
       hosts:
         drew-serv:
     dashboard:
-      hosts:
-        drew-piv4:
-        drew-rockpi4:
+        drew-piv4-01:
+        drew-piv4-03:
     debian:
       children:
         raspberrypi:

@@ -84,6 +84,7 @@
     owner: root
     group: root
     mode: 0644
+    creates: /usr/share/keyrings/azlux-archive-keyring.gpg
   when: "'raspberrypi' in group_names"
 
 - name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
