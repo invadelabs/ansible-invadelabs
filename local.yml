@@ -43,7 +43,7 @@
     - include: playbooks/ntopng.yml # ntopng network monitoring
       when: ansible_host == "drew-piv4-02"
     - include: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
-      when: ( ansible_host == "drew-piv4" ) or ( ansible_host == "drew-rockpi4" )
+      when: "'dashboard' in group_names"
 
     - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup  # noqa E204
       shell: |

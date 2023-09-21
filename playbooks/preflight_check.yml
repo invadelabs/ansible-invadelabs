@@ -51,11 +51,12 @@
   failed_when: item.stat.exists == False # XXX ensure set 0400, figure out *.env as required group 0440
   when: ansible_host == "drew-serv"
 
-- name: preflight_check; /etc/hosts has IP, hostname, and fqdn
+- name: preflight_check; /etc/hosts has IP, hostname, drew-serv, and fqdn
   shell: |
     set -o pipefail
     grep {{ ansible_default_ipv4.address }} /etc/hosts |
     grep {{ ansible_host }} |
+    grep drew-serv |
     grep {{ ansible_fqdn }} &&
     touch /var/log/hosts-init.touch
   args:
