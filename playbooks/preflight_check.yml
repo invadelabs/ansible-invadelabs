@@ -53,11 +53,10 @@
 
 - name: preflight_check; /etc/hosts has IP, hostname, drew-serv, and fqdn
   shell: |
-    set -o pipefail
-    grep {{ ansible_default_ipv4.address }} /etc/hosts |
-    grep {{ ansible_host }} |
-    grep drew-serv |
-    grep {{ ansible_fqdn }} &&
+    grep {{ ansible_default_ipv4.address }} /etc/hosts &&
+    grep {{ ansible_host }} /etc/hosts &&
+    grep drew-serv /etc/hosts &&
+    grep {{ ansible_fqdn }} /etc/hosts &&
     touch /var/log/hosts-init.touch
   args:
     chdir: /root
@@ -93,7 +92,6 @@
 
 - name: preflight_check; if rclone initalized
   shell: |
-    set -o pipefail
     rclone listremotes | grep "googledrive:" && touch /var/log/rclone-init.touch
   args:
     chdir: /root

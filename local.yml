@@ -24,7 +24,7 @@
     - include: playbooks/lynis.yml # security auditing
     - include: playbooks/logging.yml # rsyslog to logstash
     - name: drew-serv tasks
-      include: "{{ drew_serv_item }}"
+      include_tasks: "{{ drew_serv_item }}"
       loop:
         - playbooks/hw_drew-serv.yml # hardware specifics
         - playbooks/samba.yml # samba
@@ -47,7 +47,6 @@
 
     - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup  # noqa E204
       shell: |
-        set -o pipefail
         FILE=$(rclone lsjson
         --filter '- */**'
         --filter '+ drew-serv.*.tar.xz'
