@@ -52,6 +52,7 @@
       - gawk  # for lynis and ansi2html
       - dbus  # for lynis and ansi2html
       - jq
+      - ripgrep
 
       # sec
       # - libpam-tmpdir # set $TMP and $TMPDIR for PAM sessions [CUST-0280]
