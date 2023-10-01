@@ -199,7 +199,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.6.2"
+        image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.6.3"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -257,7 +257,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_repo }}grafana/grafana:10.1.1"
+        image: "{{ nexus_docker_repo }}grafana/grafana:10.1.2"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -354,7 +354,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.5"
+        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.6"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
