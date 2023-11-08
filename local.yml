@@ -125,7 +125,7 @@
     - name: docker; create container nagios4
       docker_container:
         name: nagios4
-        image: "{{ nexus_docker_repo }}jasonrivers/nagios:4.4.6" # 4.4.5
+        image: "{{ nexus_docker_repo }}jasonrivers/nagios:4.4.7"
         state: started
         restart_policy: unless-stopped
         hostname: nagios.invadelabs.com
@@ -179,7 +179,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.33.1"
+        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.33.2"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -231,7 +231,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.10"
+        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2023.11.1"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -354,7 +354,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.6"
+        image: "{{ nexus_docker_repo }}linuxserver/plex:1.32.7"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
@@ -387,6 +387,7 @@
           - "32414:32414/udp"
           - "32469:32469/tcp"
       when: ansible_host == "drew-serv"
+
     # - name: docker; create container pihole
     #   docker_container:
     #     name: pihole
