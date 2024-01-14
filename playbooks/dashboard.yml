@@ -49,7 +49,7 @@
 
 - name: dashboard; add /home/drew/.config/lxsession/LXDE-pi/autostart
   template:
-    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-raspberrypi.j2"
+    src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ ansible_hostname }}.j2"
     dest: "/home/drew/.config/lxsession/LXDE-pi/autostart"
     owner: drew
     group: drew
