@@ -66,7 +66,6 @@
         - docker; create container influxdb
         - docker; create container homeassistant
         - docker; create container grafana
-        - docker; create container zoneminder
         - docker; create container prometheus
         - docker; create container nut_exporter
         - docker; create container plex
@@ -241,6 +240,7 @@
         volumes:
           - "/etc/localtime:/etc/localtime:ro"
           - "/srv/homeassistant:/config"
+          - "/mnt/share/homeassistant:/config/backups"
         # not allowed in host mode
         sysctls: {
           "net.ipv6.conf.all.disable_ipv6": 1
@@ -274,42 +274,42 @@
           - "3000:3000/tcp"
       when: ansible_host == "drew-serv"
 
-    - name: docker; create container zoneminder
-      docker_container:
-        name: zoneminder
-        image: "{{ nexus_docker_repo }}dlandon/zoneminder:latest"
-        state: started
-        restart_policy: unless-stopped
-        hostname: zoneminder.invadelabs.com
-        log_driver: json-file
-        log_options:
-          max-size: "10m"
-        # log_driver: gelf
-        # log_options:
-        #   gelf-address: udp://localhost:12201
-        #   tag: homeassistant
-        shm_size: 1G
-        env:
-          TZ: "America/Denver"
-          PUID: "99"
-          PGID: "100"
-          INSTALL_HOOK: "1"
-          INSTALL_FACE: "1"
-          INSTALL_TINY_YOLOV3: "1"
-          INSTALL_YOLOV3: "0"
-          INSTALL_TINY_YOLOV4: "1"
-          INSTALL_YOLOV4: "0"
-          MULTI_PORT_START: "0"
-          MULTI_PORT_END: "0"
-          ADVANCED_SCRIPT: "1"
-        volumes:
-          - "/srv/zoneminder:/config"
-          - "/mnt/share/zoneminder/data:/var/cache/zoneminder"
-        ports:
-          - "7080:80/tcp"
-          - "8443:443/tcp"
-          - "9000:9000/tcp"
-      when: ansible_host == "drew-serv"
+#    - name: docker; create container zoneminder
+#      docker_container:
+#        name: zoneminder
+#        image: "{{ nexus_docker_repo }}dlandon/zoneminder:latest"
+#        state: started
+#        restart_policy: unless-stopped
+#        hostname: zoneminder.invadelabs.com
+#        log_driver: json-file
+#        log_options:
+#          max-size: "10m"
+#        # log_driver: gelf
+#        # log_options:
+#        #   gelf-address: udp://localhost:12201
+#        #   tag: homeassistant
+#        shm_size: 1G
+#        env:
+#          TZ: "America/Denver"
+#          PUID: "99"
+#          PGID: "100"
+#          INSTALL_HOOK: "1"
+#          INSTALL_FACE: "1"
+#          INSTALL_TINY_YOLOV3: "1"
+#          INSTALL_YOLOV3: "0"
+#          INSTALL_TINY_YOLOV4: "1"
+#          INSTALL_YOLOV4: "0"
+#          MULTI_PORT_START: "0"
+#          MULTI_PORT_END: "0"
+#          ADVANCED_SCRIPT: "1"
+#        volumes:
+#          - "/srv/zoneminder:/config"
+#          - "/mnt/share/zoneminder/data:/var/cache/zoneminder"
+#        ports:
+#          - "7080:80/tcp"
+#          - "8443:443/tcp"
+#          - "9000:9000/tcp"
+#      when: ansible_host == "drew-serv"
 
     - name: docker; create container prometheus
       docker_container:
