@@ -51,7 +51,7 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names"
+  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
 
 - name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
   template:
@@ -60,7 +60,7 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names"
+  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
 
 - name: initial; add lynis gpg key
   ansible.builtin.copy:
@@ -89,7 +89,7 @@
     group: root
     mode: 0644
     # checksum: "sha256:9767f7060fe0bedf00964813a843c10f5b5d566b5deaf369c18454b8926bf243" XXX
-  when: "'raspberrypi' in group_names"
+  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
 
 - name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
   template:
@@ -98,7 +98,7 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names"
+  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
   ansible.builtin.copy:
@@ -261,7 +261,7 @@
     mode: 0770
     owner: root
     group: nagios
-  when: ansible_host == "drew-piv4-02"
+  when: ansible_host == "drew-serv"
 
 ## check_eth
 - name: initial; nrpe; dl check_eth
