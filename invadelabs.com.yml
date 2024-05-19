@@ -80,8 +80,8 @@
       with_items:
         - cgm.invadelabs.com
         - drew.invadelabs.com
-        - invadelabs.com
-        - www.invadelabs.com
+        #- invadelabs.com
+        #- www.invadelabs.com
       no_log: true
       loop_control:
         loop_var: a2temp_item
@@ -96,8 +96,8 @@
       with_items:
         - cgm.invadelabs.com
         - drew.invadelabs.com
-        - invadelabs.com
-        - www.invadelabs.com
+        #- invadelabs.com
+        #- www.invadelabs.com
       loop_control:
         loop_var: a2ensite_item
       notify: Restart apache2.service
