@@ -71,6 +71,16 @@
     job: /root/scripts/gen_sitemap.sh
   when: ansible_fqdn == 'invadelabs.com'
 
+- name: cron; run tconnectsync container
+  cron:
+    name: docker run tconnectsync
+    minute: "*/15"
+    hour: "*"
+    weekday: "*"
+    user: root
+    job: /usr/bin/docker start tconnectsync >/var/log/tsyncconnect.log
+  when: ansible_fqdn == 'invadelabs.com'
+
 - name: cron; gdrive_backup.sh drew-serv.invadelabs.com
   cron:
     name: gdrive_backup.sh

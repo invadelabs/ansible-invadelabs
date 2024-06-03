@@ -25,7 +25,6 @@
     - include: playbooks/postfix.yml # sendgrid relay config
     - include: playbooks/drive.yml # initalize rclone, configures letsencrypt
     - include: playbooks/apache2.yml # a2enmod, a2ensite, apache2.conf
-    - include: playbooks/deploy_invadelabs.com.yml # initial invadelabs.com deploy
     - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
     - include: playbooks/cron.yml
     - include: playbooks/nrpe.yml # nagios nrpe monitoring
@@ -34,6 +33,21 @@
       snap:
         name:
           - certbot-dns-cloudflare
+
+    - name: docker; create container tconnectsync
+      docker_container:
+        name: tconnectsync
+        image: "drewderivative/tconnectsync:d2190db"
+        state: present
+        restart_policy: no
+        # temp dns workaround..
+        etc_hosts: {
+          "cgm.invadelabs.com": "{{ ansible_default_ipv4.address }}"
+        }
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        env_file: /etc/default/tconnectsync.env
 
     - name: docker; create container nightscout
       docker_container:
@@ -56,7 +70,6 @@
     - name: apache2; set env variables
       shell: grep {{ a2env_vars_item }} /root/apache_env | awk -F '"' '{print $2}'
       with_items:
-        - deploy_env
         - email_env
         - slack_env
         - git_env
