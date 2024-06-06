@@ -111,7 +111,7 @@
     - name: docker; create container nginx
       docker_container:
         name: nginx
-        image: "nginx:1.20.1-alpine"
+        image: "nginx:1.27.0-alpine"
         state: started
         restart_policy: unless-stopped
         hostname: nginx.invadelabs.com
