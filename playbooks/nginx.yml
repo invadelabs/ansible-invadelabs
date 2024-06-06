@@ -26,6 +26,9 @@
     - nginx
     - conf.d/default
     - conf.d/docker.invadelabs.com
+    - conf.d/docker-ghcr.invadelabs.com
+    - conf.d/docker-hosted.invadelabs.com
+    - conf.d/docker-hub.invadelabs.com
     - conf.d/drew-serv.nm1.invadelabs.com
     - conf.d/grafana.invadelabs.com
     - conf.d/ha.invadelabs.com
@@ -34,7 +37,6 @@
     - conf.d/ntopng.invadelabs.com
     - conf.d/plex.invadelabs.com
     - conf.d/prometheus.invadelabs.com
-    - conf.d/zm.invadelabs.com
   loop_control:
     loop_var: nginx_template_item
   when: ansible_host == "drew-serv"
