@@ -26,6 +26,10 @@ server {
         proxy_set_header X-Forwarded-Proto https;
     }
 
+    # Unlimit large file uploads to avoid "413 Request Entity Too Large" error
+    # for docker containers
+    client_max_body_size 0;
+
     # wildcard cert
     ssl_certificate /etc/letsencrypt/live/invadelabs.com-0001/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/invadelabs.com-0001/privkey.pem;
