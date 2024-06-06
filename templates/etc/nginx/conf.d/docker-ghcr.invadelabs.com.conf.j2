@@ -1,19 +1,19 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name docker-hosted.invadelabs.com;
+    server_name docker-ghcr.invadelabs.com;
     return 301 https://$host$request_uri;
-    access_log /var/log/nginx/docker-hosted.invadelabs.com.access.log main;
-    error_log /var/log/nginx/docker-hosted.invadelabs.com.error.log error;
+    access_log /var/log/nginx/docker-ghcr.invadelabs.com.access.log main;
+    error_log /var/log/nginx/docker-ghcr.invadelabs.com.error.log error;
 }
 
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name  docker-hosted.invadelabs.com;
+    server_name  docker-ghcr.invadelabs.com;
 
-    access_log /var/log/nginx/docker-hosted.invadelabs.com.secure.access.log main;
-    error_log /var/log/nginx/docker-hosted.invadelabs.com.secure.error.log error;
+    access_log /var/log/nginx/docker-ghcr.invadelabs.com.secure.access.log main;
+    error_log /var/log/nginx/docker-ghcr.invadelabs.com.secure.error.log error;
 
     allow  192.168.1.0/24;
     deny   all;
