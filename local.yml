@@ -6,8 +6,12 @@
   vars:
     ansible_python_interpreter: "/usr/bin/python3"
     nexus_repo: "https://nexus.invadelabs.com/repository"
-    nexus_docker_host: "docker.invadelabs.com"
-    nexus_docker_repo: "docker.invadelabs.com/" # or blank to remove
+    nexus_docker_hub_host: "docker-hub.invadelabs.com"
+    nexus_docker_hub_repo: "docker-hub.invadelabs.com/" # or blank to remove
+    nexus_docker_hosted_host: "docker-hosted.invadelabs.com"
+    nexus_docker_hosted_repo: "docker-hosted.invadelabs.com/" # or blank to remove
+    nexus_docker_ghcr_host: "docker-ghcr.invadelabs.com"
+    nexus_docker_ghcr_repo: "docker-ghcr.invadelabs.com/" # or blank to remove
     localnet_cidr: "192.168.1.0/24"
     nrpe_allowed_hosts: "{{localnet_cidr}},172.17.0.0/16,127.0.0.1,::1"
     elasticsearch_host: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
@@ -85,7 +89,7 @@
     - name: docker; create container nexus
       docker_container:
         name: nexus
-        image: "sonatype/nexus3:3.68.0"
+        image: "sonatype/nexus3:3.68.1"
         state: started
         restart_policy: unless-stopped
         hostname: nexus.invadelabs.com
@@ -98,7 +102,10 @@
           - "/mnt/share/nexus-data:/nexus-data"
         ports:
           - "8081:8081/tcp"
-          - "8181:8181/tcp" # docker-all group
+          - "8181:8181/tcp" # docker group
+          - "8183:8183/tcp" # docker-hub proxy
+          - "8184:8184/tcp" # docker-hosted self-made
+          - "8185:8185/tcp" # docker-ghcr proxy
       when: ansible_host == "drew-serv"
 
     - name: docker; create container nginx
@@ -124,7 +131,7 @@
     - name: docker; create container nagios4
       docker_container:
         name: nagios4
-        image: "{{ nexus_docker_repo }}jasonrivers/nagios:latest" # 4.4.7
+        image: "{{ nexus_docker_hub_repo }}jasonrivers/nagios:latest" # 4.4.7
         state: started
         restart_policy: unless-stopped
         hostname: nagios.invadelabs.com
@@ -160,7 +167,7 @@
     - name: docker; create container mosquitto
       docker_container:
         name: mosquitto
-        image: "{{ nexus_docker_repo }}eclipse-mosquitto:2.0.15"
+        image: "{{ nexus_docker_hub_repo }}eclipse-mosquitto:2.0.15"
         state: started
         restart_policy: unless-stopped
         hostname: mosquitto.invadelabs.com
@@ -178,7 +185,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_repo }}koenkk/zigbee2mqtt:1.37.1"
+        image: "{{ nexus_docker_hub_repo }}koenkk/zigbee2mqtt:1.38.0"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -198,7 +205,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_repo }}tsightler/ring-mqtt:5.6.3"
+        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.3"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -212,7 +219,7 @@
     - name: docker; create container influxdb
       docker_container:
         name: influxdb
-        image: "{{ nexus_docker_repo }}influxdb:1.8.10"
+        image: "{{ nexus_docker_hub_repo }}influxdb:1.8.10"
         state: started
         restart_policy: unless-stopped
         hostname: influxdb.invadelabs.com
@@ -230,7 +237,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_repo }}homeassistant/home-assistant:2024.5.2"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.6.0"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -257,7 +264,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_repo }}grafana/grafana:10.4.2"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:10.4.2"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -277,7 +284,7 @@
 #    - name: docker; create container zoneminder
 #      docker_container:
 #        name: zoneminder
-#        image: "{{ nexus_docker_repo }}dlandon/zoneminder:latest"
+#        image: "{{ nexus_docker_hub_repo }}dlandon/zoneminder:latest"
 #        state: started
 #        restart_policy: unless-stopped
 #        hostname: zoneminder.invadelabs.com
@@ -314,7 +321,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_repo }}prom/prometheus:v2.52.0"
+        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.52.0"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
@@ -338,7 +345,7 @@
     - name: docker; create container nut_exporter
       docker_container:
         name: nut_exporter
-        image: "{{ nexus_docker_repo }}druggeri/nut_exporter:2.5.2"
+        image: "{{ nexus_docker_hub_repo }}druggeri/nut_exporter:2.5.2"
         state: started
         restart_policy: unless-stopped
         hostname: nut_exporter.invadelabs.com
@@ -354,7 +361,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_repo }}linuxserver/plex:1.40.2"
+        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.2"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
@@ -391,7 +398,7 @@
     # - name: docker; create container pihole
     #   docker_container:
     #     name: pihole
-    #     image: "{{ nexus_docker_repo }}pihole/pihole:v5.6"
+    #     image: "{{ nexus_docker_hub_repo }}pihole/pihole:v5.6"
     #     state: started
     #     restart_policy: unless-stopped
     #     hostname: pihole.invadelabs.com
@@ -417,7 +424,7 @@
     # - name: docker; create container nut-upsd
     #   docker_container:
     #     name: nut-upsd
-    #     image: "{{ nexus_docker_repo }}instantlinux/nut-upsd:2.7.4-r8"
+    #     image: "{{ nexus_docker_hub_repo }}instantlinux/nut-upsd:2.7.4-r8"
     #     state: started
     #     restart_policy: unless-stopped
     #     hostname: nut-upsd.invadelabs.com
@@ -444,7 +451,7 @@
     # - name: docker; create container diyhue
     #   docker_container:
     #     name: diyHue
-    #     image: "{{ nexus_docker_repo }}diyhue/core:latest"
+    #     image: "{{ nexus_docker_hub_repo }}diyhue/core:latest"
     #     state: started
     #     restart_policy: unless-stopped
     #     hostname: diyhue.invadelabs.com
@@ -470,7 +477,7 @@
     # - name: docker; create container elasticsearch-exporter
     #   docker_container:
     #     name: elasticsearch-exporter
-    #     image: "{{ nexus_docker_repo }}prometheuscommunity/elasticsearch-exporter:v1.3.0"
+    #     image: "{{ nexus_docker_hub_repo }}prometheuscommunity/elasticsearch-exporter:v1.3.0"
     #     command: [
     #       "--es.uri={{ elasticsearch_host }}:9200"
     #     ]

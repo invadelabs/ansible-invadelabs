@@ -5,4 +5,4 @@
   vars:
     all_pip:
       - check_systemd
-  when: ansible_distribution_release != bookworm  # XXX
+  when: "ansible_distribution_release != 'bookworm'"  # XXX

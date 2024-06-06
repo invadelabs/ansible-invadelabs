@@ -52,7 +52,7 @@
     group: root
     mode: 0644
   when:
-    - "'raspberrypi' in group_names
+    - "'raspberrypi' in group_names"
     - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
@@ -63,7 +63,7 @@
     group: root
     mode: 0644
   when:
-    - "'raspberrypi' in group_names
+    - "'raspberrypi' in group_names"
     - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add lynis gpg key
@@ -98,7 +98,7 @@
     mode: 0644
     # checksum: "sha256:9767f7060fe0bedf00964813a843c10f5b5d566b5deaf369c18454b8926bf243" XXX
   when:
-    - "'raspberrypi' in group_names
+    - "'raspberrypi' in group_names"
     - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
@@ -109,7 +109,7 @@
     group: root
     mode: 0644
   when:
-    - "'raspberrypi' in group_names
+    - "'raspberrypi' in group_names"
     - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic

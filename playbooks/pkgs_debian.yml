@@ -27,7 +27,7 @@
       - postfix
       - libsasl2-modules  # needed for postfix + sendgrid
       - ansible
-      - python3-pip
+      #- python3-pip  # #XXX bookworm
 
       # - libnagios-p  lugin-perl # XXX needed for nagios-plugins-contrib (deps broken?) / broken on invadelabs.com
       - monitoring-plugins-standard
