@@ -51,7 +51,9 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
+  when:
+    - "'raspberrypi' in group_names
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
   template:
@@ -60,7 +62,9 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
+  when:
+    - "'raspberrypi' in group_names
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add lynis gpg key
   ansible.builtin.copy:
@@ -70,7 +74,9 @@
     group: root
     mode: 0644
     # checksum: "sha256:667be03f4860ef77c8cfb470661a89a0a7178594fc0808e45a1f39e6792f1e40"
-  when: "'raspberrypi' in group_names"
+  when:
+    - "'raspberrypi' in group_names"
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add /etc/apt/sources.list.d/lynis.list apt proxy
   template:
@@ -79,7 +85,9 @@
     owner: root
     group: root
     mode: 0644
-  when: "'debian-nm1' in group_names"
+  when:
+    - "'debian-nm1' in group_names"
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add azlux log2ram gpg key
   ansible.builtin.copy:
@@ -89,7 +97,9 @@
     group: root
     mode: 0644
     # checksum: "sha256:9767f7060fe0bedf00964813a843c10f5b5d566b5deaf369c18454b8926bf243" XXX
-  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
+  when:
+    - "'raspberrypi' in group_names
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
   template:
@@ -98,7 +108,9 @@
     owner: root
     group: root
     mode: 0644
-  when: "'raspberrypi' in group_names and ansible_facts['distribution_major_version'] != '12'"
+  when:
+    - "'raspberrypi' in group_names
+    - ansible_distribution_release != bookworm  # XXX
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
   ansible.builtin.copy:
@@ -128,6 +140,7 @@
     "user.name": "Drew Holt",
     "safe.directory": "*"
   }
+  # XXX safe.directory
   loop_control:
     loop_var: git_item
 
@@ -161,7 +174,7 @@
     group: root
     force: false
     checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
-  when: ansible_host == "drew-serv"
+  when: ansible_host == "drew-serv" or ansible_distribution_release == "bookworm"
 
 ## ansi2html.sh
 - name: initial; ansi2html.sh
