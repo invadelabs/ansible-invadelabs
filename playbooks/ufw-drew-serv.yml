@@ -2,7 +2,7 @@
 - name: ufw; allow OpenSSH
   ufw:
     rule: allow
-    #name: OpenSSH
+    name: OpenSSH
     comment: SSH
 
 - name: ufw; allow WireGuard
@@ -11,7 +11,6 @@
     route: yes
     interface_in: wg0
     interface_out: eno1
-    #name: OpenSSH
     comment: WireGuard
 
 - name: ufw; allow 25/tcp
@@ -239,3 +238,26 @@
   loop:
     - 172.17.0.0/16
     - 192.168.1.0/24
+
+- name: ufw; allow 8324,32400,32469/tcp
+  ufw:
+    rule: allow
+    comment: plex-tcp
+    port: 8324,32400,32469
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 1900,5353,32410,32412,32413,32414/udp
+  ufw:
+    rule: allow
+    comment: plex-udp
+    port: 1900,5353,32410,32412,32413,32414
+    proto: udp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
