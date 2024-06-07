@@ -1,0 +1,241 @@
+---
+- name: ufw; allow OpenSSH
+  ufw:
+    rule: allow
+    #name: OpenSSH
+    comment: SSH
+
+- name: ufw; allow WireGuard
+  ufw:
+    rule: allow
+    route: yes
+    interface_in: wg0
+    interface_out: eno1
+    #name: OpenSSH
+    comment: WireGuard
+
+- name: ufw; allow 25/tcp
+  ufw:
+    rule: allow
+    comment: Postfix
+    port: 25
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 53/udp
+  ufw:
+    rule: allow
+    comment: DNS
+    port: 53
+    proto: udp
+
+- name: ufw; allow 80/tcp
+  ufw:
+    rule: allow
+    comment: http
+    port: 80
+    proto: tcp
+
+- name: ufw; allow 111/tcp
+  ufw:
+    rule: allow
+    comment: something microsoft
+    port: 111
+
+- name: ufw; allow 137:138
+  ufw:
+    rule: allow
+    comment: samba
+    port: 137:138
+    proto: udp
+    src: 192.168.1.0/24
+
+- name: ufw; allow 139/tcp
+  ufw:
+    rule: allow
+    comment: something microsoft
+    port: 139
+    proto: tcp
+    src: 192.168.1.0/24
+
+- name: ufw; allow 443/tcp
+  ufw:
+    rule: allow
+    comment: https
+    port: 443
+    proto: tcp
+
+- name: ufw; allow 445/tcp
+  ufw:
+    rule: allow
+    comment: something microsoft
+    port: 445
+    proto: tcp
+    src: 192.168.1.0/24
+
+- name: ufw; allow 1883/tcp
+  ufw:
+    rule: allow
+    comment: Mosquito
+    port: 1883
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 3000/tcp
+  ufw:
+    rule: allow
+    comment: Grafana
+    port: 3000
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 5080/tcp
+  ufw:
+    rule: allow
+    comment: zigbee2mqtt
+    port: 5080
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 5601/tcp
+  ufw:
+    rule: allow
+    comment: Kibana
+    port: 5601
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8080/tcp
+  ufw:
+    rule: allow
+    comment: drew-serv-http
+    port: 8080
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8081/tcp
+  ufw:
+    rule: allow
+    comment: nexus
+    port: 8081
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8086/tcp
+  ufw:
+    rule: allow
+    comment: influxdb
+    port: 8086
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8123/tcp
+  ufw:
+    rule: allow
+    comment: homeassistant
+    port: 8123
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8181/tcp
+  ufw:
+    rule: allow
+    comment: nexus-docker-group
+    port: 8181
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8183/tcp
+  ufw:
+    rule: allow
+    comment: nexus-docker-hub
+    port: 8183
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8184/tcp
+  ufw:
+    rule: allow
+    comment: nexus-docker-hosted
+    port: 8184
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 8185/tcp
+  ufw:
+    rule: allow
+    comment: nexus-docker-ghcr
+    port: 8185
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 9090/tcp
+  ufw:
+    rule: allow
+    comment: prometheus
+    port: 9090
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 9100/tcp
+  ufw:
+    rule: allow
+    comment: prometheus-node-exporter
+    port: 9100
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
+
+- name: ufw; allow 9199/tcp
+  ufw:
+    rule: allow
+    comment: prometheus-nut-exporter
+    port: 9199
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16
+    - 192.168.1.0/24
