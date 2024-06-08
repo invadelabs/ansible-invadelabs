@@ -20,7 +20,6 @@
     port: 25
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 53/udp
@@ -82,7 +81,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 3000/tcp
@@ -93,7 +91,18 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
+    - 172.17.0.0/16 # XXX re-work network
+    - 192.168.1.0/24
+
+- name: ufw; allow 10514,5000/tcp
+  ufw:
+    rule: allow
+    comment: es-logstash
+    port: 10514,5000
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16 # XXX container network?
     - 192.168.1.0/24
 
 - name: ufw; allow 5080/tcp
@@ -104,7 +113,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 5601/tcp
@@ -115,7 +123,18 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
+    - 172.17.0.0/16 # XXX re-work network
+    - 192.168.1.0/24
+
+- name: ufw; allow 5666/tcp
+  ufw:
+    rule: allow
+    comment: nrpe
+    port: 5666
+    proto: tcp
+    src: '{{ item }}'
+  loop:
+    - 172.17.0.0/16 # XXX local needed for nrpe?
     - 192.168.1.0/24
 
 - name: ufw; allow 8080/tcp
@@ -129,15 +148,15 @@
     - 172.17.0.0/16
     - 192.168.1.0/24
 
-- name: ufw; allow 8081/tcp
+- name: ufw; allow 8081,8181,8183,8184,8185/tcp
   ufw:
     rule: allow
     comment: nexus
-    port: 8081
+    port: 8081,8181,8183,8184,8185
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
+    - 172.17.0.0/16 # XXX fix network
     - 192.168.1.0/24
 
 - name: ufw; allow 8086/tcp
@@ -148,7 +167,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 8123/tcp
@@ -159,51 +177,7 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
-    - 192.168.1.0/24
-
-- name: ufw; allow 8181/tcp
-  ufw:
-    rule: allow
-    comment: nexus-docker-group
-    port: 8181
-    proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16
-    - 192.168.1.0/24
-
-- name: ufw; allow 8183/tcp
-  ufw:
-    rule: allow
-    comment: nexus-docker-hub
-    port: 8183
-    proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16
-    - 192.168.1.0/24
-
-- name: ufw; allow 8184/tcp
-  ufw:
-    rule: allow
-    comment: nexus-docker-hosted
-    port: 8184
-    proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16
-    - 192.168.1.0/24
-
-- name: ufw; allow 8185/tcp
-  ufw:
-    rule: allow
-    comment: nexus-docker-ghcr
-    port: 8185
-    proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16
+    - 172.17.0.0/16 # XXX re-work network
     - 192.168.1.0/24
 
 - name: ufw; allow 9090/tcp
@@ -214,7 +188,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 9100/tcp
@@ -225,7 +198,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 9199/tcp
@@ -236,7 +208,6 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
 
 - name: ufw; allow 8324,32400,32469/tcp
@@ -247,7 +218,7 @@
     proto: tcp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
+    - 172.17.0.0/16 # XXX why?
     - 192.168.1.0/24
 
 - name: ufw; allow 1900,5353,32410,32412,32413,32414/udp
@@ -258,6 +229,4 @@
     proto: udp
     src: '{{ item }}'
   loop:
-    - 172.17.0.0/16
     - 192.168.1.0/24
-
