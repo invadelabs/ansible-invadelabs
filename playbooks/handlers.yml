@@ -76,7 +76,7 @@
   service: name=postfix state=restarted
 - name: Restart rsyslog.service
   service: name=rsyslog state=restarted
-  when: ansible_distribution_release != bookworm  # XXX
+  when: ansible_distribution_release != "bookworm"  # XXX
 - name: Restart smartd.service
   service: name=smartd state=restarted
 - name: Restart sshd.service
