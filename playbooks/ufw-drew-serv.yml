@@ -18,9 +18,7 @@
     rule: allow
     comment: Postfix
     port: 25
-    src: '{{ item }}'
-  loop:
-    - 192.168.1.0/24
+    src: 192.168.1.0/24
 
 - name: ufw; allow 53/udp
   ufw:
@@ -79,9 +77,12 @@
     comment: Mosquito
     port: 1883
     proto: tcp
-    src: '{{ item }}'
-  loop:
+    src: "{{ mosquito_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: mosquito_item
 
 - name: ufw; allow 3000/tcp
   ufw:
@@ -89,10 +90,25 @@
     comment: Grafana
     port: 3000
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX re-work network
+    src: "{{ grafana_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: grafana_item
+
+- name: ufw; allow 3493/tcp
+  ufw:
+    rule: allow
+    comment: nut-server
+    port: 3493
+    proto: tcp
+    src: "{{ nut_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+  loop_control:
+    loop_var: nut_item
 
 - name: ufw; allow 10514,5000/tcp
   ufw:
@@ -100,10 +116,12 @@
     comment: es-logstash
     port: 10514,5000
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX container network?
+    src: "{{ es_logstash_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: es_logstash_item
 
 - name: ufw; allow 5080/tcp
   ufw:
@@ -111,9 +129,7 @@
     comment: zigbee2mqtt
     port: 5080
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 192.168.1.0/24
+    src: 192.168.1.0/24
 
 - name: ufw; allow 5601/tcp
   ufw:
@@ -121,10 +137,12 @@
     comment: Kibana
     port: 5601
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX re-work network
+    src: "{{ kibana_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: kibana_item
 
 - name: ufw; allow 5666/tcp
   ufw:
@@ -132,10 +150,12 @@
     comment: nrpe
     port: 5666
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX local needed for nrpe?
+    src: '{{ nrpe_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: nrpe_item
 
 - name: ufw; allow 8080/tcp
   ufw:
@@ -143,10 +163,12 @@
     comment: drew-serv-http
     port: 8080
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16
+    src: '{{ drew_serv_http_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: drew_serv_http_item
 
 - name: ufw; allow 8081,8181,8183,8184,8185/tcp
   ufw:
@@ -154,10 +176,12 @@
     comment: nexus
     port: 8081,8181,8183,8184,8185
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX fix network
+    src: '{{ nexus_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: nexus_item
 
 - name: ufw; allow 8086/tcp
   ufw:
@@ -165,9 +189,12 @@
     comment: influxdb
     port: 8086
     proto: tcp
-    src: '{{ item }}'
-  loop:
+    src: '{{ influxdb_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: influxdb_item
 
 - name: ufw; allow 8123/tcp
   ufw:
@@ -175,10 +202,12 @@
     comment: homeassistant
     port: 8123
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX re-work network
+    src: '{{ homeassistant_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: homeassistant_item
 
 - name: ufw; allow 9090/tcp
   ufw:
@@ -186,9 +215,12 @@
     comment: prometheus
     port: 9090
     proto: tcp
-    src: '{{ item }}'
-  loop:
+    src: '{{ prometheus_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: prometheus_item
 
 - name: ufw; allow 9100/tcp
   ufw:
@@ -196,9 +228,12 @@
     comment: prometheus-node-exporter
     port: 9100
     proto: tcp
-    src: '{{ item }}'
-  loop:
+    src: '{{ prometheus_node_exporter_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: prometheus_node_exporter_item
 
 - name: ufw; allow 9199/tcp
   ufw:
@@ -206,9 +241,12 @@
     comment: prometheus-nut-exporter
     port: 9199
     proto: tcp
-    src: '{{ item }}'
-  loop:
+    src: '{{ prometheus_nut_exporter_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: prometheus_nut_exporter_item
 
 - name: ufw; allow 8324,32400,32469/tcp
   ufw:
@@ -216,10 +254,12 @@
     comment: plex-tcp
     port: 8324,32400,32469
     proto: tcp
-    src: '{{ item }}'
-  loop:
-    - 172.17.0.0/16 # XXX why?
+    src: '{{ plex_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+  loop_control:
+    loop_var: plex_item
 
 - name: ufw; allow 1900,5353,32410,32412,32413,32414/udp
   ufw:
@@ -227,6 +267,4 @@
     comment: plex-udp
     port: 1900,5353,32410,32412,32413,32414
     proto: udp
-    src: '{{ item }}'
-  loop:
-    - 192.168.1.0/24
+    src: 192.168.1.0/24

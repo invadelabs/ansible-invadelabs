@@ -25,21 +25,25 @@
     - include: playbooks/pkgs_debian.yml # apt / dpkg install items
     - include: playbooks/pip.yml # python pip packages to install
     - include: playbooks/iptables.yml # firewall
-    - include: playbooks/ufw-drew-serv.yml
       when: ansible_host == "drew-serv"
     - include: playbooks/lynis.yml # security auditing
     - include: playbooks/logging.yml # rsyslog to logstash
-    - name: drew-serv tasks
-      include_tasks: "{{ drew_serv_item }}"
-      loop:
-        - playbooks/hw_drew-serv.yml # hardware specifics
-        - playbooks/samba.yml # samba
-        - playbooks/nginx.yml # reverse https proxy
-        - playbooks/nut_ups.yml # NUT UPS config
-        - playbooks/postfix.yml # postfix _server_ config
-      loop_control:
-        loop_var: drew_serv_item
+
+    # drew-serv tasks
+    - name: ufw-drew-serv
+      include: playbooks/ufw-drew-serv.yml
       when: ansible_host == "drew-serv"
+    - include: playbooks/hw_drew-serv.yml # hardware specifics
+      when: ansible_host == "drew-serv"
+    - include: playbooks/samba.yml # samba
+      when: ansible_host == "drew-serv"
+    - include: playbooks/nginx.yml # reverse https proxy
+      when: ansible_host == "drew-serv"
+    - include: playbooks/nut_ups.yml # NUT UPS config
+      when: ansible_host == "drew-serv"
+    - include: playbooks/postfix.yml # postfix _server_ config
+      when: ansible_host == "drew-serv"
+
     - include: playbooks/postfix_relay.yml # postfix _relay_ config
       when: (ansible_host != "drew-serv")
     - include: playbooks/docker.yml
@@ -91,7 +95,7 @@
     - name: docker; create container nexus
       docker_container:
         name: nexus
-        image: "sonatype/nexus3:3.68.1"
+        image: "sonatype/nexus3:3.69.0"
         state: started
         restart_policy: unless-stopped
         hostname: nexus.invadelabs.com
@@ -207,7 +211,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.3"
+        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.6"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -266,7 +270,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_hub_repo }}grafana/grafana:10.4.2"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.0.0"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -363,7 +367,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.2"
+        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.3"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
