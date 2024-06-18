@@ -2,10 +2,18 @@
 - name: ufw; allow OpenSSH
   ufw:
     rule: allow
-    name: OpenSSH
     comment: SSH
+    port: 22
+    proto: tcp
 
-- name: ufw; allow WireGuard
+- name: ufw; allow 51820/udp
+  ufw:
+    rule: allow
+    comment: wireguard
+    port: 51820
+    proto: udp
+
+- name: ufw; allow WireGuard Forwarding
   ufw:
     rule: allow
     route: yes
@@ -18,6 +26,7 @@
     rule: allow
     comment: Postfix
     port: 25
+    proto: tcp
     src: 192.168.1.0/24
 
 - name: ufw; allow 53/udp
@@ -36,9 +45,10 @@
 
 - name: ufw; allow 111/tcp
   ufw:
-    rule: allow
-    comment: something microsoft
+    rule: deny
+    comment: port mapper
     port: 111
+    proto: tcp
 
 - name: ufw; allow 137:138
   ufw:
@@ -51,7 +61,7 @@
 - name: ufw; allow 139/tcp
   ufw:
     rule: allow
-    comment: something microsoft
+    comment: samba netbios
     port: 139
     proto: tcp
     src: 192.168.1.0/24
@@ -66,7 +76,7 @@
 - name: ufw; allow 445/tcp
   ufw:
     rule: allow
-    comment: something microsoft
+    comment: samba
     port: 445
     proto: tcp
     src: 192.168.1.0/24
@@ -94,6 +104,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: grafana_item
 
@@ -129,7 +140,13 @@
     comment: zigbee2mqtt
     port: 5080
     proto: tcp
-    src: 192.168.1.0/24
+    src: "{{ zigbee2mqtt_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+    - 10.8.0.1/24
+  loop_control:
+    loop_var: zigbee2mqtt_item
 
 - name: ufw; allow 5601/tcp
   ufw:
@@ -141,6 +158,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: kibana_item
 
@@ -167,6 +185,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: drew_serv_http_item
 
@@ -180,6 +199,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: nexus_item
 
@@ -206,6 +226,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: homeassistant_item
 
@@ -219,6 +240,7 @@
   with_items:
     - 172.17.0.0/16 # XXX re-network
     - 192.168.1.0/24
+    - 10.8.0.1/24
   loop_control:
     loop_var: prometheus_item
 

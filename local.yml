@@ -50,8 +50,8 @@
     - include: playbooks/sshd_config.yml
     - include: playbooks/nrpe.yml # nagios nrpe agent config
     - include: playbooks/cron.yml
-    #- include: playbooks/ntopng.yml # ntopng network monitoring
-    #  when: ansible_host == "drew-piv4-02"
+    - include: playbooks/ntopng.yml # ntopng network monitoring
+      when: ansible_host == "drew-piv4-02"
     - include: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
       when: "'dashboard' in group_names"
 
