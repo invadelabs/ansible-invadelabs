@@ -211,7 +211,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.6"
+        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.7"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
