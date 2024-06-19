@@ -37,7 +37,7 @@
         name: tconnectsync
         image: "drewderivative/tconnectsync:3d2c2dc"
         state: present
-        restart_policy: no
+        restart_policy: false
         # temp dns workaround..
         etc_hosts: {
           "cgm.invadelabs.com": "{{ ansible_default_ipv4.address }}"
@@ -82,4 +82,4 @@
         env_file: /etc/default/cgm.env
 
   handlers:
-    - include: playbooks/handlers.yml
+    - include_tasks: playbooks/handlers.yml

@@ -16,7 +16,7 @@
 - name: ufw; allow WireGuard Forwarding
   ufw:
     rule: allow
-    route: yes
+    route: true
     interface_in: wg0
     interface_out: eno1
     comment: WireGuard

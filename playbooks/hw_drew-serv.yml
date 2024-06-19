@@ -32,7 +32,8 @@
   with_dict: {
     "HandleLidSwitch": "ignore",
     "HandleLidSwitchExternalPower": "ignore",
-    "HandleLidSwitchDocked": "ignore" }
+    "HandleLidSwitchDocked": "ignore"
+  }
   loop_control:
     loop_var: logind_item
   notify:
