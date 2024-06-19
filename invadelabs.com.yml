@@ -14,18 +14,18 @@
         msg: "Host name is not set to invadelabs.com! Run; hostnamectl set-hostname invadelabs.com"
       when: ansible_fqdn != "invadelabs.com"
 
-    - include: playbooks/preflight_check.yml # fail if missing secrets
-    - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
-    - include: playbooks/pkgs_debian.yml # all apt / dpkg software bits needed
-    - include: playbooks/pip.yml # anything pip here
-    - include: playbooks/sshd_config.yml
-    - include: playbooks/lynis.yml
-    - include: playbooks/logging.yml # rsyslog / filebeat
-    - include: playbooks/postfix.yml # sendgrid relay config
-    - include: playbooks/drive.yml # initalize rclone, configures letsencrypt
-    - include: playbooks/cron.yml
-    - include: playbooks/nrpe.yml # nagios nrpe monitoring
-    - include: playbooks/nginx-invadelabs.com.yml # reverse proxy config
+    - include_tasks: playbooks/preflight_check.yml # fail if missing secrets
+    - include_tasks: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+    - include_tasks: playbooks/pkgs_debian.yml # all apt / dpkg software bits needed
+    - include_tasks: playbooks/pip.yml # anything pip here
+    - include_tasks: playbooks/sshd_config.yml
+    - include_tasks: playbooks/lynis.yml
+    - include_tasks: playbooks/logging.yml # rsyslog / filebeat
+    - include_tasks: playbooks/postfix.yml # sendgrid relay config
+    - include_tasks: playbooks/drive.yml # initalize rclone, configures letsencrypt
+    - include_tasks: playbooks/cron.yml
+    - include_tasks: playbooks/nrpe.yml # nagios nrpe monitoring
+    - include_tasks: playbooks/nginx-invadelabs.com.yml # reverse proxy config
 
     - name: pkgs; snap install certbot-dns-cloudflare
       snap:
