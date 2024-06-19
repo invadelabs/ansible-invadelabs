@@ -1,18 +1,19 @@
 ---
-- name: ntop; ntopng config
-  lineinfile:
-    dest: /etc/ntopng/ntopng.conf
-    regexp: "^{{ ntop_item.key }}"
-    line: "{{ ntop_item.key }}"
-    state: present
-  with_dict: {
-    '-n=1': '',
-    '-q': '',
-    '-i=eth0': '',
-    '-m=192.168.1.0/24': '',
-    '-S=local': ''
-  }
-  loop_control:
-    loop_var: ntop_item
-  notify:
-    - Restart ntopng.service
+- name: ntopng; ntopng_my_settings.conf
+  template:
+    src: templates/etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf.j2
+    dest: /etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart ntopng.service
+
+# XXX add deb, move this to before initial install
+- name: ntopng; apt ntop.list
+  template:
+    src: templates/etc/apt/sources.list.d/ntop.list.j2
+    dest: /etc/apt/sources.list.d/ntop.list
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart ntopng.service
