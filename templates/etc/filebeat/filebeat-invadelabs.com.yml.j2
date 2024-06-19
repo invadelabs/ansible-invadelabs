@@ -1,12 +1,12 @@
 filebeat.prospectors:
 - paths:
-  - /var/log/apache2/*access*.log
+  - /var/log/nginx/*access*.log
   tags: [apache_access]
   # should look like ^cgm.invadelabs.com:443 172\.169\.172\.169\.*
   exclude_lines:
     - {{ home_ip['content'] | b64decode | trim | regex_replace('\.', '\\.') | regex_replace('$', '\\.*') | regex_replace('^', '^cgm.invadelabs.com:443 ')  }}
 - paths:
-  - /var/log/apache2/*error*.log
+  - /var/log/nginx/*error*.log
   tags: [apache_error]
 
   recursive_glob.enabled: true
