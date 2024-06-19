@@ -14,7 +14,7 @@
     'upsd.users': '0640',
     'upsmon.conf': '0640',
     'upsd.conf': '0640'
-    }
+  }
   loop_control:
     loop_var: nut_item
   notify:

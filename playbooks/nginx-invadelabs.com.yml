@@ -1,0 +1,13 @@
+---
+# nginx config
+- name: nginx; add site templates
+  template:
+    src: templates/etc/nginx/{{nginx_template_item}}.conf.j2
+    dest: /srv/nginx/{{nginx_template_item}}.conf
+  with_items:
+    - nginx
+    - conf.d/default
+    - conf.d/cgm.invadelabs.com
+  loop_control:
+    loop_var: nginx_template_item
+  notify: docker; reload nginx

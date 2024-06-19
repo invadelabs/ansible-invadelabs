@@ -15,12 +15,12 @@
   stat:
     path: "{{ invadelabs_file_item }}"
   with_items:
-    - /root/apache_env
     - /root/github_token
     - /root/postfix_passwd
     - /root/slacktee.conf
     - /root/cloudflare.ini
     - /etc/default/cgm.env
+    - /etc/default/tconnectsync.env
     - /home/drew/home_ip
     - /var/www/drew.invadelabs.com/omgz_square.gif
   loop_control:

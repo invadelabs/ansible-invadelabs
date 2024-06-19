@@ -18,17 +18,9 @@
     - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers | join(' ')}}"
   postfix_mynetworks: "127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128"
   host_pkgs:
+    - bsd-mailx
     - docker.io
     - rclone
-    - apache2
-    - libapache2-mod-php
-    - php-sqlite3 # for drewwiki
-    - php-mbstring # for drewwiki
-    - php-xml
-    - php-curl # for selenium-invadelabs script
-    - php-apcu # Alternative PHP Cache (APC)
-    - php-fpm
-    - php-intl
   host_pip:
     - check-docker
     - docker-py
