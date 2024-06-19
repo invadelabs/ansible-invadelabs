@@ -4,7 +4,6 @@
   become_method: sudo
   # gather_facts: no
   vars:
-    ansible_python_interpreter: "/usr/bin/python3"
     rsyslog_host: localhost
     rsyslog_port: 11514
     nrpe_allowed_hosts: "nm.invadelabs.com,127.0.0.1,::1"
@@ -19,15 +18,14 @@
     - include: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
     - include: playbooks/pkgs_debian.yml # all apt / dpkg software bits needed
     - include: playbooks/pip.yml # anything pip here
-    - include: playbooks/sshd_config.yml # sshd_config
-    - include: playbooks/lynis.yml # security auditing
+    - include: playbooks/sshd_config.yml
+    - include: playbooks/lynis.yml
     - include: playbooks/logging.yml # rsyslog / filebeat
     - include: playbooks/postfix.yml # sendgrid relay config
     - include: playbooks/drive.yml # initalize rclone, configures letsencrypt
-    - include: playbooks/apache2.yml # a2enmod, a2ensite, apache2.conf
-    - include: playbooks/deploy_drew.invadelabs.com.yml # DrewWiki depoy with googleAnalytics, OpenGraphMeta, Descript2, lock down versions
     - include: playbooks/cron.yml
     - include: playbooks/nrpe.yml # nagios nrpe monitoring
+    - include: playbooks/nginx-invadelabs.com.yml # reverse proxy config
 
     - name: pkgs; snap install certbot-dns-cloudflare
       snap:
@@ -49,6 +47,25 @@
           max-size: "10m"
         env_file: /etc/default/tconnectsync.env
 
+    - name: docker; create container nginx
+      docker_container:
+        name: nginx
+        image: "nginx:1.27.0-alpine"
+        state: started
+        restart_policy: unless-stopped
+        hostname: nginx.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        volumes:
+          - "/etc/letsencrypt:/etc/letsencrypt:ro"
+          - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro"
+          - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
+          - "/var/log/nginx:/var/log/nginx:rw"
+        ports:
+          - "80:80/tcp"
+          - "443:443/tcp"
+
     - name: docker; create container nightscout
       docker_container:
         name: nightscout
@@ -65,52 +82,4 @@
         env_file: /etc/default/cgm.env
 
   handlers:
-    - include: playbooks/handlers.yml # start / restart systemd stuff, other things
-
-    - name: apache2; set env variables
-      shell: grep {{ a2env_vars_item }} /root/apache_env | awk -F '"' '{print $2}'
-      with_items:
-        - email_env
-        - slack_env
-        - git_env
-      loop_control:
-        loop_var: a2env_vars_item
-      register: apache_env_vars # XXX fix this for invadelabs.com.conf.j2 temlate
-      no_log: true
-      notify: apache2; add site templates
-
-    # - debug:
-    #     msg: "{{ apache_env_vars.results[0].stdout }}"
-
-    # apahce2 vhosts
-    - name: apache2; add site templates
-      template:
-        src: templates/etc/apache2/sites-available/{{ a2temp_item }}.conf.j2
-        dest: /etc/apache2/sites-available/{{ a2temp_item }}.conf
-        owner: root
-        group: root
-        mode: 0644
-      with_items:
-        - cgm.invadelabs.com
-        - drew.invadelabs.com
-        #- invadelabs.com
-        #- www.invadelabs.com
-      no_log: true
-      loop_control:
-        loop_var: a2temp_item
-      notify:
-        - apache2; a2ensite templates
-        - Restart apache2.service
-
-    - name: apache2; a2ensite templates
-      command: a2ensite {{ a2ensite_item }}
-      args:
-        creates: /etc/apache2/sites-enabled/{{ a2ensite_item }}.conf
-      with_items:
-        - cgm.invadelabs.com
-        - drew.invadelabs.com
-        #- invadelabs.com
-        #- www.invadelabs.com
-      loop_control:
-        loop_var: a2ensite_item
-      notify: Restart apache2.service
+    - include: playbooks/handlers.yml

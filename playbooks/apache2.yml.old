@@ -15,7 +15,6 @@
     state: present
     name: "{{ a2enmod_item }}"
   with_items:
-    - mpm_event
     - ssl
     - rewrite
     - headers
@@ -46,7 +45,33 @@
     owner: root
     group: root
     mode: 0644
-  notify: apache2; set env variables
+
+# apahce2 vhosts
+- name: apache2; add site templates
+  template:
+    src: templates/etc/apache2/sites-available/{{ a2temp_item }}.conf.j2
+    dest: /etc/apache2/sites-available/{{ a2temp_item }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - cgm.invadelabs.com
+    - drew.invadelabs.com
+  loop_control:
+    loop_var: a2temp_item
+  notify:
+    - Restart apache2.service
+
+- name: apache2; a2ensite templates
+  command: a2ensite {{ a2ensite_item }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ a2ensite_item }}.conf
+  with_items:
+    - cgm.invadelabs.com
+    - drew.invadelabs.com
+  loop_control:
+    loop_var: a2ensite_item
+  notify: Restart apache2.service
 
 # apahce2.conf
 - name: apache2; apache2.conf updates
