@@ -32,21 +32,6 @@
         name:
           - certbot-dns-cloudflare
 
-    - name: docker; create container tconnectsync
-      docker_container:
-        name: tconnectsync
-        image: "drewderivative/tconnectsync:3d2c2dc"
-        state: present
-        restart_policy: false
-        # temp dns workaround..
-        etc_hosts: {
-          "cgm.invadelabs.com": "{{ ansible_default_ipv4.address }}"
-        }
-        log_driver: json-file
-        log_options:
-          max-size: "10m"
-        env_file: /etc/default/tconnectsync.env
-
     - name: docker; create container nginx
       docker_container:
         name: nginx
@@ -80,6 +65,21 @@
         ports:
           - "1337:1337/tcp"
         env_file: /etc/default/cgm.env
+
+    - name: docker; create container tconnectsync
+      docker_container:
+        name: tconnectsync
+        image: "drewderivative/tconnectsync:3d2c2dc"
+        state: present
+        restart_policy: false
+        # temp dns workaround..
+        etc_hosts: {
+          "cgm.invadelabs.com": "{{ ansible_default_ipv4.address }}"
+        }
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        env_file: /etc/default/tconnectsync.env
 
     - name: docker; create container drewwiki
       docker_container:
