@@ -20,39 +20,39 @@
     mail_relay: "192.168.1.125" # drew-serv.nm1.invadelabs.com temp dns workaround..
 
   tasks:
-    - include_tasks: playbooks/preflight_check.yml # fail if missing secrets
-    - include_tasks: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
-    - include_tasks: playbooks/pkgs_debian.yml # apt / dpkg install items
-    - include_tasks: playbooks/pip.yml # python pip packages to install
-    - include_tasks: playbooks/iptables.yml # firewall
+    - import_tasks: playbooks/preflight_check.yml # fail if missing secrets
+    - import_tasks: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
+    - import_tasks: playbooks/pkgs_debian.yml # apt / dpkg install items
+    - import_tasks: playbooks/pip.yml # python pip packages to install
+    - import_tasks: playbooks/iptables.yml # firewall
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/lynis.yml # security auditing
-    - include_tasks: playbooks/logging.yml # rsyslog to logstash
+    - import_tasks: playbooks/lynis.yml # security auditing
+    - import_tasks: playbooks/logging.yml # rsyslog to logstash
 
     # drew-serv tasks
     - name: ufw-drew-serv
-      include_tasks: playbooks/ufw-drew-serv.yml
+      import_tasks: playbooks/ufw-drew-serv.yml
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/hw_drew-serv.yml # hardware specifics
+    - import_tasks: playbooks/hw_drew-serv.yml # hardware specifics
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/samba.yml # samba
+    - import_tasks: playbooks/samba.yml # samba
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/nginx.yml # reverse https proxy
+    - import_tasks: playbooks/nginx.yml # reverse https proxy
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/nut_ups.yml # NUT UPS config
+    - import_tasks: playbooks/nut_ups.yml # NUT UPS config
       when: ansible_host == "drew-serv"
-    - include_tasks: playbooks/postfix.yml # postfix _server_ config
+    - import_tasks: playbooks/postfix.yml # postfix _server_ config
       when: ansible_host == "drew-serv"
 
-    - include_tasks: playbooks/postfix_relay.yml # postfix _relay_ config
+    - import_tasks: playbooks/postfix_relay.yml # postfix _relay_ config
       when: (ansible_host != "drew-serv")
-    - include_tasks: playbooks/docker.yml
-    - include_tasks: playbooks/sshd_config.yml
-    - include_tasks: playbooks/nrpe.yml # nagios nrpe agent config
-    - include_tasks: playbooks/cron.yml
-    - include_tasks: playbooks/ntopng.yml # ntopng network monitoring
+    - import_tasks: playbooks/docker.yml
+    - import_tasks: playbooks/sshd_config.yml
+    - import_tasks: playbooks/nrpe.yml # nagios nrpe agent config
+    - import_tasks: playbooks/cron.yml
+    - import_tasks: playbooks/ntopng.yml # ntopng network monitoring
       when: ansible_host == "drew-piv4-02"
-    - include_tasks: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
+    - import_tasks: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
       when: "'dashboard' in group_names"
 
     - name: docker; rclone get drew-serv-bkup-latest.tar.xz backup  # noqa E204
@@ -82,7 +82,7 @@
 
 ## HANDLERS ##
   handlers:
-    - include_tasks: playbooks/handlers.yml # start / restart systemd stuff, other things # noqa: E204
+    - import_tasks: playbooks/handlers.yml # start / restart systemd stuff, other things # noqa: E204
 
     ## Docker Handlers
     - name: docker; extract drew-serv-bkup-latest.tar.xz
