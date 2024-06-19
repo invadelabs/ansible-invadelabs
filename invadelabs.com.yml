@@ -81,5 +81,26 @@
           - "1337:1337/tcp"
         env_file: /etc/default/cgm.env
 
+    - name: docker; create container drewwiki
+      docker_container:
+        name: drewwiki
+        image: "mediawiki:1.41.1"
+        state: started
+        restart_policy: unless-stopped
+        hostname: drew.invadelabs.com
+        # log_driver: none
+        log_driver: json-file
+        log_options:
+          max-size: "1m"
+        volumes:
+          - "/srv/drewwiki/LocalSettings.php:/var/www/html/LocalSettings.php"
+          - "/srv/drewwiki/database:/var/www/data"
+          - "/srv/drewwiki/images:/var/www/html/images"
+          - "/srv/drewwiki/omgz_square.gif:/var/www/html/omgz_square.gif"
+          - "/srv/drewwiki/favicon.ico:/var/www/html/favicon.ico"
+          - "/srv/drewwiki/googleAnalytics:/var/www/html/extensions/googleAnalytics"
+        ports:
+          - "8085:80/tcp"
+
   handlers:
     - import_tasks: playbooks/handlers.yml
