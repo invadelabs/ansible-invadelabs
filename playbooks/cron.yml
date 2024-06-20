@@ -103,21 +103,13 @@
       -l /root/scripts/gdrive_invadelabs.com.txt -s
   when: ansible_fqdn == 'invadelabs.com'
 
-# - name: cron; Add cron certbot
+# - name: cron; `hostname invadelabs.com`
 #   cron:
-#     name: certbot
-#     minute: 0
-#     hour: 3,15
+#     name: hostname invadelabs.com
+#     minute: "0"
 #     user: root
-#     job: certbot --apache renew --quiet
-
-- name: cron; `hostname invadelabs.com`
-  cron:
-    name: hostname invadelabs.com
-    minute: "0"
-    user: root
-    job: hostname invadelabs.com
-  when: ansible_fqdn == 'invadelabs.com'
+#     job: hostname invadelabs.com
+#   when: ansible_fqdn == 'invadelabs.com'
 
 - name: cron; autossh
   cron:
@@ -141,14 +133,6 @@
       kill -9 $(ps aux | grep "/usr/bin/[s]sh " | grep invadelabs.com | awk -F" " '{print $2}')
   when: ansible_host == "drew-serv"
 
-# - name: cron; disable wifi # XXX temp workaround
-#   cron:
-#     name: disable wifi
-#     special_time: reboot
-#     user: root
-#     job: sleep 30 && nmcli dev set wlo1 managed no && /usr/sbin/rfkill block 0
-#   when: ansible_host == "drew-serv"
-
 # - name: cron; docker start pihole # XXX temp workaround
 #   cron:
 #     name: docker start pihole
@@ -156,15 +140,6 @@
 #     user: root
 #     job: sleep 30; docker start pihole >/dev/null
 #   when: ansible_host == "drew-serv"
-
-# XXX wireless-crda / crda package missing in jammy armbian?
-- name: cron; set wifi region u22.04 pine64
-  cron:
-    name: set wifi region u22.04 pine64
-    special_time: reboot
-    user: root
-    job: /usr/sbin/iw reg set US
-  when: ansible_host == "drew-pine64"
 
 - name: cron; fail2ban socket perms # XXX temp workaround
   cron:

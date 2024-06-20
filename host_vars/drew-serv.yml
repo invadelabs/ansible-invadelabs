@@ -19,7 +19,6 @@
     - zigbee2mqtt
   nrpe_plugins_dir: "/usr/lib/nagios/plugins"
   nrpe_specific:
-    - check_bat: "/usr/local/bin/check_bat"
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker -p /mnt/share -p /srv"
     - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers | join(' ')}}"
     - check_es_disk: "/usr/local/bin/check_es_system.sh -H localhost -t disk -d 20"
@@ -31,7 +30,7 @@
     - check_healthchecks.io: "{{nrpe_plugins_dir}}/check_http -H hc-ping.com -u {{ healthchecks_endpoint['content'] | b64decode | trim }} -s 'OK'"
     - check_iostat: "/usr/local/bin/check_iostat -d sda -i -p"
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 10,6,4 -c 20,10,5"
-    - check_memory: "/usr/local/bin/check_memory.pl -u M -w 20% -c 10%"
+    - check_memory: "{{nrpe_plugins_dir}}/check_memory -w 80% -c 90%"
     - check_mongo_mybg: "/usr/local/bin/check_mongo_mybg.py /etc/default/cgm.env 14400"
     - check_smart_nvme0: "/usr/local/bin/check_smart.pl -d /dev/nvme0 -i auto"
     - check_smart_sda: "/usr/local/bin/check_smart.pl -d /dev/sda -i auto"

@@ -103,6 +103,7 @@
 - name: pre_flightcheck; debug message to docker compose
   debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
+  when: ansible_host == "drew-serv"
 
 - name: preflight_check; ensure folders exist
   stat:

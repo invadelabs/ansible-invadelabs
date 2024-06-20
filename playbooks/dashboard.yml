@@ -16,27 +16,7 @@
     group: drew
     mode: 0755
 
-### BEGIN CONFIG FOR RASPBERRY PI
-# - name: dashboard; create dir /home/drew/.config/lxsession/LXDE
-#   file:
-#     path: /home/drew/.config/lxsession/LXDE-pi
-#     state: directory
-#     owner: drew
-#     group: drew
-#     mode: 0755
-#     recurse: yes
-#   when: ansible_host == "drew-pine64"
-
-# - name: dashboard; add /home/drew/.config/lxsession/LXDE/autostart
-#   template:
-#     src: "templates/home/drew/.config/lxsession/LXDE-pi/autostart-{{ansible_host}}.j2"
-#     dest: "/home/drew/.config/lxsession/LXDE/autostart"
-#     owner: drew
-#     group: drew
-#     mode: 0755
-#   when: ansible_host == "drew-pine64"
-
-# LXDE-pi is the name of LXDa-piE session (ps aux | grpe lxde), not the user
+# LXDE-pi is the name of LXDE-pi session (ps aux | grep lxde), not the user
 - name: dashboard; create dir /home/drew/.config/lxsession/LXDE-pi
   file:
     path: /home/drew/.config/lxsession/LXDE-pi
@@ -56,32 +36,19 @@
     mode: 0755
   when: "'dashboard' in group_names"
 
-- name: dashboard; set /etc/lightdm/lightdm.conf
-  lineinfile:
-    dest: /etc/lightdm/lightdm.conf
-    regexp: "^{{ lightdm_item.key }}"
-    line: "{{ lightdm_item.key }}={{ lightdm_item.value }}"
-    state: present
-  with_dict: {
-    "autologin-user": "drew"
-  }
-  loop_control:
-    loop_var: lightdm_item
-  when: "'dashboard' in group_names"
-
-- name: dashboard; set /boot/config.txt
-  lineinfile:
-    dest: /boot/config.txt
-    regexp: "^{{ lightdm_item.key }}"
-    line: "{{ lightdm_item.key }}={{ lightdm_item.value }}"
-    state: present
-  with_dict: {
-    "disable_overscan": "1",
-    "hdmi_enable_4kp60": "1"
-  }
-  loop_control:
-    loop_var: lightdm_item
-  when: "'dashboard' in group_names"
+# now set at installation
+# - name: dashboard; set /etc/lightdm/lightdm.conf
+#   lineinfile:
+#     dest: /etc/lightdm/lightdm.conf
+#     regexp: "^{{ lightdm_item.key }}"
+#     line: "{{ lightdm_item.key }}={{ lightdm_item.value }}"
+#     state: present
+#   with_dict: {
+#     "autologin-user": "drew"
+#   }
+#   loop_control:
+#     loop_var: lightdm_item
+#   when: "'dashboard' in group_names"
 
 # host fingerprint stored in  ~/.synergy/SSL/Fingerprints/Local.txt
 - name: dashboard; create /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt  # noqa deprecated-command-syntax
@@ -89,25 +56,23 @@
   args:
     creates: /home/drew/.synergy/SSL/Fingerprints/TrustedServers.txt
   when: "'dashboard' in group_names"
-### END CONFIG FOR RASPBERRY PI
 
-
-### BEGIN CONFIG FOR ROCK PI
-- name: dashboard; add /etc/lightdm/lightdm.conf.d/99 autologin.conf
-  template:
-    src: "templates/etc/lightdm/lightdm.conf.d/99-autologin.conf.j2"
-    dest: "/etc/lightdm/lightdm.conf.d/99-autologin.conf"
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_host == "drew-rockpi4"
-
-- name: dashboard; add /home/drew/.config/autostart/program.desktop
-  template:
-    src: "templates/home/drew/.config/autostart/program.desktop.j2"
-    dest: "/home/drew/.config/autostart/program.desktop"
-    owner: drew
-    group: drew
-    mode: 0644
-  when: ansible_host == "drew-rockpi4"
-### END CONFIG FOR RASPBERRY PI
+# ### BEGIN CONFIG FOR ROCK PI
+# - name: dashboard; add /etc/lightdm/lightdm.conf.d/99 autologin.conf
+#   template:
+#     src: "templates/etc/lightdm/lightdm.conf.d/99-autologin.conf.j2"
+#     dest: "/etc/lightdm/lightdm.conf.d/99-autologin.conf"
+#     owner: root
+#     group: root
+#     mode: 0644
+#   when: ansible_host == "drew-rockpi4"
+#
+# - name: dashboard; add /home/drew/.config/autostart/program.desktop
+#   template:
+#     src: "templates/home/drew/.config/autostart/program.desktop.j2"
+#     dest: "/home/drew/.config/autostart/program.desktop"
+#     owner: drew
+#     group: drew
+#     mode: 0644
+#   when: ansible_host == "drew-rockpi4"
+# ### END CONFIG FOR RASPBERRY PI

@@ -24,8 +24,6 @@
     - import_tasks: playbooks/initial.yml # etckeeper, fail2ban, ansible bits
     - import_tasks: playbooks/pkgs_debian.yml # apt / dpkg install items
     - import_tasks: playbooks/pip.yml # python pip packages to install
-    - import_tasks: playbooks/iptables.yml # firewall
-      when: ansible_host == "drew-serv"
     - import_tasks: playbooks/lynis.yml # security auditing
     - import_tasks: playbooks/logging.yml # rsyslog to logstash
 
@@ -51,7 +49,7 @@
     - import_tasks: playbooks/nrpe.yml # nagios nrpe agent config
     - import_tasks: playbooks/cron.yml
     - import_tasks: playbooks/ntopng.yml # ntopng network monitoring
-      when: ansible_host == "drew-piv4-02"
+      when: ( ansible_host == "drew-piv4-02" ) or ( ansible_host == "drew-piv5-01" )
     - import_tasks: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
       when: "'dashboard' in group_names"
 

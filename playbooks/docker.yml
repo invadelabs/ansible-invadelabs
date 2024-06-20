@@ -35,3 +35,4 @@
 - name: docker; note to run docker compose
   debug:
     msg: "Run `cd /srv/docker-elk; docker-compose up -d` after restoring /srv/data if we fail around here."
+  when: ansible_host == "drew-serv"

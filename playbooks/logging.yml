@@ -14,7 +14,7 @@
     group: root
     mode: 0600
     validate: "filebeat test config -c %s"
-  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_fqdn == "drew-serv.nm1.invadelabs.com" )
+  when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
   notify: Restart filebeat.service
 
 - name: logging; /etc/systemd/journald.conf
@@ -71,16 +71,10 @@
   loop_control:
     loop_var: logwatch_item
 
-- name: logging; logwatch.conf  # noqa risky-file-permissions
-  lineinfile:
-    path: /etc/logwatch/conf/logwatch.conf
-    state: present
-    create: true
-    regexp: '^{{ logwatchconf_item.key }}'
-    line: '{{ logwatchconf_item.key }} = {{ logwatchconf_item.value }}'
-  with_dict: {
-    "Range": "between -7 days and -1 days",
-    "Archives": "yes"
-  }
-  loop_control:
-    loop_var: logwatchconf_item
+- name: logging; add /etc/logwatch/conf/logwatch.conf
+  template:
+    src: templates/etc/logwatch/conf/logwatch.conf.j2
+    dest: /etc/logwatch/conf/logwatch.conf
+    owner: root
+    group: root
+    mode: 0644

@@ -1,24 +1,9 @@
 ---
 - name: postfix_relay; /etc/postfix/main.cf
-  lineinfile:
+  template:
+    src: templates/etc/postfix/main-relay.cf.j2
     dest: /etc/postfix/main.cf
-    regexp: "^{{ postfix_relay_item.key }}"
-    line: "{{ postfix_relay_item.key }} = {{ postfix_relay_item.value }}"
-    state: present
-  with_dict: {
-    "smtpd_relay_restrictions": "permit_mynetworks permit_sasl_authenticated defer_unauth_destination",
-    "myhostname": "{{ ansible_fqdn }}",
-    "alias_maps": "hash:/etc/aliases",
-    "alias_database": "hash:/etc/aliases",
-    "mydestination": "$myhostname, localhost",
-    "relayhost": "{{ mail_relay }}",
-    "mailbox_size_limit": "0",
-    "recipient_delimiter": "+",
-    "inet_interfaces": "all",
-    "inet_protocols": "all",
-    "header_size_limit": "4096000",
-    "smtp_sasl_security_options": "noanonymous"
-  }
-  loop_control:
-    loop_var: postfix_relay_item
+    owner: root
+    group: root
+    mode: 0644
   notify: Restart postfix.service
