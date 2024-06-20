@@ -44,17 +44,6 @@
   timezone:
     name: America/Denver
 
-- name: initial; add rpi /etc/apt/sources.list apt proxy
-  template:
-    src: templates/etc/apt/sources.list.rpi.j2
-    dest: /etc/apt/sources.list
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - "'raspberrypi' in group_names"
-    - ansible_distribution_release != "bookworm"  # XXX
-
 - name: initial; add debian-bookworm /etc/apt/sources.list apt proxy
   template:
     src: templates/etc/apt/sources.list.bookworm.j2
@@ -63,18 +52,7 @@
     group: root
     mode: 0644
   when:
-    - ansible_distribution_release == "bookworm"  # XXX
-
-- name: initial; add rpi /etc/apt/sources.list.d/raspi.list apt proxy
-  template:
-    src: templates/etc/apt/sources.list.d/raspi.list.rpi.j2
-    dest: /etc/apt/sources.list.d/raspi.list
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - "'raspberrypi' in group_names"
-    - ansible_distribution_release != "bookworm"  # XXX
+    - ansible_distribution_release == "bookworm"
 
 - name: initial; add rpi-bookworm /etc/apt/sources.list.d/raspi.list apt proxy
   template:
@@ -84,7 +62,7 @@
     group: root
     mode: 0644
   when:
-    - ansible_distribution_release == "bookworm"  # XXX
+    - ansible_distribution_release == "bookworm"
 
 - name: initial; add lynis gpg key
   ansible.builtin.copy:
@@ -107,29 +85,6 @@
     mode: 0644
   when:
     - "'debian-nm1' in group_names"
-    - ansible_distribution_release != "bookworm"  # XXX
-
-- name: initial; add azlux log2ram gpg key
-  ansible.builtin.copy:
-    src: templates/usr/share/keyrings/azlux-archive-keyring.gpg.rpi
-    dest: /usr/share/keyrings/azlux-archive-keyring.gpg
-    owner: root
-    group: root
-    mode: 0644
-    # checksum: "sha256:9767f7060fe0bedf00964813a843c10f5b5d566b5deaf369c18454b8926bf243" XXX
-  when:
-    - "'raspberrypi' in group_names"
-    - ansible_distribution_release != "bookworm"  # XXX
-
-- name: initial; add /etc/apt/sources.list.d/azlux.list apt proxy
-  template:
-    src: templates/etc/apt/sources.list.d/azlux.list.rpi.j2
-    dest: /etc/apt/sources.list.d/azlux.list
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - "'raspberrypi' in group_names"
     - ansible_distribution_release != "bookworm"  # XXX
 
 - name: initial; add /etc/apt/apt.conf.d/10periodic
@@ -184,17 +139,6 @@
     dest: /root/scripts
     version: main
     depth: 1
-
-- name: initial; nrpe; dl check_memory.pl
-  get_url:
-    url: https://gist.githubusercontent.com/drew-holt/4da247a2874b7a0470bd3d55d5191312/raw/d24673b607dfee98f8a859acca21ef5dde26aa3d/check_memory.pl
-    dest: /usr/local/bin/check_memory.pl
-    mode: 0755
-    owner: root
-    group: root
-    force: false
-    checksum: "sha256:2269ac81e514a3c75dec030c5dc8d3a058729755c6cbca250e69f717a1ac7978"
-  when: ansible_host == "drew-serv" or ansible_distribution_release == "bookworm"
 
 ## ansi2html.sh
 - name: initial; ansi2html.sh
@@ -262,18 +206,6 @@
     group: root
     force: false
     checksum: "sha256:d3c17702ffcde121cd990bb3e4262a7574b0034aea716e203b357abfaae94210"
-  when: ansible_host == "drew-serv"
-
-## check_bat
-- name: initial; nrpe; dl check_bat
-  get_url:
-    url: https://raw.githubusercontent.com/drew-holt/nagios-plugins/master/check_bat
-    dest: /usr/local/bin/check_bat
-    mode: 0755
-    owner: root
-    group: root
-    force: false
-    checksum: "sha256:153c141744e91c4eadea1e600b253af58b81c315186d7ea2e8a1deeca9096454"
   when: ansible_host == "drew-serv"
 
 ## check_fail2ban.sh http://nagios.fm4dd.com/plugins/manual/check_fail2ban.htm

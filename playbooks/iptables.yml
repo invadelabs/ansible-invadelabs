@@ -1,4 +1,0 @@
----
-- name: iptables; place holder
-  debug:
-    msg: Place holder to set firewall rules

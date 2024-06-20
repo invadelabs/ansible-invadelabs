@@ -1,18 +1,17 @@
 ---
-- name: ntopng; ntopng_my_settings.conf
-  template:
-    src: templates/etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf.j2
-    dest: /etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart ntopng.service
-
 # XXX add deb, move this to before initial install
 - name: ntopng; apt ntop.list
   template:
     src: templates/etc/apt/sources.list.d/ntop.list.j2
     dest: /etc/apt/sources.list.d/ntop.list
+    owner: root
+    group: root
+    mode: 0644
+
+- name: ntopng; ntopng_my_settings.conf
+  template:
+    src: templates/etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf.j2
+    dest: /etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf
     owner: root
     group: root
     mode: 0644

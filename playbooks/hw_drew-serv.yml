@@ -22,23 +22,6 @@
 #     fstype: ext4
 #     state: mounted
 
-# when laptop lid is closed keep power on
-- name: hw_drew-serv; set /etc/systemd/logind.conf
-  lineinfile:
-    dest: /etc/systemd/logind.conf
-    regexp: "^{{logind_item.key}}="
-    line: "{{logind_item.key}}={{logind_item.value}}"
-    state: present
-  with_dict: {
-    "HandleLidSwitch": "ignore",
-    "HandleLidSwitchExternalPower": "ignore",
-    "HandleLidSwitchDocked": "ignore"
-  }
-  loop_control:
-    loop_var: logind_item
-  notify:
-    - Restart systemd-logind.service
-
 # - name: hw; grubby remove rhgb quiet and disable cgroupsv2
 #   shell: grubby --update-kernel=ALL --remove-args="rhgb quiet" --args="systemd.unified_cgroup_hierarchy=0" && touch /var/log/grubby.touch
 #   args:

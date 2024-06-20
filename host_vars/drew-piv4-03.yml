@@ -3,9 +3,8 @@
   nrpe_specific:
     - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 25% -c 10% -p /"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
-    - check_fail2ban: "{{nrpe_plugins_dir}}/check_fail2ban.sh -w 1 -c 2"
     - check_load: "{{nrpe_plugins_dir}}/check_load -r -w 4,2,1 -c 6,4,2"
-    - check_memory: "{{nrpe_plugins_dir}}/check_memory  -w 80%% -c 90%"
+    - check_memory: "{{nrpe_plugins_dir}}/check_memory -w 80%% -c 90%"
     - check_systemd: "{{nrpe_plugins_dir}}/check_systemd"
     - check_temp: "/usr/local/bin/check_temp.sh -d /sys/class/thermal/thermal_zone0/temp -w 60 -c 65"
     - check_total_procs: "{{nrpe_plugins_dir}}/check_procs -w 250 -c 300"
