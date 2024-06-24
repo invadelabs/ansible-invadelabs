@@ -1,6 +1,5 @@
 ---
   monitor_containers:
-    # - pihole
     # - nightscout
     # - zoneminder
     - docker-elk_elasticsearch_1
@@ -9,10 +8,13 @@
     - grafana
     - homeassistant
     - influxdb
+    - minecraft
+    - minecraft-bds
     - mosquitto
     - nexus
     - nginx
     - nut_exporter
+    - pihole
     - plex
     - prometheus
     - ring-mqtt

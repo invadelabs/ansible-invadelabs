@@ -14,7 +14,7 @@ filebeat.prospectors:
     - '/var/log/nginx/kibana.*access.*.log'
   # ignore dashboard readonly client access logs
   exclude_lines:
-    - ^192\.168\.1\.(120|140|147)\.*
+    - ^192\.168\.1\.(112|140|166)\.*
     - ^172\.17\.0\.1\.*
   recursive_glob.enabled: true
 

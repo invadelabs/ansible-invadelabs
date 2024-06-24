@@ -35,6 +35,12 @@
     comment: DNS
     port: 53
     proto: udp
+    src: "{{ dns_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+  loop_control:
+    loop_var: dns_item
 
 - name: ufw; allow 80/tcp
   ufw:
@@ -175,6 +181,20 @@
   loop_control:
     loop_var: nrpe_item
 
+- name: ufw; allow 6080/tcp
+  ufw:
+    rule: allow
+    comment: pihole
+    port: 6080
+    proto: tcp
+    src: "{{ pihole_item }}"
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+    - 10.8.0.1/24
+  loop_control:
+    loop_var: pihole_item
+
 - name: ufw; allow 8080/tcp
   ufw:
     rule: allow
@@ -290,3 +310,42 @@
     port: 1900,5353,32410,32412,32413,32414
     proto: udp
     src: 192.168.1.0/24
+
+- name: ufw; allow inv-rsyslog/tcp
+  ufw:
+    rule: allow
+    comment: inv-rsyslog
+    port: 11514
+    proto: tcp
+    src: '{{ inv_rsyslog_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+  loop_control:
+    loop_var: inv_rsyslog_item
+
+- name: ufw; allow 19132/minecraft-bedrock/udp
+  ufw:
+    rule: allow
+    comment: minecraft-bedrock
+    port: 19132
+    proto: udp
+    src: '{{ minecraft_bedrock_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+  loop_control:
+    loop_var: minecraft_bedrock_item
+
+- name: ufw; allow 25565/minecraft/tcp
+  ufw:
+    rule: allow
+    comment: minecraft
+    port: 25565
+    proto: tcp
+    src: '{{ minecraft_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+  loop_control:
+    loop_var: minecraft_item

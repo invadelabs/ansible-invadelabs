@@ -77,7 +77,34 @@
         - docker; create container prometheus
         - docker; create container nut_exporter
         - docker; create container plex
+        - docker; create container pihole
+        - docker; create container minecraft
+        - docker; create container minecraft-bds
 
+    - name: docker; create container minecraft
+      docker_container:
+        name: minecraft
+        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-server:2024.6.1-java21"
+        state: started
+        restart_policy: unless-stopped
+        hostname: minecraft.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        volumes:
+          - "/srv/mc-data:/data"
+        ports:
+          - "25565:25565/tcp"
+        env:
+          EULA: "TRUE"
+          MEMORY: "8G"
+          MOTD: "Monsters off, cheats on, txt msg for op"
+          SPAWN_MONSTERS: "false"
+          SERVER_NAME: "Drew's Minecraft Server"
+          MAX_PLAYERS: "5"
+          ALLOW_CHEATS: "TRUE"
+          MODE: "survival"
+      when: ansible_host == "drew-serv"
 ## HANDLERS ##
   handlers:
     - import_tasks: playbooks/handlers.yml # start / restart systemd stuff, other things # noqa: E204
@@ -399,30 +426,79 @@
           - "32469:32469/tcp"
       when: ansible_host == "drew-serv"
 
-    # - name: docker; create container pihole
-    #   docker_container:
-    #     name: pihole
-    #     image: "{{ nexus_docker_hub_repo }}pihole/pihole:v5.6"
-    #     state: started
-    #     restart_policy: unless-stopped
-    #     hostname: pihole.invadelabs.com
-    #     log_driver: json-file
-    #     log_options:
-    #       max-size: "10m"
-    #     volumes:
-    #       - "/srv/pihole/etc-pihole:/etc/pihole"
-    #       - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
-    #     ports:
-    #       - "{{ ansible_default_ipv4.address }}:53:53/tcp"
-    #       - "{{ ansible_default_ipv4.address }}:53:53/udp"
-    #       - "6080:80/tcp"
-    #     env:
-    #       TZ: "America/Denver"
-    #     dns_servers:
-    #       - 127.0.0.1
-    #       - 1.1.1.1
-    #   when: "'pihole' in group_names"
+    - name: docker; create container pihole
+      docker_container:
+        name: pihole
+        image: "{{ nexus_docker_hub_repo }}pihole/pihole:2024.06.0"
+        state: started
+        restart_policy: unless-stopped
+        hostname: pihole.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        volumes:
+          - "/srv/pihole/etc-pihole:/etc/pihole"
+          - "/srv/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+        ports:
+          - "{{ ansible_default_ipv4.address }}:53:53/tcp"
+          - "{{ ansible_default_ipv4.address }}:53:53/udp"
+          - "6080:80/tcp"
+        env:
+          TZ: "America/Denver"
+        dns_servers:
+          - 127.0.0.1
+          - 1.1.1.1
+      when: "'pihole' in group_names"
 
+    - name: docker; create container minecraft
+      docker_container:
+        name: minecraft
+        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-server:2024.6.1-java21"
+        state: started
+        restart_policy: unless-stopped
+        hostname: minecraft.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        volumes:
+          - "/srv/mc-data:/data"
+        ports:
+          - "25565:25565/tcp"
+        env:
+          EULA: "TRUE"
+          MEMORY: "8G"
+          MOTD: "Monsters off, cheats on, txt msg for op"
+          SPAWN_MONSTERS: "false"
+          SERVER_NAME: "Drew's Minecraft Server"
+          MAX_PLAYERS: "5"
+          ALLOW_CHEATS: "TRUE"
+          MODE: "survival"
+      when: ansible_host == "drew-serv"
+
+    - name: docker; create container minecraft-bds
+      docker_container:
+        name: minecraft-bds
+        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-bedrock-server"
+        state: started
+        restart_policy: unless-stopped
+        hostname: minecraft-bds.invadelabs.com
+        log_driver: json-file
+        log_options:
+          max-size: "10m"
+        volumes:
+          - "/srv/mc-bds-data:/data"
+        ports:
+          - "19132:19132/udp"
+        env:
+          EULA: "TRUE"
+          MEMORY: "4G"
+          MOTD: "DD Console Go"
+          SPAWN_MONSTERS: "false"
+          GAMEMODE: "creative"
+          LEVEL_TYPE: "flat"
+          SERVER_NAME: "Drew's Console Server"
+          MAX_PLAYERS: "4"
+      when: ansible_host == "drew-serv"
     # # XXX needs /srv/nut-upsd
     # # can't find device after power return and requires restart of container
     # - name: docker; create container nut-upsd
