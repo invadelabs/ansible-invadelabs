@@ -35,6 +35,7 @@
     - conf.d/kibana.invadelabs.com
     - conf.d/nexus.invadelabs.com
     - conf.d/ntopng.invadelabs.com
+    - conf.d/pihole.invadelabs.com
     - conf.d/plex.invadelabs.com
     - conf.d/prometheus.invadelabs.com
   loop_control:

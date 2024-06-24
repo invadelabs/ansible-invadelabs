@@ -1,9 +1,9 @@
 - name: pihole; add pihole custom.list
   template:
     src: "templates/srv/pihole/etc-pihole/custom.list.j2"
-    dest: "/srv/pihole/etc-pihole/custom.list.j2"
+    dest: "/srv/pihole/etc-pihole/custom.list"
     owner: drew
-    group: drew
-    mode: 0644
+    group: root
+    mode: 0664
   when: "'pihole' in group_names"
   notify: docker; reload pihole custom.list and flush cache
