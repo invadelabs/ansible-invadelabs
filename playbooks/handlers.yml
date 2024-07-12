@@ -1,8 +1,5 @@
 ---
 ## Start Service Handlers
-- name: Start apache2.service
-  service: name=apache2 state=started enabled=yes
-  when: ansible_host == "invadelabs.com"
 - name: Start chronyd.service
   service: name=chronyd state=started enabled=yes
 - name: Start docker.service
