@@ -24,6 +24,7 @@
     dest: /srv/nginx/{{nginx_template_item}}.conf
   with_items:
     - nginx
+    - ssl-inv-default
     - conf.d/default
     - conf.d/docker.invadelabs.com
     - conf.d/docker-ghcr.invadelabs.com
@@ -32,6 +33,7 @@
     - conf.d/drew-serv.nm1.invadelabs.com
     - conf.d/grafana.invadelabs.com
     - conf.d/ha.invadelabs.com
+    - conf.d/jf.invadelabs.com
     - conf.d/kibana.invadelabs.com
     - conf.d/nexus.invadelabs.com
     - conf.d/ntopng.invadelabs.com

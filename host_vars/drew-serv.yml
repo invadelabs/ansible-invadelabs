@@ -8,6 +8,7 @@
     - grafana
     - homeassistant
     - influxdb
+    - jellyfin
     - minecraft
     - mosquitto
     - nexus
