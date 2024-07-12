@@ -38,6 +38,7 @@
     - conf.d/pihole.invadelabs.com
     - conf.d/plex.invadelabs.com
     - conf.d/prometheus.invadelabs.com
+    - conf.d/proxmox.invadelabs.com
   loop_control:
     loop_var: nginx_template_item
   when: ansible_host == "drew-serv"

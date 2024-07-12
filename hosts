@@ -17,7 +17,7 @@ drew-piv4-03
 drew-piv4-04
 drew-piv5-01
 
-[amd64]
+[x86_64]
 drew-serv
 
 [dashboard]
@@ -40,4 +40,4 @@ nm1-hosts
 
 [debian-nm1:children]
 raspberrypi
-amd64
+x86_64

@@ -9,7 +9,6 @@
     - homeassistant
     - influxdb
     - minecraft
-    - minecraft-bds
     - mosquitto
     - nexus
     - nginx

@@ -17,17 +17,24 @@
   when: ( ansible_fqdn == "invadelabs.com" ) or ( ansible_host == "drew-serv" )
   notify: Restart filebeat.service
 
-- name: logging; /etc/systemd/journald.conf
-  lineinfile:
-    dest: /etc/systemd/journald.conf
-    regexp: "^{{ journald_item.key }}"
-    line: "{{ journald_item.key }}={{ journald_item.value }}"
-    state: present
-  with_dict: {
-    "ForwardToSyslog": "yes"
-  }
-  loop_control:
-    loop_var: journald_item
+- name: logging; mkdir /etc/systemd/journald.conf.d
+  file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: "'raspberrypi' in group_names"
+  notify: Restart systemd-journald.service
+
+- name: logging; add /etc/systemd/journald.conf.d/20-inv-default.conf
+  template:
+    src: templates/etc/systemd/journald.conf.d/20-inv-default.conf.j2
+    dest: /etc/systemd/journald.conf.d/20-inv-default.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: "'raspberrypi' in group_names"
   notify: Restart systemd-journald.service
 
 - name: logging; add /etc/sysctl.d/vm.max_map_count.conf drew-serv # for logstash container

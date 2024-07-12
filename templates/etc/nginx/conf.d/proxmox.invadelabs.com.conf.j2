@@ -1,30 +1,28 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name nexus.invadelabs.com;
+    server_name proxmox.invadelabs.com;
     return 301 https://$host$request_uri;
-    access_log /var/log/nginx/nexus.invadelabs.com.access.log main;
-    error_log /var/log/nginx/nexus.invadelabs.com.error.log error;
+    access_log /var/log/nginx/proxmox.invadelabs.com.access.log main;
+    error_log /var/log/nginx/proxmox.invadelabs.com.error.log error;
 }
 
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name  nexus.invadelabs.com;
+    server_name  proxmox.invadelabs.com;
 
-    access_log /var/log/nginx/nexus.invadelabs.com.secure.access.log main;
-    error_log /var/log/nginx/nexus.invadelabs.com.secure.error.log error;
+    access_log /var/log/nginx/proxmox.invadelabs.com.secure.access.log main;
+    error_log /var/log/nginx/proxmox.invadelabs.com.secure.error.log error;
 
     allow  192.168.1.0/24;
-    allow  172.17.0.1/24
     deny   all;
 
     location / {
-        proxy_pass       http://172.17.0.1:8081/;
+        proxy_pass       https://192.168.1.215:8006/;
         proxy_set_header X-Forwarded-Host $host:$server_port;
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
     }
 
     # wildcard cert
