@@ -107,5 +107,5 @@
   when: (ansible_host == "drew-serv") or (ansible_host == "drew-pine64")
 
 - name: docker; reload nginx
-  shell: /usr/bin/docker exec nginx /bin/sh -c '/usr/sbin/nginx -s reopen > /dev/null 2>/dev/null'
+  shell: /usr/bin/docker exec nginx /bin/sh -c '/usr/sbin/nginx -s reopen'
   when: ansible_host == "drew-serv"
