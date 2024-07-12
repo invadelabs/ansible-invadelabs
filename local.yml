@@ -81,30 +81,6 @@
         - docker; create container minecraft
         - docker; create container minecraft-bds
 
-    - name: docker; create container minecraft
-      docker_container:
-        name: minecraft
-        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-server:2024.6.1-java21"
-        state: started
-        restart_policy: unless-stopped
-        hostname: minecraft.invadelabs.com
-        log_driver: json-file
-        log_options:
-          max-size: "10m"
-        volumes:
-          - "/srv/mc-data:/data"
-        ports:
-          - "25565:25565/tcp"
-        env:
-          EULA: "TRUE"
-          MEMORY: "8G"
-          MOTD: "Monsters off, cheats on, txt msg for op"
-          SPAWN_MONSTERS: "false"
-          SERVER_NAME: "Drew's Minecraft Server"
-          MAX_PLAYERS: "5"
-          ALLOW_CHEATS: "TRUE"
-          MODE: "survival"
-      when: ansible_host == "drew-serv"
 ## HANDLERS ##
   handlers:
     - import_tasks: playbooks/handlers.yml # start / restart systemd stuff, other things # noqa: E204
@@ -162,7 +138,7 @@
     - name: docker; create container nagios4
       docker_container:
         name: nagios4
-        image: "{{ nexus_docker_hub_repo }}jasonrivers/nagios:latest" # 4.4.7
+        image: "{{ nexus_docker_hub_repo }}jasonrivers/nagios:4.5.2"
         state: started
         restart_policy: unless-stopped
         hostname: nagios.invadelabs.com
@@ -216,7 +192,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_hub_repo }}koenkk/zigbee2mqtt:1.38.0"
+        image: "{{ nexus_docker_hub_repo }}koenkk/zigbee2mqtt:1.39.0"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -268,7 +244,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.6.0"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.7.2"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -295,7 +271,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.0.0"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.0.1"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -352,7 +328,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.52.0"
+        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.53.0"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
@@ -392,7 +368,7 @@
     - name: docker; create container plex
       docker_container:
         name: plex
-        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.3"
+        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.4"
         state: started
         restart_policy: unless-stopped
         hostname: plex.invadelabs.com
@@ -407,10 +383,10 @@
           VERSION: "docker"
         volumes:
           - "/mnt/share/plex/library:/config"
-          - "/mnt/share/plex/tvseries:/tv"
-          - "/mnt/share/plex/movies:/movies"
-          - "/mnt/share/music-youtube-dl:/music-youtube-dl:rw"
-          - "/mnt/share/Music:/Music:rw"
+          - "/mnt/share/media/tvseries:/tv:ro"
+          - "/mnt/share/media/movies:/movies:ro"
+          - "/mnt/share/media/music:/music-youtube-dl:ro"
+          - "/mnt/share/Music:/Music:ro"
         devices:
           - /dev/dri:/dev/dri
         ports:
@@ -429,7 +405,7 @@
     - name: docker; create container pihole
       docker_container:
         name: pihole
-        image: "{{ nexus_docker_hub_repo }}pihole/pihole:2024.06.0"
+        image: "{{ nexus_docker_hub_repo }}pihole/pihole:2024.07.0"
         state: started
         restart_policy: unless-stopped
         hostname: pihole.invadelabs.com
@@ -456,7 +432,7 @@
         image: "{{ nexus_docker_hub_repo }}itzg/minecraft-server:2024.6.1-java21"
         state: started
         restart_policy: unless-stopped
-        hostname: minecraft.invadelabs.com
+        hostname: mc.invadelabs.com
         log_driver: json-file
         log_options:
           max-size: "10m"
@@ -464,6 +440,7 @@
           - "/srv/mc-data:/data"
         ports:
           - "25565:25565/tcp"
+          - "25575:25575/tcp"
         env:
           EULA: "TRUE"
           MEMORY: "8G"
@@ -481,7 +458,7 @@
         image: "{{ nexus_docker_hub_repo }}itzg/minecraft-bedrock-server"
         state: started
         restart_policy: unless-stopped
-        hostname: minecraft-bds.invadelabs.com
+        hostname: mc-bds.invadelabs.com
         log_driver: json-file
         log_options:
           max-size: "10m"
@@ -491,14 +468,15 @@
           - "19132:19132/udp"
         env:
           EULA: "TRUE"
-          MEMORY: "4G"
-          MOTD: "DD Console Go"
+          MEMORY: "8G"
+          MOTD: "Monsters off, cheats on, txt msg for op"
           SPAWN_MONSTERS: "false"
-          GAMEMODE: "creative"
-          LEVEL_TYPE: "flat"
-          SERVER_NAME: "Drew's Console Server"
-          MAX_PLAYERS: "4"
+          SERVER_NAME: "Drew's BDS Minecraft Server"
+          MAX_PLAYERS: "5"
+          ALLOW_CHEATS: "TRUE"
+          MODE: "survival"
       when: ansible_host == "drew-serv"
+
     # # XXX needs /srv/nut-upsd
     # # can't find device after power return and requires restart of container
     # - name: docker; create container nut-upsd
