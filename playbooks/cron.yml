@@ -173,7 +173,7 @@
     user: root
     job: >-
       D=$(date '+\%Y\%m\%d\%H\%M\%S\%z');
-      cd /mnt/share/bkup &&
+      cd /mnt/share/bkup/elasticsearch &&
       tar -I "pxz -T 0" --listed-incremental=docker-elk.snar -cf docker-elk.$D.tar.xz docker-elk/ &&
       rclone copy -v --bwlimit 400k
       --filter "+ docker-elk.*.tar.xz"
@@ -206,8 +206,8 @@
     # month: */4
     user: root
     job: >-
-      if ls /mnt/share/bkup/docker-elk.*; then
-      rm -fv /mnt/share/bkup/docker-elk.*; fi |
+      if ls /mnt/share/bkup/elasticsearch/docker-elk.*; then
+      rm -fv /mnt/share/bkup/elasticsearch/docker-elk.*; fi |
       systemd-cat -t es-backup-cleanup
   when: ansible_host == "drew-serv"
 
