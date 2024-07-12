@@ -29,6 +29,8 @@
       - ansible
       # - python3-pip  # #XXX bookworm
 
+      - rsyslog
+
       - monitoring-plugins-standard
       - nagios-nrpe-server
       - monitoring-plugins-basic
@@ -57,7 +59,7 @@
       - chkrootkit  # malware scanner, to perform periodic file system scans [HRDN-7230]
   notify:
     - Start postfix.service
-    - Start apache2.service
+    - Start rsyslog.service
 
 - name: update-alternatives; editor vim-basic
   alternatives:
