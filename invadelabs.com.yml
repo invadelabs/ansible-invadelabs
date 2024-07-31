@@ -47,6 +47,7 @@
           - "/srv/nginx/conf.d:/etc/nginx/conf.d:ro"
           - "/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
           - "/var/log/nginx:/var/log/nginx:rw"
+          - "/srv/nginx/ssl-inv-default.conf:/etc/nginx/ssl-inv-default.conf:ro"
         ports:
           - "80:80/tcp"
           - "443:443/tcp"

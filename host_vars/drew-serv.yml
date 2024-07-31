@@ -15,7 +15,6 @@
     - nginx
     - nut_exporter
     - pihole
-    - plex
     - prometheus
     - ring-mqtt
     - zigbee2mqtt
