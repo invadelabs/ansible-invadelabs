@@ -58,7 +58,7 @@
         FILE=$(rclone lsjson
         --filter '- */**'
         --filter '+ drew-serv.*.tar.xz'
-        --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1)
+        --filter '- *' googledrive:/Backup/Web | jq --sort-keys -r '.[].Name' | tail -n 1)
         rclone copyto googledrive:/Backup/Web/$FILE /srv/drew-serv-bkup-latest.tar.xz
       args:
         creates: /srv/drew-serv-bkup-latest.tar.xz
@@ -76,10 +76,8 @@
         - docker; create container grafana
         - docker; create container prometheus
         - docker; create container nut_exporter
-        - docker; create container plex
         - docker; create container pihole
         - docker; create container minecraft
-        - docker; create container minecraft-bds
         - docker; create container jellyfin
 
 ## HANDLERS ##
@@ -246,7 +244,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.7.2"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.7.4"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -263,7 +261,7 @@
         }
         # temp dns workaround..
         etc_hosts: {
-          "plex.invadelabs.com": "{{ ansible_default_ipv4.address }}"
+          "jf.invadelabs.com": "{{ ansible_default_ipv4.address }}"
         }
         # network_mode: host
         ports:
@@ -367,42 +365,42 @@
           NUT_EXPORTER_SERVER: "{{ ansible_default_ipv4.address }}"
       when: ansible_host == "drew-serv"
 
-    - name: docker; create container plex
-      docker_container:
-        name: plex
-        image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.4"
-        state: started
-        restart_policy: unless-stopped
-        hostname: plex.invadelabs.com
-        log_driver: json-file
-        log_options:
-          max-size: "10m"
-        env_file: /etc/default/plex.env
-        env:
-          PUID: "1000"
-          PGID: "1000"
-          TZ: "America/Denver"
-          VERSION: "docker"
-        volumes:
-          - "/mnt/share/plex/library:/config"
-          - "/mnt/share/media/tvseries:/tv:ro"
-          - "/mnt/share/media/movies:/movies:ro"
-          - "/mnt/share/media/music:/music-youtube-dl:ro"
-          - "/mnt/share/Music:/Music:ro"
-        devices:
-          - /dev/dri:/dev/dri
-        ports:
-          - "32400:32400/tcp"
-          - "1900:1900/udp"
-          - "3005:3005/tcp"
-          - "5353:5353/udp"
-          - "8324:8324/tcp"
-          - "32410:32410/udp"
-          - "32412:32412/udp"
-          - "32413:32413/udp"
-          - "32414:32414/udp"
-          - "32469:32469/tcp"
-      when: ansible_host == "drew-serv"
+    #- name: docker; create container plex
+    #  docker_container:
+    #    name: plex
+    #    image: "{{ nexus_docker_hub_repo }}linuxserver/plex:1.40.4"
+    #    state: started
+    #    restart_policy: unless-stopped
+    #    hostname: plex.invadelabs.com
+    #    log_driver: json-file
+    #    log_options:
+    #      max-size: "10m"
+    #    env_file: /etc/default/plex.env
+    #    env:
+    #      PUID: "1000"
+    #      PGID: "1000"
+    #      TZ: "America/Denver"
+    #      VERSION: "docker"
+    #    volumes:
+    #      - "/mnt/share/plex/library:/config"
+    #      - "/mnt/share/media/tvseries:/tv:ro"
+    #      - "/mnt/share/media/movies:/movies:ro"
+    #      - "/mnt/share/media/music:/music-youtube-dl:ro"
+    #      - "/mnt/share/Music:/Music:ro"
+    #    devices:
+    #      - /dev/dri:/dev/dri
+    #    ports:
+    #      - "32400:32400/tcp"
+    #      - "1900:1900/udp"
+    #      - "3005:3005/tcp"
+    #      - "5353:5353/udp"
+    #      - "8324:8324/tcp"
+    #      - "32410:32410/udp"
+    #      - "32412:32412/udp"
+    #      - "32413:32413/udp"
+    #      - "32414:32414/udp"
+    #      - "32469:32469/tcp"
+    #  when: ansible_host == "drew-serv"
 
     - name: docker; create container pihole
       docker_container:
@@ -431,7 +429,7 @@
     - name: docker; create container minecraft
       docker_container:
         name: minecraft
-        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-server:2024.6.1-java21"
+        image: "{{ nexus_docker_hub_repo }}05jchambers/legendary-minecraft-geyser-floodgate:latest"
         state: started
         restart_policy: unless-stopped
         hostname: mc.invadelabs.com
@@ -439,44 +437,16 @@
         log_options:
           max-size: "10m"
         volumes:
-          - "/srv/mc-data:/data"
+          - "/srv/mc-data:/minecraft"
         ports:
           - "25565:25565/tcp"
           - "25575:25575/tcp"
-        env:
-          EULA: "TRUE"
-          MEMORY: "8G"
-          MOTD: "Monsters off, cheats on, txt msg for op"
-          SPAWN_MONSTERS: "false"
-          SERVER_NAME: "Drew's Minecraft Server"
-          MAX_PLAYERS: "5"
-          ALLOW_CHEATS: "TRUE"
-          MODE: "survival"
-      when: ansible_host == "drew-serv"
-
-    - name: docker; create container minecraft-bds
-      docker_container:
-        name: minecraft-bds
-        image: "{{ nexus_docker_hub_repo }}itzg/minecraft-bedrock-server"
-        state: started
-        restart_policy: unless-stopped
-        hostname: mc-bds.invadelabs.com
-        log_driver: json-file
-        log_options:
-          max-size: "10m"
-        volumes:
-          - "/srv/mc-bds-data:/data"
-        ports:
           - "19132:19132/udp"
+          - "19132:19132/tcp"
         env:
-          EULA: "TRUE"
-          MEMORY: "8G"
-          MOTD: "Monsters off, cheats on, txt msg for op"
-          SPAWN_MONSTERS: "false"
-          SERVER_NAME: "Drew's BDS Minecraft Server"
-          MAX_PLAYERS: "5"
-          ALLOW_CHEATS: "TRUE"
-          MODE: "survival"
+          MaxMemory: "8196"
+          TZ: "America/Denver"
+          BackupCount: "20"
       when: ansible_host == "drew-serv"
 
     # # XXX needs /srv/nut-upsd

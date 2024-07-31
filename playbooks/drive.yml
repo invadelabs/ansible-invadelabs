@@ -2,7 +2,7 @@
 - name: drive; get invadelabs.com-bkup-latest.tar.xz backup
   shell: |
     set -o pipefail
-    FILE=$(rclone lsjson --filter '- */**' --filter '+ invadelabs.com.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq -r '.[].Name' | sort | tail -n 1)
+    FILE=$(rclone lsjson --filter '- */**' --filter '+ invadelabs.com.*.tar.xz' --filter '- *' googledrive:/Backup/Web | jq --sort-keys -r '.[].Name' | tail -n 1)
     rclone copyto googledrive:/Backup/Web/$FILE /srv/invadelabs.com-bkup-latest.tar.xz
   args:
     chdir: /root
