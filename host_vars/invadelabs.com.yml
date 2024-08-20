@@ -1,5 +1,7 @@
 ---
   monitor_containers:
+   - nginx
+   - drewwiki
    - nightscout
   nrpe_plugins_dir: "/usr/lib/nagios/plugins"
   nrpe_specific:
