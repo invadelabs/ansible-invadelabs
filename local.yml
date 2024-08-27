@@ -212,7 +212,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.6.7"
+        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.7.0"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -244,7 +244,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.7.4"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.8.2"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -271,7 +271,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.1.3"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.1.4"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -280,10 +280,11 @@
           max-size: "10m"
         env:
           GF_SECURITY_ALLOW_EMBEDDING: "true"
-          GF_INSTALL_PLUGINS: "natel-discrete-panel"
-          GF_ALLOW_LOADING_UNSIGNED_PLUGINS: "natel-discrete-panel"
+          GF_AUTH_ANONYMOUS_ENABLED: "true"
+          GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
         volumes:
           - "/srv/grafana:/var/lib/grafana"
+          - "/srv/grafana/defaults.ini:/usr/share/grafana/conf/defaults.ini"
         ports:
           - "3000:3000/tcp"
       when: ansible_host == "drew-serv"
@@ -328,7 +329,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.53.0"
+        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.53.2"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
