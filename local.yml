@@ -35,7 +35,7 @@
       when: ansible_host == "drew-serv"
     - import_tasks: playbooks/samba.yml # samba
       when: ansible_host == "drew-serv"
-    - import_tasks: playbooks/nginx.yml # reverse https proxy
+    - import_tasks: playbooks/nginx-drew-serv.yml # reverse https proxy
       when: ansible_host == "drew-serv"
     - import_tasks: playbooks/nut_ups.yml # NUT UPS config
       when: ansible_host == "drew-serv"
@@ -117,7 +117,7 @@
     - name: docker; create container nginx
       docker_container:
         name: nginx
-        image: "nginx:1.27.0-alpine"
+        image: "nginx:1.27.1-alpine"
         state: started
         restart_policy: unless-stopped
         hostname: nginx.invadelabs.com
@@ -212,7 +212,7 @@
     - name: docker; create container ring-mqtt
       docker_container:
         name: ring-mqtt
-        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.7.0"
+        image: "{{ nexus_docker_hub_repo }}tsightler/ring-mqtt:5.7.1"
         state: started
         restart_policy: unless-stopped
         hostname: ring-mqtt.invadelabs.com
@@ -221,6 +221,8 @@
           max-size: "10m"
         volumes:
           - "/srv/ring-mqtt:/data"
+        ports:
+          - "8554:8554/tcp"
       when: ansible_host == "drew-serv"
 
     - name: docker; create container influxdb
@@ -244,7 +246,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.8.2"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.9.0b1"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -271,7 +273,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.1.4"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.2.0"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -279,12 +281,14 @@
         log_options:
           max-size: "10m"
         env:
-          GF_SECURITY_ALLOW_EMBEDDING: "true"
+          GF_USERS_ALLOW_SIGN_UP: "false"
+          GF_USERS_ALLOW_ORG_CREATE: "false"
           GF_AUTH_ANONYMOUS_ENABLED: "true"
-          GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+          # GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+          GF_SERVER_ROOT_URL: "https://grafana.invadelabs.com"
         volumes:
           - "/srv/grafana:/var/lib/grafana"
-          - "/srv/grafana/defaults.ini:/usr/share/grafana/conf/defaults.ini"
+          # - "/srv/grafana/defaults.ini:/usr/share/grafana/conf/defaults.ini"
         ports:
           - "3000:3000/tcp"
       when: ansible_host == "drew-serv"
@@ -329,7 +333,7 @@
     - name: docker; create container prometheus
       docker_container:
         name: prometheus
-        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.53.2"
+        image: "{{ nexus_docker_hub_repo }}prom/prometheus:v2.54.1"
         command: [
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
@@ -525,7 +529,7 @@
     - name: docker; create container jellyfin
       docker_container:
         name: jellyfin
-        image: "{{ nexus_docker_hub_repo }}jellyfin/jellyfin:10.9.9"
+        image: "{{ nexus_docker_hub_repo }}jellyfin/jellyfin:10.9.10"
         state: started
         restart_policy: unless-stopped
         hostname: jf.invadelabs.com

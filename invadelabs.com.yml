@@ -70,7 +70,7 @@
     - name: docker; create container tconnectsync
       docker_container:
         name: tconnectsync
-        image: "drewderivative/tconnectsync:3d2c2dc"
+        image: "jwoglom/tconnectsync:1.0.0"
         state: present
         restart_policy: false
         # temp dns workaround..
