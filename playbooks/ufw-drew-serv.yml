@@ -249,6 +249,34 @@
   loop_control:
     loop_var: jellyfin_item
 
+- name: ufw; allow 1900/udp 7359/udp
+  ufw:
+    rule: allow
+    comment: jellyfin
+    port: 1900,7359
+    proto: udp
+    src: '{{ jellyfin_auto_discover_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+    - 10.8.0.1/24
+  loop_control:
+    loop_var: jellyfin_auto_discover_item
+
+- name: ufw; allow 8554/tcp
+  ufw:
+    rule: allow
+    comment: ring-mqtt-rtsp
+    port: 8554
+    proto: tcp
+    src: '{{ ring_mqtt_rtsp_item }}'
+  with_items:
+    - 172.17.0.0/16 # XXX re-network
+    - 192.168.1.0/24
+    - 10.8.0.1/24
+  loop_control:
+    loop_var: ring_mqtt_rtsp_item
+
 - name: ufw; allow 8123/tcp
   ufw:
     rule: allow
