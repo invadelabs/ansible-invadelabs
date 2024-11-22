@@ -1,4 +1,4 @@
----
+
 - hosts: nm1
   become: true
   become_method: sudo
@@ -49,7 +49,7 @@
     - import_tasks: playbooks/nrpe.yml # nagios nrpe agent config
     - import_tasks: playbooks/cron.yml
     - import_tasks: playbooks/ntopng.yml # ntopng network monitoring
-      when: ( ansible_host == "drew-piv4-02" ) or ( ansible_host == "drew-piv5-01" )
+      when: ansible_host == "drew-piv5-01"
     - import_tasks: playbooks/dashboard.yml # keyboardless/mouseless X11 dashboard
       when: "'dashboard' in group_names"
 
@@ -192,7 +192,7 @@
     - name: docker; create container zigbee2mqtt
       docker_container:
         name: zigbee2mqtt
-        image: "{{ nexus_docker_hub_repo }}koenkk/zigbee2mqtt:1.39.1"
+        image: "{{ nexus_docker_hub_repo }}koenkk/zigbee2mqtt:1.40.2"
         state: started
         restart_policy: unless-stopped
         hostname: zigbee2mqtt.invadelabs.com
@@ -246,7 +246,7 @@
     - name: docker; create container homeassistant
       docker_container:
         name: homeassistant
-        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.9.0b1"
+        image: "{{ nexus_docker_hub_repo }}homeassistant/home-assistant:2024.10.2"
         state: started
         restart_policy: unless-stopped
         hostname: homeassistant.invadelabs.com
@@ -273,7 +273,7 @@
     - name: docker; create container grafana
       docker_container:
         name: grafana
-        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.2.0"
+        image: "{{ nexus_docker_hub_repo }}grafana/grafana:11.2.2"
         state: started
         restart_policy: unless-stopped
         hostname: grafana.invadelabs.com
@@ -284,8 +284,9 @@
           GF_USERS_ALLOW_SIGN_UP: "false"
           GF_USERS_ALLOW_ORG_CREATE: "false"
           GF_AUTH_ANONYMOUS_ENABLED: "true"
-          # GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+          GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
           GF_SERVER_ROOT_URL: "https://grafana.invadelabs.com"
+          GF_ENABLE_GZIP: "true"
         volumes:
           - "/srv/grafana:/var/lib/grafana"
           # - "/srv/grafana/defaults.ini:/usr/share/grafana/conf/defaults.ini"
@@ -529,7 +530,7 @@
     - name: docker; create container jellyfin
       docker_container:
         name: jellyfin
-        image: "{{ nexus_docker_hub_repo }}jellyfin/jellyfin:10.9.10"
+        image: "{{ nexus_docker_hub_repo }}jellyfin/jellyfin:10.9.11"
         state: started
         restart_policy: unless-stopped
         hostname: jf.invadelabs.com
@@ -539,10 +540,9 @@
         volumes:
           - "/srv/jellyfin:/config"
           - "/srv/jellyfin-cache:/cache"
-          - "/mnt/share/media/tvseries:/tv:ro"
+          - "/mnt/share/media/tv:/tv:ro"
           - "/mnt/share/media/movies:/movies:ro"
-          - "/mnt/share/media/music:/music-youtube-dl:ro"
-          - "/mnt/share/Music:/Music:ro"
+          - "/mnt/share/media/music:/music:ro"
         devices:
           - /dev/dri:/dev/dri
         ports:
