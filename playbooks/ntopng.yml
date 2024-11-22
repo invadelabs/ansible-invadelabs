@@ -8,6 +8,22 @@
     group: root
     mode: 0644
 
+- name: ntopng; create /etc/ntopng directory
+  ansible.builtin.file:
+    path: /etc/ntopngs
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
+- name: ntopng; create /etc/ntopng/ntopng.conf.d directory
+  ansible.builtin.file:
+    path: //etc/ntopng/ntopng.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
 - name: ntopng; ntopng_my_settings.conf
   template:
     src: templates/etc/ntopng/ntopng.conf.d/ntopng_my_settings.conf.j2

@@ -2,7 +2,7 @@
   monitor_containers: []
   nrpe_plugins_dir: "/usr/lib/nagios/plugins"
   nrpe_specific:
-    - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker -p /mnt/share -p /srv"
+    - check_disk: "{{nrpe_plugins_dir}}/check_disk -w 20% -c 10% -p / -p /var/lib/docker"
     - check_docker: "sudo /usr/local/bin/check_docker --uptime 120:120 --connection /run/docker.sock --present --status running --containers {{monitor_containers | join(' ')}}"
     - check_eth: "/usr/local/bin/check_eth -i {{ ansible_default_ipv4.alias }} -w 70m -c 80m"
     - check_fail2ban: "/usr/local/bin/check_fail2ban.sh -w 1 -c 2"
